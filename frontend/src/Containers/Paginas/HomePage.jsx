@@ -12,6 +12,7 @@ function Home() {
     return (
         <Layout>
            <Navbar />
+           
             <Footer />
         </Layout>
     )
