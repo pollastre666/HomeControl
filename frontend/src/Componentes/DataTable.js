@@ -1,0 +1,107 @@
+import React, { useState } from "react";
+
+const DataTable = () => {
+  // Estado para los horarios
+  const [schedules, setSchedules] = useState([
+    { id: 1, name: "Horari 1", devices: ["Llums sala", "Persiana principal"], days: "Dilluns - Divendres 08:00" },
+    { id: 2, name: "Horari 2", devices: ["Termòstat", "Aire condicionat"], days: "Dissabte - Diumenge 10:00" },
+    { id: 3, name: "Horari 3", devices: ["Totes les llums"], days: "Cada dia 19:30" },
+    { id: 4, name: "Horari 4", devices: ["Alarma"], days: "Dilluns - Divendres 23:00" }
+  ]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 2;
+
+  // Función para agregar un nuevo horario
+  const handleAddSchedule = () => {
+    const newSchedule = {
+      id: schedules.length + 1,
+      name: `Horari ${schedules.length + 1}`,
+      devices: ["Nou dispositiu"],
+      days: "Nou dia i hora"
+    };
+    setSchedules([...schedules, newSchedule]);
+  };
+
+  // Función para cambiar la página
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  // Lógica para la paginación
+  const indexOfLastSchedule = currentPage * itemsPerPage;
+  const indexOfFirstSchedule = indexOfLastSchedule - itemsPerPage;
+  const currentSchedules = schedules.slice(indexOfFirstSchedule, indexOfLastSchedule);
+  const totalPages = Math.ceil(schedules.length / itemsPerPage);
+
+  return (
+    <div className="p-6 bg-white rounded-lg shadow-md">
+      <div className="mb-4 flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-gray-800">Control domòtic - Horaris</h2>
+        <button
+          onClick={handleAddSchedule}
+          className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+        >
+          Afegir Horari
+        </button>
+      </div>
+      
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Horari</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aparells afectats</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dies afectats hora</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {currentSchedules.map((schedule) => (
+              <tr key={schedule.id}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{schedule.id}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-blue-600">{schedule.name}</td>
+                <td className="px-6 py-4 text-sm text-gray-900">
+                  <ul className="list-disc pl-4">
+                    {schedule.devices.map((device, index) => (
+                      <li key={index}>{device}</li>
+                    ))}
+                  </ul>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{schedule.days}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Paginación */}
+      <div className="mt-6 flex justify-center items-center space-x-2">
+        <button 
+          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+          className="p-2 text-gray-600 hover:text-blue-600 disabled:opacity-50"
+          disabled={currentPage === 1}
+        >
+          &lt;
+        </button>
+        {[...Array(totalPages)].map((_, index) => (
+          <button 
+            key={index + 1}
+            onClick={() => handlePageChange(index + 1)}
+            className={`px-3 py-1 rounded ${index + 1 === currentPage ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
+          >
+            {index + 1}
+          </button>
+        ))}
+        <button 
+          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+          className="p-2 text-gray-600 hover:text-blue-600 disabled:opacity-50"
+          disabled={currentPage === totalPages}
+        >
+          &gt;
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default DataTable;
