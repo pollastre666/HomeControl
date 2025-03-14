@@ -8,7 +8,7 @@ const BarraNavegacion = () => {
   const cerrarMenu = () => setMenuAbierto(false);
 
   return (
-    <nav className="w-full py-6 top-0 transition duration-300 ease-in-out z-40 fixed bg-[#F8F6F5] shadow-md dark:bg-oscuro">
+    <nav className="w-full py-6 top-0 transition duration-300 ease-in-out z-40 bg-[#0E82B0] shadow-md dark:bg-oscuro">
       <div className="px-4 sm:px-6">
         <div className="-ml-4 -mt-2 hidden lg:flex flex-wrap items-center justify-between sm:flex-nowrap md:px-14 px-2">
           {/* Logo */}

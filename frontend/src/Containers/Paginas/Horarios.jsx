@@ -1,21 +1,18 @@
-
 import { useEffect } from "react"
-import Footer from '../../Componentes/Navigacion/Footer'
 import Layout from "../../hocs/layouts/layout"
-import Navbar from '../../Componentes/Navigacion/NavBar'
 import DataTable from '../../Componentes/DataTable'
+
 function Horarios() {
     useEffect(() => {
-        window.scrollTo(0, 0)
-    }, [])
+        window.scrollTo(0, 0); // Mueve el scroll al principio cuando se carga la página
+    }, []);
 
     return (
         <Layout>
-           <Navbar />
-              <DataTable />
-            <Footer />
+            <p/>
+            <DataTable /> {/* Asegúrate de que DataTable esté recibiendo datos correctamente */}
         </Layout>
-    )
+    );
 }
 
-export default Horarios
+export default Horarios;
