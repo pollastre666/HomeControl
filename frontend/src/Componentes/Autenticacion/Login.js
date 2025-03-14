@@ -35,7 +35,9 @@ const LoginForm = () => {
 
       {/* Sección de formulario */}
       <main className="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2">
-        <h1 className="text-2xl font-semibold mb-4">Inicio de sesión</h1>
+      <h1 className="text-2xl bg-[#0E3BB0] font-semibold mb-4 border-2 border-[#0E3BB0] p-4">
+    Inicio de sesión
+</h1>
         
         <form onSubmit={handleSubmit} role="form">
           {/* Campo de usuario */}
