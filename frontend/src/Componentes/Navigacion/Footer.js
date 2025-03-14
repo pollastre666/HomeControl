@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Logo from '../../Assets/Logos/LogoH.png';
+import Checkbox1 from "../Checkbox"; // Asegúrate de que el componente Checkbox esté bien importado
 
 const Footer = () => {
   const añoActual = new Date().getFullYear();
@@ -18,7 +19,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative z-10 bg-white pb-10 pt-20 dark:bg-dark-800 lg:pb-20 lg:pt-[120px]">
+    <footer className="relative z-10 bg-[#E8E0D1] pb-10 pt-20 dark:bg-dark-800 lg:pb-20 lg:pt-[120px]">
       <div className="container mx-auto px-4">
         <div className="-mx-4 flex flex-wrap items-start justify-between">
           {/* Sección Información */}
@@ -53,7 +54,7 @@ const Footer = () => {
                   </svg>
                 </span>
                 <span role="group" aria-label="Número de teléfono">
-                 +++++++++++++++++++++++++++
+                  +++++++++++++++++++++++++++
                 </span>
               </div>
             </address>
@@ -92,18 +93,16 @@ const Footer = () => {
               &copy; {añoActual} Home Control.{" "}
               <span className="sr-only">Todos los derechos reservados</span>
             </p>
+
+            {/* Checkbox en el footer */}
+            <div className="mt-6 border-black border-gray-200 dark:border-dark-700 pt-6">
+              <Checkbox1 />
+              <label htmlFor="checkbox" className="ml-2 text-sm text-gray-600 border-black dark:text-gray-400">
+                Acepto los términos y condiciones
+              </label>
+            </div>
           </div>
         </div>
-      </div>
-      
-      {/* Elementos decorativos */}
-      <div aria-hidden="true">
-        <span className="absolute bottom-0 left-0 z-[-1]">
-          {/* SVG decorativo */}
-        </span>
-        <span className="absolute right-10 top-10 z-[-1]">
-          {/* SVG decorativo */}
-        </span>
       </div>
     </footer>
   );

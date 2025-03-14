@@ -1,19 +1,20 @@
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import store from './Store';  // Si el archivo es Store.js, usa 'Store'
+import store from './Store';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 import { Provider } from 'react-redux';
-import AnimatedRoutes from './Routes';  // Asegúrate de que el nombre del archivo y la ruta sean correctos
+import AnimatedRoutes from './Routes';  
 
 function App() {
   return (
-
+    <HelmetProvider>
       <Provider store={store}>
         <Router>
        <AnimatedRoutes /> 
         </Router>
       </Provider>
-
+      </HelmetProvider>
   );
 }
 
