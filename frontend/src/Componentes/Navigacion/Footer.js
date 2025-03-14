@@ -53,7 +53,7 @@ const Footer = () => {
                   </svg>
                 </span>
                 <span role="group" aria-label="Número de teléfono">
-                  +1 (234) 567-890
+                 +++++++++++++++++++++++++++
                 </span>
               </div>
             </address>
@@ -61,7 +61,7 @@ const Footer = () => {
 
           {/* Sección Enlaces */}
           <GrupoEnlaces titulo="Recursos">
-            <EnlaceFooter to="/desarrollo-saas">Desarrollo SaaS</EnlaceFooter>
+            <EnlaceFooter to="/desarrollo-saas">******************+</EnlaceFooter>
           </GrupoEnlaces>
 
           <GrupoEnlaces titulo="Empresa">
@@ -89,7 +89,7 @@ const Footer = () => {
             </div>
             
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              &copy; {añoActual} NombreEmpresa.{" "}
+              &copy; {añoActual} Home Control.{" "}
               <span className="sr-only">Todos los derechos reservados</span>
             </p>
           </div>
