@@ -8,6 +8,8 @@ const DataTable = () => {
     { id: 3, name: "Horari 3", devices: ["Totes les llums"], days: "Cada dia 19:30" },
     { id: 4, name: "Horari 4", devices: ["Alarma"], days: "Dilluns - Divendres 23:00" }
   ]);
+  
+  // Estado de la página actual y elementos por página
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 2;
 
@@ -22,11 +24,6 @@ const DataTable = () => {
     setSchedules([...schedules, newSchedule]);
   };
 
-  // Función para cambiar la página
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
   // Lógica para la paginación
   const indexOfLastSchedule = currentPage * itemsPerPage;
   const indexOfFirstSchedule = indexOfLastSchedule - itemsPerPage;
@@ -39,7 +36,7 @@ const DataTable = () => {
         <h2 className="text-2xl font-bold text-gray-800">Control domòtic - Horaris</h2>
         <button
           onClick={handleAddSchedule}
-          className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+          className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-200"
         >
           Afegir Horari
         </button>
@@ -74,28 +71,52 @@ const DataTable = () => {
         </table>
       </div>
 
-      {/* Paginación */}
+      {/* Paginación mejorada */}
       <div className="mt-6 flex justify-center items-center space-x-2">
-        <button 
+        {/* Botón de retroceso */}
+        <button
           onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
           className="p-2 text-gray-600 hover:text-blue-600 disabled:opacity-50"
           disabled={currentPage === 1}
+          aria-label="Página anterior"
         >
           &lt;
         </button>
+
+        {/* Botones de salto de página */}
+        {currentPage > 3 && (
+          <>
+            <button
+              onClick={() => setCurrentPage(1)}
+              className="px-3 py-1 rounded text-gray-600 hover:bg-gray-100"
+            >
+              1
+            </button>
+            <span className="px-3 py-1">...</span>
+          </>
+        )}
+        
         {[...Array(totalPages)].map((_, index) => (
-          <button 
+          <button
             key={index + 1}
-            onClick={() => handlePageChange(index + 1)}
+            onClick={() => setCurrentPage(index + 1)}
             className={`px-3 py-1 rounded ${index + 1 === currentPage ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
+            aria-label={`Ir a la página ${index + 1}`}
           >
             {index + 1}
           </button>
         ))}
-        <button 
+        
+        {currentPage < totalPages - 2 && (
+          <span className="px-3 py-1">...</span>
+        )}
+
+        {/* Botón de avance */}
+        <button
           onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
           className="p-2 text-gray-600 hover:text-blue-600 disabled:opacity-50"
           disabled={currentPage === totalPages}
+          aria-label="Página siguiente"
         >
           &gt;
         </button>
