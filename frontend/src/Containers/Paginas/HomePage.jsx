@@ -1,9 +1,7 @@
 
 import { useEffect } from "react"
-import Footer from '../../Componentes/Navigacion/Footer'
 import Layout from "../../hocs/layouts/layout"
-import Navbar from '../../Componentes/Navigacion/NavBar'
-
+import HeroSection from "../../Componentes/Home/HeroSection "
 function Home() {
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -13,7 +11,7 @@ function Home() {
         <Layout>
 
            
-
+        <HeroSection />
         </Layout>
     )
 }

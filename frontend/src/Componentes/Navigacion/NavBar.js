@@ -8,11 +8,11 @@ const BarraNavegacion = () => {
   const cerrarMenu = () => setMenuAbierto(false);
 
   return (
-    <nav className="w-full py-6 top-0 transition duration-300 ease-in-out z-40 bg-[#0E82B0] shadow-md dark:bg-oscuro">
+    <nav className="w-full py-6 top-0 flex transition duration-300 ease-in-out z-40 bg-[#0F76B1] shadow-md dark:bg-oscuro">
       <div className="px-4 sm:px-6">
         <div className="-ml-4 -mt-2 hidden lg:flex flex-wrap items-center justify-between sm:flex-nowrap md:px-14 px-2">
           {/* Logo */}
-          <Link to="/" className="ml-4 mt-2">
+          <Link to="/#" className="ml-4 mt-2">
             <img src={Logo} width={130} height={130} alt="Logo" />
           </Link>
 
@@ -26,7 +26,7 @@ const BarraNavegacion = () => {
             </NavLink>
             <NavLink
               to="/Horarios"
-              className="text-lg inline-flex font-medium leading-6 text-gray-900 border-b-2 border-transparent hover:border-primary hover:text-primary transition duration-300 ease-in-out mx-4"
+              className="text-lg inline-flex font-medium leading-6 text-gray-900 border-b-2 border-transparent hover:border-red hover:text-primary transition duration-300 ease-in-out mx-4"
             >
               Horarios
             </NavLink>
@@ -74,7 +74,7 @@ const BarraNavegacion = () => {
           </NavLink>
           <NavLink
             to="/Horarios"
-            className="block text-white py-2 px-4 hover:bg-primary"
+            className="block text-white py-2 px-4 hover:bg-[f8f7ff]"
             onClick={cerrarMenu}
           >
             Horarios
@@ -95,7 +95,7 @@ const BarraNavegacion = () => {
           </NavLink>
           <Link
             to="/login"
-            className="px-7 py-3 text-base font-medium text-dark hover:text-primary dark:text-white"
+            className="px-7 py-3 text-base font-medium bg-blue-600 text-dark hover:text-primary dark:text-white"
             aria-label="Iniciar sesión"
           >
             Iniciar sesión
