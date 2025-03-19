@@ -6,9 +6,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "orange-button": '#ff561e',
+        "blue-button": '#0466C8',
         // Aquí puedes añadir más colores personalizados si lo necesitas
-        "primary": '#0E3BB0',  // Ejemplo de color primario
+        "primary": '#0466C8',  // Ejemplo de color primario
         "secondary": '#ff4500',  // Ejemplo de color secundario
         "dark": '#1a1a1a',  // Ejemplo de color oscuro
         "light": '#f2f2f2',  // Ejemplo de color claro

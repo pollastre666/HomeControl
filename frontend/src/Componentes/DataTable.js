@@ -1,19 +1,17 @@
 import React, { useState } from "react";
 
 const DataTable = () => {
-  // Estado para los horarios
   const [schedules, setSchedules] = useState([
     { id: 1, name: "Horari 1", devices: ["Llums sala", "Persiana principal"], days: "Dilluns - Divendres 08:00" },
     { id: 2, name: "Horari 2", devices: ["Termòstat", "Aire condicionat"], days: "Dissabte - Diumenge 10:00" },
     { id: 3, name: "Horari 3", devices: ["Totes les llums"], days: "Cada dia 19:30" },
     { id: 4, name: "Horari 4", devices: ["Alarma"], days: "Dilluns - Divendres 23:00" }
   ]);
-  
-  // Estado de la página actual y elementos por página
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 2;
+  const [editingId, setEditingId] = useState(null);
 
-  // Función para agregar un nuevo horario
   const handleAddSchedule = () => {
     const newSchedule = {
       id: schedules.length + 1,
@@ -24,7 +22,15 @@ const DataTable = () => {
     setSchedules([...schedules, newSchedule]);
   };
 
-  // Lógica para la paginación
+  const handleEdit = (id) => {
+    setEditingId(id);
+  };
+
+  const handleSave = (id, updatedSchedule) => {
+    setSchedules(schedules.map(schedule => (schedule.id === id ? updatedSchedule : schedule)));
+    setEditingId(null);
+  };
+
   const indexOfLastSchedule = currentPage * itemsPerPage;
   const indexOfFirstSchedule = indexOfLastSchedule - itemsPerPage;
   const currentSchedules = schedules.slice(indexOfFirstSchedule, indexOfLastSchedule);
@@ -46,80 +52,64 @@ const DataTable = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Horari</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aparells afectats</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dies afectats hora</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">#</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Horari</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aparells</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Dies</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Accions</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {currentSchedules.map((schedule) => (
               <tr key={schedule.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{schedule.id}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-blue-600">{schedule.name}</td>
-                <td className="px-6 py-4 text-sm text-gray-900">
-                  <ul className="list-disc pl-4">
-                    {schedule.devices.map((device, index) => (
-                      <li key={index}>{device}</li>
-                    ))}
-                  </ul>
+                <td className="px-6 py-4 text-sm text-gray-900">{schedule.id}</td>
+                <td className="px-6 py-4">
+                  {editingId === schedule.id ? (
+                    <input
+                      type="text"
+                      className="border p-1 w-full"
+                      value={schedule.name}
+                      onChange={(e) => handleSave(schedule.id, { ...schedule, name: e.target.value })}
+                    />
+                  ) : (
+                    schedule.name
+                  )}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{schedule.days}</td>
+                <td className="px-6 py-4">
+                  {editingId === schedule.id ? (
+                    <input
+                      type="text"
+                      className="border p-1 w-full"
+                      value={schedule.devices.join(", ")}
+                      onChange={(e) => handleSave(schedule.id, { ...schedule, devices: e.target.value.split(", ") })}
+                    />
+                  ) : (
+                    schedule.devices.join(", ")
+                  )}
+                </td>
+                <td className="px-6 py-4">
+                  {editingId === schedule.id ? (
+                    <input
+                      type="text"
+                      className="border p-1 w-full"
+                      value={schedule.days}
+                      onChange={(e) => handleSave(schedule.id, { ...schedule, days: e.target.value })}
+                    />
+                  ) : (
+                    schedule.days
+                  )}
+                </td>
+                <td className="px-6 py-4">
+                  {editingId === schedule.id ? (
+                    <button onClick={() => setEditingId(null)} className="px-2 py-1 bg-blue-500 text-white rounded">Guardar</button>
+                  ) : (
+                    <button onClick={() => handleEdit(schedule.id)} className="px-2 py-1 bg-yellow-500 text-white rounded">Editar</button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
-
-      {/* Paginación mejorada */}
-      <div className="mt-6 flex justify-center items-center space-x-2">
-        {/* Botón de retroceso */}
-        <button
-          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-          className="p-2 text-gray-600 hover:text-blue-600 disabled:opacity-50"
-          disabled={currentPage === 1}
-          aria-label="Página anterior"
-        >
-          &lt;
-        </button>
-
-        {/* Botones de salto de página */}
-        {currentPage > 3 && (
-          <>
-            <button
-              onClick={() => setCurrentPage(1)}
-              className="px-3 py-1 rounded text-gray-600 hover:bg-gray-100"
-            >
-              1
-            </button>
-            <span className="px-3 py-1">...</span>
-          </>
-        )}
-        
-        {[...Array(totalPages)].map((_, index) => (
-          <button
-            key={index + 1}
-            onClick={() => setCurrentPage(index + 1)}
-            className={`px-3 py-1 rounded ${index + 1 === currentPage ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
-            aria-label={`Ir a la página ${index + 1}`}
-          >
-            {index + 1}
-          </button>
-        ))}
-        
-        {currentPage < totalPages - 2 && (
-          <span className="px-3 py-1">...</span>
-        )}
-
-        {/* Botón de avance */}
-        <button
-          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-          className="p-2 text-gray-600 hover:text-blue-600 disabled:opacity-50"
-          disabled={currentPage === totalPages}
-          aria-label="Página siguiente"
-        >
-          &gt;
-        </button>
       </div>
     </div>
   );
