@@ -4,100 +4,53 @@ import Logo from '../../Assets/Logos/LogoH.png';
 
 const BarraNavegacion = () => {
   const [menuAbierto, setMenuAbierto] = useState(false);
-
   const cerrarMenu = () => setMenuAbierto(false);
 
   return (
-    <nav className="w-full py-6 top-0 flex transition duration-300 ease-in-out z-40 bg-[#0F76B1] shadow-md dark:bg-oscuro">
-      <div className="px-4 sm:px-6">
-        <div className="-ml-4 -mt-2 hidden lg:flex flex-wrap items-center justify-between sm:flex-nowrap md:px-14 px-2">
-          {/* Logo */}
-          <Link to="/#" className="ml-4 mt-2">
-            <img src={Logo} width={130} height={130} alt="Logo" />
+    <nav className="w-full py-6 top-0 flex justify-between items-center transition duration-300 ease-in-out z-40 bg-[#0F76B1] shadow-md dark:bg-oscuro">
+      {/* Contenedor principal */}
+      <div className="px-4 sm:px-6 flex items-center justify-between w-full">
+        {/* Logo */}
+        <Link to="/" className="flex items-center">
+          <img src={Logo} width={130} height={130} alt="Logo" />
+        </Link>
+
+        {/* Menú Desktop */}
+        <div className="hidden lg:flex space-x-6">
+          <NavLink to="/" className="text-lg font-medium text-white hover:text-gray-300 transition">Inicio</NavLink>
+          <NavLink to="/Horarios" className="text-lg font-medium text-white hover:text-gray-300 transition">Horarios</NavLink>
+          <NavLink to="/#" className="text-lg font-medium text-white hover:text-gray-300 transition">Tasques</NavLink>
+          <NavLink to="/#" className="text-lg font-medium text-white hover:text-gray-300 transition">Control Doméstico</NavLink>
+
+          {/* Botón Login */}
+          <Link to="/login" className="px-6 py-2 text-base font-medium bg-black text-white rounded-md hover:bg-gray-700 transition">
+            Iniciar sesión
           </Link>
-
-          {/* Menú de navegación */}
-          <div className="ml-4 mt-2 flex-shrink-0">
-            <NavLink
-              to="/"
-              className="text-lg inline-flex font-medium leading-6 text-gray-900 border-b-2 border-transparent hover:border-primary hover:text-primary transition duration-300 ease-in-out mx-4"
-            >
-              Inicio
-            </NavLink>
-            <NavLink
-              to="/Horarios"
-              className="text-lg inline-flex font-medium leading-6 text-gray-900 border-b-2 border-transparent hover:border-red hover:text-primary transition duration-300 ease-in-out mx-4"
-            >
-              Horarios
-            </NavLink>
-            <NavLink
-              to="/Horarios"
-              className="text-lg inline-flex font-medium leading-6 text-gray-900 border-b-2 border-transparent hover:border-primary hover:text-primary transition duration-300 ease-in-out mx-4"
-            >
-              Control Doméstico
-            </NavLink>
-            <NavLink
-              to="/blog"
-              className="text-lg inline-flex font-medium leading-6 text-gray-900 border-b-2 border-transparent hover:border-primary hover:text-primary transition duration-300 ease-in-out mx-4"
-            >
-              PP
-            </NavLink>
-
-            {/* Botón Login */}
-            <Link
-              to="/login"
-              className="inline-flex ml-12 items-center rounded-md border bg-blue border-transparent bg-primary px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-gray-900 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            >
-              Iniciar sesión
-            </Link>
-          </div>
         </div>
+
+        {/* Botón menú móvil */}
+        <button
+          onClick={() => setMenuAbierto(!menuAbierto)}
+          className="lg:hidden text-white focus:outline-none"
+          aria-label="Abrir menú"
+        >
+          <span className="block w-6 h-0.5 bg-white mb-1"></span>
+          <span className="block w-6 h-0.5 bg-white mb-1"></span>
+          <span className="block w-6 h-0.5 bg-white"></span>
+        </button>
       </div>
 
       {/* Menú móvil */}
-      <div className={`lg:hidden ${menuAbierto ? 'block' : 'hidden'}`}>
-        <button
-          onClick={() => setMenuAbierto(!menuAbierto)}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 px-3 py-2 text-white"
-        >
-          <span className="block w-6 h-0.5 bg-white"></span>
-          <span className="block w-6 h-0.5 bg-white my-1"></span>
-          <span className="block w-6 h-0.5 bg-white"></span>
-        </button>
-        <div className="bg-gray-800 p-4">
-          <NavLink
-            to="/"
-            className="block text-white py-2 px-4 hover:bg-primary"
-            onClick={cerrarMenu}
-          >
-            Inicio
-          </NavLink>
-          <NavLink
-            to="/Horarios"
-            className="block text-white py-2 px-4 hover:bg-[f8f7ff]"
-            onClick={cerrarMenu}
-          >
-            Horarios
-          </NavLink>
-          <NavLink
-            to="/control-domestico"
-            className="block text-white py-2 px-4 hover:bg-primary"
-            onClick={cerrarMenu}
-          >
-            Control Doméstico
-          </NavLink>
-          <NavLink
-            to="/blog"
-            className="block text-white py-2 px-4 hover:bg-primary"
-            onClick={cerrarMenu}
-          >
-            PP
-          </NavLink>
-          <Link
-            to="/login"
-            className="px-7 py-3 text-base font-medium bg-blue-600 text-dark hover:text-primary dark:text-white"
-            aria-label="Iniciar sesión"
-          >
+      <div className={`lg:hidden fixed inset-0 bg-black bg-opacity-50 z-50 transition-transform duration-300 ${menuAbierto ? "translate-x-0" : "translate-x-full"}`}>
+        <div className="bg-gray-800 w-64 h-full shadow-lg p-5 flex flex-col">
+          <button onClick={cerrarMenu} className="self-end text-white text-2xl">&times;</button>
+
+          <NavLink to="/" className="text-white py-2" onClick={cerrarMenu}>Inicio</NavLink>
+          <NavLink to="/Horarios" className="text-white py-2" onClick={cerrarMenu}>Horarios</NavLink>
+          <NavLink to="/#" className="text-white py-2" onClick={cerrarMenu}>Tasques</NavLink>
+          <NavLink to="/#" className="text-white py-2" onClick={cerrarMenu}>Control Doméstico</NavLink>
+
+          <Link to="/login" className="mt-4 px-6 py-3 bg-blue-600 text-white text-center rounded-md hover:bg-blue-500 transition" onClick={cerrarMenu}>
             Iniciar sesión
           </Link>
         </div>
