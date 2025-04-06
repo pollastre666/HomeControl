@@ -3,6 +3,7 @@ import Home from './Containers/Paginas/HomePage';
 import LoginForm from './Componentes/Autenticacion/Login';
 import { AnimatePresence } from 'framer-motion';
 import DataTable from './Containers/Paginas/Horarios';
+import MapSection from './Componentes/Ubicacion';
 function AnimatedRoutes() {
   const location = useLocation();
 
@@ -15,6 +16,8 @@ function AnimatedRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/Horarios" element={<DataTable />} />
+        <Route path="/Ubicacion" element={<MapSection />} />
+
       </Routes>
     </AnimatePresence>
   );
