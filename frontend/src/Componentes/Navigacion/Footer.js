@@ -19,7 +19,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative z-10 bg-[#E8E0D1] pb-10 pt-20 dark:bg-dark-800 lg:pb-20 lg:pt-[120px]">
+    <footer className="relative z-10 bg-[#ccdbfd] pb-10 pt-20 dark:bg-dark-800 lg:pb-20 lg:pt-[120px]">
       <div className="container mx-auto px-4">
         <div className="-mx-4 flex flex-wrap items-start justify-between">
           {/* Sección Información */}
@@ -60,11 +60,10 @@ const Footer = () => {
             </address>
           </div>
 
-          {/* Sección Enlaces */}
           <GrupoEnlaces titulo="Recursos">
-            <EnlaceFooter to="/desarrollo-saas">******************+</EnlaceFooter>
+            <EnlaceFooter to="/desarrollo-saas">Recursos</EnlaceFooter>
+            <EnlaceFooter to="../../Ubicacion">Ubicacion</EnlaceFooter>
           </GrupoEnlaces>
-
           <GrupoEnlaces titulo="Empresa">
             <EnlaceFooter to="/nosotros">Sobre nosotros</EnlaceFooter>
           </GrupoEnlaces>
