@@ -48,7 +48,7 @@ const SeccionFeatures = () => {
 
                 <h1 class="mt-4 text-xl font-semibold text-gray-800 dark:text-white">------------------------</h1>
 
-                <p class="mt-2 text-gray-500 dark:text-gray-400">------------------------------------------------------------------------------</p>
+                <p class="mt-2 text-gray-500 dark:text-gray-400">@prateducacio</p>
             </div>
 
             <div>
