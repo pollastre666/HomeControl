@@ -1,5 +1,8 @@
+import Layout from "../hocs/layouts/layout";
+
 const SeccionMapa = () => {
   return (
+    <Layout>
     <section className="text-gray-600 body-font relative">
       <div className="absolute inset-0 bg-gray-300">
         <iframe
@@ -40,6 +43,7 @@ const SeccionMapa = () => {
         </div>
       </div>
     </section>
+    </Layout>
   );
 };
 
