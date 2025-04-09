@@ -32,7 +32,7 @@ const DataTable = () => {
     try {
       localStorage.setItem('schedules', JSON.stringify(schedules));
     } catch (e) {
-      console.error("Error saving to localStorage:", e);
+      console.error("Error al guardar camvios:", e);
     }
   }, [schedules]);
 
@@ -44,8 +44,8 @@ const DataTable = () => {
     const newId = getNextId();
     const newSchedule = {
       id: newId,
-      name: `Horari ${newId}`,
-      devices: ["Nou dispositiu"],
+      name: `Horario ${newId}`,
+      devices: ["Nou dispositivo"],
       days: "Cada dia",
       time: "00:00",
       active: true
@@ -112,7 +112,7 @@ const DataTable = () => {
   return (
     <div className="p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto">
       <div className="mb-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <h2 className="text-2xl font-bold text-gray-800">Control Domòtic - Horaris</h2>
+        <h2 className="text-2xl font-bold text-gray-800">Control Domòestico - Horarios</h2>
         <div className="flex gap-2">
           <input
             type="text"
@@ -125,7 +125,7 @@ const DataTable = () => {
             onClick={handleAddSchedule}
             className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-200"
           >
-            + Afegir Horari
+            + Añadir Horario
           </button>
         </div>
       </div>
