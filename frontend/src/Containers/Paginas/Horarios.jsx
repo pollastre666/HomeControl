@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import Layout from "../../hocs/layouts/layout"
-import DataTable from '../../Componentes/DataTable'
+import DataTable from '../../Componentes/Horarios/DataTable'
 
 function Horarios() {
     useEffect(() => {

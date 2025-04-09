@@ -44,7 +44,7 @@ const Footer = () => {
                 >
                   <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm2 0v10h12V5H4z" />
                 </svg>
-                <span>+1 (555) 123-4567</span>
+                <span>000000000</span>
               </div>
             </address>
           </div>
@@ -77,9 +77,6 @@ const Footer = () => {
                 </a>
               ))}
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              &copy; {añoActual} Home Control. Todos los derechos reservados.
-            </p>
             <div className="mt-6 flex items-center gap-2">
               <Checkbox1 id="terms" />
               <label htmlFor="terms" className="text-sm text-gray-600 dark:text-gray-400">

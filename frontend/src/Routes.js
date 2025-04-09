@@ -3,14 +3,14 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Home from './Containers/Paginas/HomePage'; 
 import LoginForm from './Componentes/Autenticacion/LoginForm';
-import DataTable from './Containers/Paginas/Horarios';
-import MapSection from './Componentes/Ubicacion';
-import Nosotros from './Containers/Paginas/Nosotros';
-import AdminDashboard from './Componentes/Dashboard/AdminDashboard';
-import EditorContent from './Componentes/Autenticacion/EditorContent'; // Ajustado
+import DataTable from './Containers/Paginas/Horarios'; // Página de horarios 
+import MapSection from './Componentes/Ubicacion'; // Componente para mostrar el ubicación y puede que lo utilicemos para el contacto tambien
+import Nosotros from './Containers/Paginas/Nosotros'; // Página de "Nosotros"
+import AdminDashboard from './Componentes/Dashboard/AdminDashboard'; // Dashboard para el administrador
+import EditorContent from './Componentes/Autenticacion/EditorContent'; // Componente para que el usuario pueda editar su información y contenido
 import UserProfile from './Componentes/Autenticacion/UserProfile'; // Ajustado
-import Unauthorized from './Componentes/Autenticacion/Unauthorized'; // Ajustado
-import ProtectedRoute from './ProtectedRoutes'; // Ajustado
+import Unauthorized from './Componentes/Autenticacion/Unauthorized'; // componente para mostrar un mensaje de acceso denegado
+import ProtectedRoute from './ProtectedRoutes'; // rutas protegidas para que los usuarios no autorizados no puedan acceder a ciertas rutas
 
 function AnimatedRoutes() {
   const location = useLocation();
