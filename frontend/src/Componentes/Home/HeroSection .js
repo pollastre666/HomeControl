@@ -21,11 +21,11 @@ const HeroSection = () => {
             Ahorra energía
           </h2>
           <p className="mt-2 text-gray-600">
-            Descubre cómo nuestros productos pueden ayudarte a reducir el consumo energético y mejorar tu confort.
+            texto
           </p>
           <div className="mt-4">
             <a
-              href="#more-info"
+              href="Iformacion"
               className="inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600"
             >
               Más información

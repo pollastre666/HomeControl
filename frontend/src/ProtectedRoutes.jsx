@@ -5,11 +5,11 @@ import { useAuth } from './Componentes/Autenticacion/AuthContext';
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, isLoading } = useAuth();
 
+  // Mientras se carga el estado de autenticación, muestra un spinner
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-100 to-indigo-200 flex items-center justify-center">
         <div className="flex flex-col items-center space-y-4">
-          {/* Spinner Animado */}
           <svg
             className="animate-spin h-12 w-12 text-teal-600"
             xmlns="http://www.w3.org/2000/svg"
@@ -30,21 +30,23 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             ></path>
           </svg>
-          {/* Texto de Cargando */}
           <p className="text-lg font-semibold text-teal-800">Cargando...</p>
         </div>
       </div>
     );
   }
 
+  // Si no hay usuario autenticado, redirige a login
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
+  // Si se especifican roles permitidos y el rol del usuario no está incluido, redirige a unauthorized
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     return <Navigate to="/unauthorized" replace />;
   }
 
+  // Si todo está bien, renderiza el componente hijo (e.g., EditorContent)
   return children;
 };
 

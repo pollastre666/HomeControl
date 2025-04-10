@@ -11,20 +11,25 @@ import EditorContent from './Componentes/Autenticacion/EditorContent'; // Compon
 import UserProfile from './Componentes/Autenticacion/UserProfile'; // Ajustado
 import Unauthorized from './Componentes/Autenticacion/Unauthorized'; // componente para mostrar un mensaje de acceso denegado
 import ProtectedRoute from './ProtectedRoutes'; // rutas protegidas para que los usuarios no autorizados no puedan acceder a ciertas rutas
-
+import ErrorPage from './Containers/Errores/Error404'; // Componente para mostrar un error 404
+import Asistencia from './Containers/Paginas/Asistencia';
 function AnimatedRoutes() {
   const location = useLocation();
 
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
+        {/* Rutas de errores */}
+        <Route path="*" element={<ErrorPage />} />
+
+
         {/* Rutas públicas */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/Horarios" element={<DataTable />} />
         <Route path="/Ubicacion" element={<MapSection />} />
         <Route path="/Nosotros" element={<Nosotros />} />
-
+        <Route path="/Asistencia" element={<Asistencia />} /> // Página de asistencia
         {/* Rutas protegidas */}
         <Route
           path="/admin/dashboard"
@@ -37,7 +42,7 @@ function AnimatedRoutes() {
         <Route
           path="/editor/content"
           element={
-            <ProtectedRoute allowedRoles={['editor', 'admin']}>
+            <ProtectedRoute allowedRoles={['editor', 'admin', 'User']}>
               <EditorContent />
             </ProtectedRoute>
           }

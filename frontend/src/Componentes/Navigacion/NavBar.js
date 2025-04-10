@@ -52,21 +52,27 @@ const BarraNavegacion = () => {
           >
             Horarios
           </NavLink>
-          <NavLink
+         <NavLink
             to="/#"
             className="text-lg font-medium text-white hover:text-amber-200 transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-200 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full"
             onClick={cerrarMenu}
           >
-            Tasques
-          </NavLink>
-          <NavLink
+            Tareas
+          </NavLink> 
+{/*         <NavLink
             to="/#"
             className="text-lg font-medium text-white hover:text-amber-200 transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-200 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full"
             onClick={cerrarMenu}
           >
             Control Doméstico
+          </NavLink>*/}
+          <NavLink
+            to="/Asistencia"
+            className="text-lg font-medium text-white hover:text-amber-200 transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-200 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full"
+            onClick={cerrarMenu}
+          >
+            Asistencia
           </NavLink>
-
           {/* Theme Toggle */}
           <button
             onClick={toggleDarkMode}
@@ -178,14 +184,20 @@ const BarraNavegacion = () => {
           >
             Tasques
           </NavLink>
-          <NavLink
+         {/* <NavLink
             to="/#"
             className="text-white py-2 hover:text-amber-200 transition-colors duration-300"
             onClick={cerrarMenu}
           >
             Control Doméstico
-          </NavLink>
-
+          </NavLink>*/}
+          <NavLink
+            to="/#"
+            className="text-lg font-medium text-white hover:text-amber-200 transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-200 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full"
+            onClick={cerrarMenu}
+          >
+            Asistencia
+          </NavLink> 
           {/* Theme Toggle in Mobile Menu */}
           <button
             onClick={toggleDarkMode}

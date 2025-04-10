@@ -1,8 +1,8 @@
 import React from 'react';
 import { useAuth } from '../Autenticacion/AuthContext';
-import logo from '../../Assets/Logos/LogoH.png';
 import { Link, useNavigate } from 'react-router-dom';
-import Layout from "../../hocs/layouts/layout"
+import Layout from "../../hocs/layouts/layout";
+import EditorContent from './EditorContent';
 
 const UserProfile = () => {
   const { user, logout } = useAuth();
@@ -34,11 +34,31 @@ const UserProfile = () => {
     },
   ];
 
+  // Add loading state if user data is being fetched
+  if (!user) {
+    return (
+      <Layout>
+        <div className="flex justify-center items-center h-screen">
+          <p className="text-gray-600">Cargando perfil...</p>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
       <main className="flex-grow p-6">
         <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-blue-800 mb-4">Perfil de Usuario</h1>
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-3xl font-bold text-blue-800">Perfil de Usuario</h1>
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 text-white py-1 px-3 rounded-lg hover:bg-red-700 transition-colors duration-200"
+            >
+              Cerrar Sesión
+            </button>
+          </div>
+
           <p className="text-gray-600 mb-6">
             Bienvenido, {user?.username || 'Usuario'} (Rol: {user?.role || 'No definido'})
           </p>
@@ -48,13 +68,17 @@ const UserProfile = () => {
             <div className="mt-2 space-y-2">
               <p className="text-gray-600">Nombre: {user?.username || 'N/A'}</p>
               <p className="text-gray-600">Rol: {user?.role || 'N/A'}</p>
+              {/* Add more user details if available */}
+              {user?.email && <p className="text-gray-600">Email: {user.email}</p>}
             </div>
-            <button 
-              className="mt-4 bg-blue-600 text-white py-1 px-3 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-              onClick={() => navigate('/editar-perfil')} // Añadí una navegación de ejemplo
-            >
-              Editar Perfil
-            </button>
+            <div className="mt-4 space-x-4">
+              <button 
+                className="bg-blue-600 text-white py-1 px-3 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                onClick={() => navigate('/editor/content')}
+              >
+                Editar Perfil
+              </button>
+            </div>
           </section>
 
           <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -67,7 +91,7 @@ const UserProfile = () => {
                 <p className="text-gray-600 text-sm mt-1">{action.description}</p>
                 <button
                   onClick={() => navigate(action.path)}
-                  className="mt-2 bg-blue-600 text-white py-1 px-3 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                  className="mt-2 bg-blue-600 text-white py-1 px-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 w-full"
                 >
                   {action.buttonText}
                 </button>
