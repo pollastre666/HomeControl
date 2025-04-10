@@ -1,12 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthContext'
+import { useAuth } from './AuthContext';
+
 const LoginForm = () => {
   const [formData, setFormData] = useState({ usuario: '', contrasena: '' });
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
+
+  // Si ya está autenticado, redirige inmediatamente
+  useEffect(() => {
+    if (user) {
+      switch (user.role) {
+        case 'admin':
+          navigate('/admin/dashboard');
+          break;
+        case 'editor':
+          navigate('/editor/content');
+          break;
+        default:
+          navigate('/user/profile');
+      }
+    }
+  }, [user, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +39,6 @@ const LoginForm = () => {
     try {
       const response = await login(formData);
       if (response.success) {
-        // Redirección basada en rol
         switch (response.user.role) {
           case 'admin':
             navigate('/admin/dashboard');
@@ -66,8 +82,7 @@ const LoginForm = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all disabled:bg-gray-100"
               placeholder="Tu usuario"
               required
-              disabled={isSubmitting}
-            />
+              disabled={isSubmitting}/>
           </div>
 
           <div>
@@ -81,7 +96,7 @@ const LoginForm = () => {
               value={formData.contrasena}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all disabled:bg-gray-100"
-              placeholder="••••••••"
+              placeholder="******"
               required
               disabled={isSubmitting}
             />
