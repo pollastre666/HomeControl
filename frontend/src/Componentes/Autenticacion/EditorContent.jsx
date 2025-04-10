@@ -16,7 +16,6 @@ const EditorContent = () => {
   if (user?.role !== 'editor') {
     return <Navigate to="/unauthorized" replace />;
   }
-
   return (
     <Layout>
       <main className="p-6">

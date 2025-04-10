@@ -9,7 +9,6 @@ const LoginForm = () => {
   const { login, user } = useAuth();
   const navigate = useNavigate();
 
-  // Si ya está autenticado, redirige inmediatamente
   useEffect(() => {
     if (user) {
       switch (user.role) {
@@ -51,7 +50,7 @@ const LoginForm = () => {
         }
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.message); // Mensaje de error de Firebase
     } finally {
       setIsSubmitting(false);
     }
@@ -82,7 +81,8 @@ const LoginForm = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all disabled:bg-gray-100"
               placeholder="Tu usuario"
               required
-              disabled={isSubmitting}/>
+              disabled={isSubmitting}
+            />
           </div>
 
           <div>
