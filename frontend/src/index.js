@@ -1,9 +1,11 @@
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import './Syle/index.css';
+import './Styles/index.css';
 import reportWebVitals from './reportWebVitals';
+import "./index.css"; // Asegúrate de que el nombre del archivo sea correcto
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

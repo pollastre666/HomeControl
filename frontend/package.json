@@ -3,11 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+<<<<<<< HEAD
     "@redux-devtools/extension": "^3.3.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.16",
+=======
+>>>>>>> 2a1b173ceb8cff375fceb38fb0c9cbff500401f9
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
@@ -15,13 +18,23 @@
     "ajv": "^6.12.6",
     "cookie": "^1.0.2",
     "framer-motion": "^12.4.7",
+<<<<<<< HEAD
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+=======
+    "postcss-loader": "4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+>>>>>>> 2a1b173ceb8cff375fceb38fb0c9cbff500401f9
     "react-helmet": "^6.1.0",
     "react-helmet-async": "^2.0.5",
     "react-redux": "^8.1.3",
     "react-router-dom": "^7.2.0",
     "react-scripts": "^5.0.1",
+<<<<<<< HEAD
+=======
+    "react-spinners": "^0.15.0",
+>>>>>>> 2a1b173ceb8cff375fceb38fb0c9cbff500401f9
     "redux": "^5.0.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^3.1.0",
@@ -52,8 +65,12 @@
     ]
   },
   "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/line-clamp": "^0.4.4",
+    "@tailwindcss/typography": "^0.5.16",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.3",
-    "tailwindcss": "^3.0.0"
+    "tailwindcss": "^4.0.14"
   }
 }
