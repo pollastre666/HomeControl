@@ -8,7 +8,8 @@ function Asistencia() {
 
     return (
         <Layout>
-            <p>Faltan Componentes </p>
+            
+       
         </Layout>
     )
 }
