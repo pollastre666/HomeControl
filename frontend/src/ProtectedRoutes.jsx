@@ -1,12 +1,29 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuth } from './Componentes/Autenticacion/AuthContext';
+import React, { useEffect, useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from './Componentes/Autenticacion/AuthProvider';
+import { toast } from 'react-toastify';
+import PropTypes from 'prop-types';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, isLoading } = useAuth();
+  const location = useLocation();
+  const [showLoader, setShowLoader] = useState(true);
+  const toastId = React.useRef(null);
 
-  // Mientras se carga el estado de autenticación, muestra un spinner
-  if (isLoading) {
+  // Delay loader para evitar parpadeo en cargas rápidas
+  useEffect(() => {
+    const timer = setTimeout(() => setShowLoader(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Debounce para notificaciones
+  const showDebouncedToast = (message, type = 'warn') => {
+    if (!toast.isActive(toastId.current)) {
+      toastId.current = toast[type](message, { toastId: message });
+    }
+  };
+
+  if (isLoading || showLoader) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-100 to-indigo-200 flex items-center justify-center">
         <div className="flex flex-col items-center space-y-4">
@@ -23,31 +40,38 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
               r="10"
               stroke="currentColor"
               strokeWidth="4"
-            ></circle>
+            />
             <path
               className="opacity-75"
               fill="currentColor"
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
+            />
           </svg>
-          <p className="text-lg font-semibold text-teal-800">Cargando...</p>
+          <p className="text-lg font-semibold text-teal-800">Verificando acceso...</p>
         </div>
       </div>
     );
   }
 
-  // Si no hay usuario autenticado, redirige a login
   if (!user) {
-    return <Navigate to="/login" replace />;
+    console.debug('Redirección a login desde:', location.pathname);
+    showDebouncedToast('Acceso restringido: Debes iniciar sesión', 'warning');
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Si se especifican roles permitidos y el rol del usuario no está incluido, redirige a unauthorized
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/unauthorized" replace />;
+    console.warn(`Intento de acceso no autorizado: ${user.role} a ${location.pathname}`);
+    showDebouncedToast('No tienes permisos para esta sección', 'error');
+    return <Navigate to="/unauthorized" state={{ from: location }} replace />;
   }
 
-  // Si todo está bien, renderiza el componente hijo (e.g., EditorContent)
+  // Solo renderizar hijos si pasa todas las validaciones
   return children;
+};
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.node.isRequired,
+  allowedRoles: PropTypes.arrayOf(PropTypes.string)
 };
 
 export default ProtectedRoute;
