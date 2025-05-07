@@ -1,19 +1,23 @@
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Provider } from 'react-redux';
 import store from './Store';
-import { AuthProvider } from './Componentes/Autenticacion/AuthContext' // Ajustado
+import { AuthProvider } from './Componentes/Autenticacion/AuthProvider';
+//import NavBar from './Componentes/Navigacion/NavBar';
 import AnimatedRoutes from './Routes';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
     <HelmetProvider>
       <Provider store={store}>
-        <AuthProvider>
-          <Router>
+        <BrowserRouter>
+          <AuthProvider>
             <AnimatedRoutes />
-          </Router>
-        </AuthProvider>
+            <ToastContainer />
+          </AuthProvider>
+        </BrowserRouter>
       </Provider>
     </HelmetProvider>
   );
