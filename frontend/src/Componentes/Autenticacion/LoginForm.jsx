@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthProvider';
+import { useAuth } from '../Autenticacion/AuthProvider';
 import { toast } from 'react-toastify';
 import { sendEmailVerification } from 'firebase/auth';
 
@@ -33,8 +33,8 @@ const LoginForm = () => {
         user.role === 'admin'
           ? '/admin/dashboard'
           : user.role === 'editor'
-          ? '/editor/content'
-          : '/user/profile';
+          ? '/editor/dashboard'
+          : '/user/dashboard';
       navigate(redirectPath, { replace: true });
     }
   }, [user, isLoading, navigate]);
@@ -258,7 +258,7 @@ const LoginForm = () => {
               value={formData.email}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all disabled:bg-gray-100"
-              placeholder="ejemplo@dominio.com"
+              placeholder="email@dominio.com"
               required
               disabled={isSubmitting}
             />

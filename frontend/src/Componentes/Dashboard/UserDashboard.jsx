@@ -4,7 +4,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import Layout from '../../hocs/layouts/layout';
 import { toast } from 'react-toastify';
 
-const AdminDashboard = () => {
+const UserDashboard = () => {
   const { user, isLoading, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -47,72 +47,41 @@ const AdminDashboard = () => {
     return <Navigate to="/login" replace />;
   }
 
-  // TEMPORARY: Allow access for any authenticated user for testing
-  // Original: if (user.role !== 'admin') { ... }
-  // Revert to original check after confirming Firestore role is set correctly
-  // if (!['admin', 'editor', 'user'].includes(user.role)) {
-  //   toast.error('Acceso denegado: No tienes permisos para esta página.');
-  //   return <Navigate to={`/unauthorized?role=admin`} replace />;
-  // }
+  // Restrict access to user, editor, and admin roles
+  if (!['user', 'editor', 'admin'].includes(user.role)) {
+    toast.error('Acceso denegado: No tienes permisos para esta página.');
+    return <Navigate to={`/unauthorized?role=user`} replace />;
+  }
 
   // Sidebar options
   const sidebarItems = [
     {
-      name: 'Admin Dashboard',
-      path: '/admin/dashboard',
+      name: 'Dashboard',
+      path: '/user/dashboard',
       icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
     },
     {
-      name: 'Editor Dashboard',
-      path: '/editor/dashboard',
-      icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
-    },
-    {
-      name: 'User Dashboard',
-      path: '/user/dashboard',
+      name: 'Profile',
+      path: '/user/profile',
       icon: 'M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z',
-    },
-    {
-      name: 'Users',
-      path: '/admin/users',
-      icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z',
-    },
-    {
-      name: 'Devices',
-      path: '/admin/devices',
-      icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
     },
     {
       name: 'Log Out',
       action: logout,
-      icon: 'M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1',
+      icon: 'M17 16l4-4m0 0l-4-4m4 4Hük7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1',
     },
   ];
 
-  // Placeholder for API data
+  // Placeholder for stats
   const stats = [
-    { title: 'Connected Devices', value: 12, subtext: '+2 since yesterday' },
-    { title: 'Active Schedules', value: 8, subtext: '2 upcoming in 1 hour' },
-    { title: 'Registered Users', value: 45, subtext: '+5 this week' },
+    { title: 'Connected Devices', value: 5, subtext: '+1 since yesterday' },
+    { title: 'Active Schedules', value: 3, subtext: '1 upcoming in 30 minutes' },
   ];
 
+  // Placeholder for recent activity
   const recentActivity = [
-    { text: 'Living room lights turned on by schedule', time: '10 minutes ago' },
-    { text: 'User "juan" added a new device', time: '1 hour ago' },
-    { text: 'Security alarm activated', time: '3 hours ago' },
-  ];
-
-  const recentDevices = [
-    {
-      name: 'Security Camera',
-      icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
-      date: new Date().toLocaleDateString(),
-    },
-    {
-      name: 'Smart Thermostat',
-      icon: 'M20 14.66V20a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2h5.34M9 11.66l3 3 7-7',
-      date: new Date().toLocaleDateString(),
-    },
+    { text: 'Bedroom lights turned off', time: '5 minutes ago' },
+    { text: 'Thermostat adjusted to 22°C', time: '1 hour ago' },
   ];
 
   return (
@@ -121,8 +90,8 @@ const AdminDashboard = () => {
         {/* Sidebar */}
         <aside className="w-64 bg-blue-800 text-white flex-shrink-0 shadow-lg">
           <div className="p-6">
-            <h2 className="text-2xl font-bold">Admin Panel</h2>
-            <p className="text-sm text-blue-200 mt-1">System Management</p>
+            <h2 className="text-2xl font-bold">User Dashboard</h2>
+            <p className="text-sm text-blue-200 mt-1">Your Home Overview</p>
           </div>
           <nav className="mt-6">
             <ul className="space-y-2">
@@ -159,9 +128,9 @@ const AdminDashboard = () => {
           {/* Header */}
           <header className="bg-white shadow-md rounded-lg p-6 mb-6 flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-blue-800">Admin Dashboard</h1>
+              <h1 className="text-2xl font-bold text-blue-800">User Dashboard</h1>
               <p className="text-sm text-gray-500">
-                Welcome, {user?.username || 'User'} (Role: {user?.role || 'Admin'})
+                Welcome, {user?.username || 'User'} (Role: {user?.role || 'User'})
               </p>
             </div>
             <div className="flex items-center space-x-4">
@@ -176,7 +145,7 @@ const AdminDashboard = () => {
           </header>
 
           {/* Stats */}
-          <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             {stats.map((stat) => (
               <div
                 key={stat.title}
@@ -189,9 +158,9 @@ const AdminDashboard = () => {
             ))}
           </section>
 
-          {/* System Activity */}
-          <section className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 className="text-xl font-semibold text-blue-800 mb-4">System Activity</h2>
+          {/* Recent Activity */}
+          <section className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-xl font-semibold text-blue-800 mb-4">Recent Activity</h2>
             <ul className="space-y-3">
               {recentActivity.map((activity, index) => (
                 <li key={index} className="flex items-center space-x-3">
@@ -202,42 +171,10 @@ const AdminDashboard = () => {
               ))}
             </ul>
           </section>
-
-          {/* Recent Devices */}
-          <section className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-blue-800 mb-4">Recently Added Devices</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {recentDevices.map((device) => (
-                <div
-                  key={device.name}
-                  className="bg-blue-50 rounded-lg p-4 flex items-center space-x-4"
-                >
-                  <svg
-                    className="w-8 h-8 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d={device.icon}
-                    />
-                  </svg>
-                  <div>
-                    <p className="text-gray-600 font-semibold">{device.name}</p>
-                    <p className="text-sm text-gray-500">Added: {device.date}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
         </main>
       </div>
     </Layout>
   );
 };
 
-export default AdminDashboard;
+export default UserDashboard;

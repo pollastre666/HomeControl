@@ -77,11 +77,11 @@ const NavBar = () => {
               Horarios
             </NavLink>
             <NavLink
-              to="/Tareas"
+              to="/Nosotros"
               className="text-lg font-medium text-white hover:text-amber-200 transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-200 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full"
               onClick={cerrarMenu}
             >
-              Tareas
+              Nosotros
             </NavLink>
             <button
               onClick={toggleVerticalMenu}

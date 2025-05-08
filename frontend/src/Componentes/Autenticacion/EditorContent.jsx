@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from './AuthProvider';
+import { useAuth } from '../Autenticacion/AuthProvider';
 import { Navigate, useNavigate } from 'react-router-dom';
 import Layout from '../../hocs/layouts/layout';
 import { toast } from 'react-toastify';
@@ -75,7 +75,7 @@ const EditorContent = () => {
     );
   }
 
-  // Redirect if user is not authenticated
+  // Redirect if not authenticated
   if (!user) {
     toast.warn('Por favor, inicia sesión para acceder a esta página.');
     return <Navigate to="/login" replace />;

@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }) => {
               details: error.details,
             });
             if (error.message.includes('offline')) {
-              showToast('No se puede acceder a Firestore: estás offline. Usando rol por defecto: user');
+              showToast('No se puede acceder a Firestore: estás offline. Usando rol por defecto:售user');
             } else {
               showToast(`Error al obtener el rol del usuario: ${error.message}`, 'error');
             }
@@ -202,8 +202,8 @@ export const AuthProvider = ({ children }) => {
       showToast('Inicio de sesión exitoso', 'success');
       const redirectPath =
         role === 'admin' ? '/admin/dashboard' :
-        role === 'editor' ? '/editor/content' :
-        '/user/profile';
+        role === 'editor' ? '/editor/dashboard' :
+        '/user/dashboard';
       navigate(redirectPath, { replace: true });
       return { success: true, user: mappedUser };
     } catch (error) {
