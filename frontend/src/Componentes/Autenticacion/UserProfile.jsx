@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from './AuthProvider';
+import { useAuth } from '../Autenticacion/AuthProvider';
 import { Navigate, useNavigate } from 'react-router-dom';
 import Layout from '../../hocs/layouts/layout';
 import { toast } from 'react-toastify';
@@ -74,9 +74,8 @@ const UserProfile = () => {
     return <Navigate to="/login" replace />;
   }
 
-  // Manejar rol undefined o no permitido
-  const userRole = user.role || 'user'; // Fallback to 'user' if role is undefined
-  if (!['user', 'editor', 'admin'].includes(userRole)) {
+  // Permitir acceso a user, editor y admin
+  if (!['user', 'editor', 'admin'].includes(user.role)) {
     toast.error('Acceso denegado: Rol no válido.');
     return <Navigate to={`/unauthorized?role=user`} replace />;
   }
@@ -96,7 +95,7 @@ const UserProfile = () => {
           </div>
 
           <p className="text-gray-600 mb-6">
-            Bienvenido, {user.username || 'Usuario'} (Rol: {userRole})
+            Bienvenido, {user.username || 'Usuario'} (Rol: {user.role})
           </p>
 
           {/* Detalles del Perfil */}
@@ -104,7 +103,7 @@ const UserProfile = () => {
             <h3 className="text-lg font-semibold text-blue-800">Detalles del Perfil</h3>
             <div className="mt-2 space-y-2">
               <p className="text-gray-600">Nombre: {user.username || 'N/A'}</p>
-              <p className="text-gray-600">Rol: {userRole}</p>
+              <p className="text-gray-600">Rol: {user.role}</p>
               {user.email && <p className="text-gray-600">Correo: {user.email}</p>}
             </div>
           </section>
