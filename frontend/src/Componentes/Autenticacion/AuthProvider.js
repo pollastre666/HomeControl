@@ -41,6 +41,15 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       try {
         if (firebaseUser) {
+          if (!firebaseUser.emailVerified) {
+            console.log('User email not verified:', firebaseUser.email);
+            showToast('Por favor, verifica tu correo electrónico para continuar.', 'warn');
+            await signOut(auth);
+            setUser(null);
+            navigate('/login', { replace: true });
+            return;
+          }
+
           console.log('Firebase user authenticated:', {
             email: firebaseUser.email,
             uid: firebaseUser.uid,
@@ -59,8 +68,6 @@ export const AuthProvider = ({ children }) => {
                   role: 'user',
                   email: firebaseUser.email,
                   createdAt: new Date(),
-                }).catch((createError) => {
-                  throw createError;
                 });
                 console.log('User document created successfully for UID:', firebaseUser.uid);
                 showToast('Se creó un nuevo perfil de usuario con rol por defecto: user', 'info');
@@ -71,7 +78,7 @@ export const AuthProvider = ({ children }) => {
                   details: createError.details,
                 });
                 showToast(`Error al crear el perfil de usuario: ${createError.message}`, 'error');
-                role = 'user'; // Fallback role
+                role = 'user';
               }
             }
           } catch (error) {
@@ -81,16 +88,16 @@ export const AuthProvider = ({ children }) => {
               details: error.details,
             });
             if (error.message.includes('offline')) {
-              showToast('No se puede acceder a Firestore: estás offline. Usando rol por defecto: user');
+              showToast('No se puede acceder a Firestore: estás offline. Usando rol por defecto:售user');
             } else {
               showToast(`Error al obtener el rol del usuario: ${error.message}`, 'error');
             }
-            role = 'user'; // Fallback role
+            role = 'user';
           }
 
           const mappedUser = {
             username: firebaseUser.email.split('@')[0],
-            role: role || 'user', // Ensure role is never undefined
+            role: role || 'user',
             email: firebaseUser.email,
             uid: firebaseUser.uid,
           };
@@ -134,6 +141,13 @@ export const AuthProvider = ({ children }) => {
       const { email, password } = credentials;
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const firebaseUser = userCredential.user;
+
+      if (!firebaseUser.emailVerified) {
+        await signOut(auth);
+        showToast('Por favor, verifica tu correo electrónico antes de iniciar sesión.', 'warn');
+        throw new Error('Email not verified');
+      }
+
       console.log('Firebase login successful:', firebaseUser.email);
 
       let role = 'user';
@@ -150,8 +164,6 @@ export const AuthProvider = ({ children }) => {
               role: 'user',
               email: firebaseUser.email,
               createdAt: new Date(),
-            }).catch((createError) => {
-              throw createError;
             });
             console.log('User document created successfully for UID:', firebaseUser.uid);
             showToast('Se creó un nuevo perfil de usuario con rol por defecto: user', 'info');
@@ -162,7 +174,7 @@ export const AuthProvider = ({ children }) => {
               details: createError.details,
             });
             showToast(`Error al crear el perfil de usuario: ${createError.message}`, 'error');
-            role = 'user'; // Fallback role
+            role = 'user';
           }
         }
       } catch (error) {
@@ -176,19 +188,22 @@ export const AuthProvider = ({ children }) => {
         } else {
           showToast(`Error al obtener el rol del usuario: ${error.message}`, 'error');
         }
-        role = 'user'; // Fallback role
+        role = 'user';
       }
 
       const mappedUser = {
         username: firebaseUser.email.split('@')[0],
-        role: role || 'user', // Ensure role is never undefined
+        role: role || 'user',
         email: firebaseUser.email,
         uid: firebaseUser.uid,
       };
 
       setUser(mappedUser);
       showToast('Inicio de sesión exitoso', 'success');
-      const redirectPath = '/dashboard';
+      const redirectPath =
+        role === 'admin' ? '/admin/dashboard' :
+        role === 'editor' ? '/editor/dashboard' :
+        '/user/dashboard';
       navigate(redirectPath, { replace: true });
       return { success: true, user: mappedUser };
     } catch (error) {
@@ -238,8 +253,6 @@ export const AuthProvider = ({ children }) => {
         role,
         email: firebaseUser.email,
         createdAt: new Date(),
-      }).catch((createError) => {
-        throw createError;
       });
       console.log('User document created successfully for UID:', firebaseUser.uid);
       showToast(`Usuario creado con rol: ${role}`, 'success');

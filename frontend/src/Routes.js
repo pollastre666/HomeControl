@@ -2,9 +2,9 @@ import React from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Home from './Containers/Paginas/HomePage';
-import LoginForm from './Componentes/Autenticacion/LoginForm';
 import DataTable from './Containers/Paginas/Horarios';
-import MapSection from './Componentes/Ubicacion';
+import TareasComponent from './Containers/Paginas/Tareas';
+import MapContactSection from './Componentes/Ubicacion';
 import Nosotros from './Containers/Paginas/Nosotros';
 import AdminDashboard from './Componentes/Dashboard/AdminDashboard';
 import EditorContent from './Componentes/Autenticacion/EditorContent';
@@ -14,6 +14,9 @@ import ProtectedRoute from './ProtectedRoutes';
 import ErrorPage from './Containers/Errores/Error404';
 import Asistencia from './Containers/Paginas/Asistencia';
 import Contacto from './Componentes/Asistencia/Contacto';
+import LoginForm from './Componentes/Autenticacion/LoginForm';
+import MasInformacion from './Componentes/Home/masInformacion';
+
 function AnimatedRoutes() {
   const location = useLocation();
 
@@ -23,12 +26,29 @@ function AnimatedRoutes() {
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginForm />} />
-        <Route path="/Horarios" element={<DataTable />} />
-        <Route path="/Ubicacion" element={<MapSection />} />
+        <Route path="/Ubicacion" element={<MapContactSection />} />
         <Route path="/Nosotros" element={<Nosotros />} />
         <Route path="/Asistencia" element={<Asistencia />} />
         <Route path="/Contacto" element={<Contacto />} />
+        <Route path="/Mas-Informacion" element={<MasInformacion />} />
+
         {/* Protected Routes */}
+        <Route
+          path="/Horarios"
+          element={
+            <ProtectedRoute allowedRoles={['user', 'editor', 'admin']}>
+              <DataTable />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/Tareas"
+          element={
+            <ProtectedRoute allowedRoles={['user', 'editor', 'admin']}>
+              <TareasComponent />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/admin/dashboard"
           element={
