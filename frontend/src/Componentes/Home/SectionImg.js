@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Tilt } from 'react-tilt';
+import { Link } from 'react-router-dom';
 
 const galleryItems = [
   {
@@ -8,15 +8,13 @@ const galleryItems = [
     src: 'https://www.somfy.es/common/img/library///500x370_cover/Connexoon_Window_Stephane_Rambaud_18_web2.jpg',
     alt: 'Smart home control panel',
     title: 'Persianas',
-    description: 'Persianas, contraventanas y estores exteriores motorizados.',
-    link: '/products/persianas'
+    link: '/Persianas'
   },
   {
     id: 2,
     src: 'https://www.somfy.es/common/img/library//500x370_cover/blinds-and-curtains.jpg',
     alt: 'Smart lighting system',
     title: 'Estores Eléctricos',
-    description: 'Estores eléctricos y cortinas motorizadas para un hogar inteligente.',
     link: '/products/estores-electricos'
   },
   {
@@ -24,7 +22,6 @@ const galleryItems = [
     src: 'https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg',
     alt: 'Home automation hub',
     title: 'Automation Hub',
-    description: 'Conecta y automatiza tus dispositivos inteligentes de forma fluida.',
     link: '/products/automation-hub'
   },
   {
@@ -32,7 +29,6 @@ const galleryItems = [
     src: 'https://www.somfy.es/common/img/library//500x370_cover/gates-and-door-phones.jpg',
     alt: 'Smart thermostat',
     title: 'Sistemas de Control de Acceso',
-    description: 'Cámaras, alarmas y sistemas de seguridad para tu hogar.',
     link: '/products/control-de-acceso'
   },
   {
@@ -40,7 +36,6 @@ const galleryItems = [
     src: 'https://www.somfy.es/common/img/library//500x370_cover/cameras-and-alarms.jpg',
     alt: 'Security camera interface',
     title: 'Seguridad Avanzada',
-    description: 'Monitoriza tu hogar con sistemas de seguridad en tiempo real.',
     link: '/products/seguridad-avanzada'
   },
   {
@@ -48,7 +43,6 @@ const galleryItems = [
     src: 'https://www.somfy.es/common/img/library///500x370_cover/yslo-swing-shutters-motor-tahoma-compatible.jpg',
     alt: 'Voice assistant integration',
     title: 'Smart Home y Automatismos',
-    description: 'Controla tu hogar con asistentes de voz y automatismos avanzados.',
     link: '/products/smart-home-automatismos'
   }
 ];
@@ -56,7 +50,6 @@ const galleryItems = [
 const GallerySection = () => {
   const { scrollY } = useScroll();
   const parallaxY = useTransform(scrollY, [0, 1000], [0, -150]);
-  const [hoveredItem, setHoveredItem] = useState(null);
 
   return (
     <section className="relative bg-gradient-to-b from-amber-50 via-white to-amber-100 py-32 overflow-hidden">
@@ -92,52 +85,38 @@ const GallerySection = () => {
         {/* Interactive Image Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {galleryItems.map((item, index) => (
-            <Tilt
+            <motion.div
               key={item.id}
-              options={{ max: 15, scale: 1.05, speed: 400 }}
-              className="w-full"
+              className="relative rounded-xl overflow-hidden bg-white shadow-md hover:shadow-xl transition-shadow duration-300 h-48 w-full max-w-[300px] mx-auto"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.15, ease: 'easeOut' }}
+              viewport={{ once: true }}
+              role="article"
+              aria-labelledby={`gallery-item-${item.id}`}
             >
-              <motion.div
-                className="relative rounded-2xl overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-shadow duration-300"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.15, ease: 'easeOut' }}
-                viewport={{ once: true }}
-                onHoverStart={() => setHoveredItem(item.id)}
-                onHoverEnd={() => setHoveredItem(null)}
-                role="article"
-                aria-labelledby={`gallery-item-${item.id}`}
-              >
-                <a href={item.link} aria-label={`Learn more about ${item.title}`}>
+              <Link to={item.link} aria-label={`Learn more about ${item.title}`}>
+                <div className="relative w-full h-full group">
+                  {/* Image with Zoom Effect */}
                   <img
                     src={item.src}
                     alt={item.alt}
-                    className="w-full h-72 object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
                   />
-                </a>
-                {/* Overlay with Info */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-t from-amber-900/85 via-amber-900/50 to-transparent flex flex-col justify-end p-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: hoveredItem === item.id ? 1 : 0, y: hoveredItem === item.id ? 0 : 20 }}
-                  transition={{ duration: 0.4, ease: 'easeInOut' }}
-                >
-                  <h3 id={`gallery-item-${item.id}`} className="text-2xl font-semibold text-white mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-amber-100 leading-relaxed">
-                    {item.description}
-                  </p>
-                  <a
-                    href={item.link}
-                    className="mt-4 inline-block text-sm font-semibold text-amber-300 hover:text-amber-100 transition-colors duration-200"
-                    aria-label={`Learn more about ${item.title}`}
-                  >
-                    Ver Mas →
-                  </a>
-                </motion.div>
-              </motion.div>
-            </Tilt>
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 group-hover:from-black/75" />
+                  {/* Title */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
+                    <h3
+                      id={`gallery-item-${item.id}`}
+                      className="text-xl font-semibold text-white text-center"
+                    >
+                      {item.title}
+                    </h3>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
           ))}
         </div>
       </div>
