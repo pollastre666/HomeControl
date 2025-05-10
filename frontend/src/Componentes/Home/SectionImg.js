@@ -1,135 +1,118 @@
-import React from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import React, { useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
+import GalleryCardHero from '../Productos/ComponetesDeCartas/GalleryCardHero'; 
 
+// Gallery items data (exactly six items)
 const galleryItems = [
   {
     id: 1,
     src: 'https://www.somfy.es/common/img/library///500x370_cover/Connexoon_Window_Stephane_Rambaud_18_web2.jpg',
     alt: 'Smart home control panel',
     title: 'Persianas',
-    link: '/Persianas'
+    link: '/Persianas',
+    description: 'Control de luz y privacidad con persianas motorizadas.',
   },
   {
     id: 2,
     src: 'https://www.somfy.es/common/img/library//500x370_cover/blinds-and-curtains.jpg',
     alt: 'Smart lighting system',
     title: 'Estores Eléctricos',
-    link: '/products/estores-electricos'
+    link: '/Estores',
+    description: 'Estores elegantes con automatización avanzada.',
   },
   {
     id: 3,
     src: 'https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg',
     alt: 'Home automation hub',
     title: 'Automation Hub',
-    link: '/products/automation-hub'
+    link: '/automation-hub',
+    description: 'Centraliza el control de tu hogar inteligente.',
   },
   {
     id: 4,
     src: 'https://www.somfy.es/common/img/library//500x370_cover/gates-and-door-phones.jpg',
-    alt: 'Smart thermostat',
-    title: 'Sistemas de Control de Acceso',
-    link: '/products/control-de-acceso'
+    alt: 'Smart access control',
+    title: 'Control de Acceso',
+    link: '/access-control',
+    description: 'Acceso seguro y simplificado para tu hogar.',
   },
   {
     id: 5,
     src: 'https://www.somfy.es/common/img/library//500x370_cover/cameras-and-alarms.jpg',
-    alt: 'Security camera interface',
+    alt: 'Advanced security interface',
     title: 'Seguridad Avanzada',
-    link: '/products/seguridad-avanzada'
+    link: '/advanced-security',
+    description: 'Protección total con cámaras y alarmas inteligentes.',
   },
   {
     id: 6,
     src: 'https://www.somfy.es/common/img/library///500x370_cover/yslo-swing-shutters-motor-tahoma-compatible.jpg',
-    alt: 'Voice assistant integration',
-    title: 'Smart Home y Automatismos',
-    link: '/products/smart-home-automatismos'
-  }
+    alt: 'Smart home automation',
+    title: 'Smart Home Automatismos',
+    link: '/smart-home-automation',
+    description: 'Automatización completa para un hogar conectado.',
+  },
 ];
 
+// Animation variants for header
+const headerVariants = {
+  hidden: { opacity: 0, y: 60 },
+  visible: { opacity: 1, y: 0, transition: { duration: 1, ease: 'easeOut' } },
+};
+
 const GallerySection = () => {
-  const { scrollY } = useScroll();
-  const parallaxY = useTransform(scrollY, [0, 1000], [0, -150]);
+  const [hoveredItem, setHoveredItem] = useState(null);
+
+  // Memoize gallery items
+  const memoizedItems = useMemo(() => galleryItems, []);
 
   return (
-    <section className="relative bg-gradient-to-b from-amber-50 via-white to-amber-100 py-32 overflow-hidden">
-      {/* Parallax Background */}
-      <motion.div
-        className="absolute inset-0 -z-10 bg-cover bg-center opacity-15"
-        style={{
-          backgroundImage: `url('https://www.somfy.es/common/img/library///2000x600_cover/port-enery-winter.jpg')`,
-          y: parallaxY
-        }}
-      />
+    <section className="relative bg-gradient-to-br from-amber-50 via-white to-amber-100 py-16 sm:py-24 lg:py-32 overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-amber-200/30 to-transparent pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 -z-10 h-96 transform-gpu overflow-hidden blur-3xl">
+        <div
+          className="relative aspect-[1155/678] w-full bg-gradient-to-tr from-amber-300 to-amber-600 opacity-20"
+          style={{
+            clipPath:
+              'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+          }}
+        />
+      </div>
 
-      {/* Ambient Light Overlay */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-amber-200/20 to-transparent pointer-events-none" />
-
-      <div className="container mx-auto px-6 lg:px-8">
-        {/* Header Section with Animation */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header Section */}
         <motion.div
-          className="text-center mb-24"
-          initial={{ opacity: 0, y: 60 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: 'easeOut' }}
+          className="text-center mb-12 sm:mb-16 lg:mb-20"
+          variants={headerVariants}
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true }}
         >
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6 tracking-tight">
-            Home Control Solutions
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 sm:mb-6 tracking-tight">
+            Soluciones HomeControl
           </h1>
-          <p className="mx-auto max-w-3xl text-lg leading-8 text-gray-600 font-medium">
-            Transform your home with HomeControl, your trusted partner for seamless smart home automation and connectivity.
+          <p className="mx-auto max-w-2xl sm:max-w-3xl text-base sm:text-lg leading-7 text-gray-600 font-medium">
+            Transforma tu hogar con soluciones de automatización inteligentes y conectadas.
           </p>
         </motion.div>
 
-        {/* Interactive Image Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {galleryItems.map((item, index) => (
-            <motion.div
+        {/* Interactive Image Grid with GalleryCardHero */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          {memoizedItems.map((item, index) => (
+            <GalleryCardHero
               key={item.id}
-              className="relative rounded-xl overflow-hidden bg-white shadow-md hover:shadow-xl transition-shadow duration-300 h-48 w-full max-w-[300px] mx-auto"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.15, ease: 'easeOut' }}
-              viewport={{ once: true }}
-              role="article"
-              aria-labelledby={`gallery-item-${item.id}`}
-            >
-              <Link to={item.link} aria-label={`Learn more about ${item.title}`}>
-                <div className="relative w-full h-full group">
-                  {/* Image with Zoom Effect */}
-                  <img
-                    src={item.src}
-                    alt={item.alt}
-                    className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
-                  />
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 group-hover:from-black/75" />
-                  {/* Title */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3
-                      id={`gallery-item-${item.id}`}
-                      className="text-xl font-semibold text-white text-center"
-                    >
-                      {item.title}
-                    </h3>
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
+              title={item.title}
+              description={item.description}
+              image={item.src}
+              link={item.link}
+              index={index}
+              onHover={() => setHoveredItem(item.id)}
+              onLeave={() => setHoveredItem(null)}
+              isHovered={hoveredItem === item.id}
+            />
           ))}
         </div>
-      </div>
-
-      {/* Decorative Gradient Overlay */}
-      <div className="absolute inset-x-0 bottom-0 -z-10 transform-gpu overflow-hidden blur-3xl h-96">
-        <div
-          className="relative aspect-[1155/678] w-full bg-gradient-to-tr from-amber-300 to-amber-600 opacity-25"
-          style={{
-            clipPath:
-              'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)'
-          }}
-        />
       </div>
     </section>
   );
