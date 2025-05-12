@@ -12,6 +12,7 @@ PubSubClient client(espClient);
 const char* TOPIC_SENSORES = "homecontrol/sensores";
 const char* TOPIC_ENCHUFES = "homecontrol/enchufes";
 const char* TOPIC_BOMBILLAS = "homecontrol/bombillas";
+
 void setup_wifi() {
     delay(10);
     Serial.println("Conectando a WiFi...");
