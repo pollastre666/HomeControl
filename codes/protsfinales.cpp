@@ -12,7 +12,7 @@ const char* password = "TU_CONTRASEÑA_WIFI"; // Reemplaza con tu contraseña de
 // --- Configuración del Servidor Intermediario ---
 const char* serverIp = "IP_DEL_SERVIDOR_PYTHON"; // Reemplaza con la IP de la máquina que ejecutará el script Python
 const int serverPort = 5000;                 // Puerto en el que escuchará el servidor Python (puede ser otro)
-String serverPath = "/motion";               // Ruta en el servidor para notificar movimiento
+String serverPath = "/motion";               // Ruta en el servidor para notificar movimiento 
 
 // --- Configuración de Pines ---
 const int pirPin = D1; // Pin GPIO al que está conectado el sensor PIR (D1 = GPIO5 en Wemos D1 Mini)
