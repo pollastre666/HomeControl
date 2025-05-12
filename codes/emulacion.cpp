@@ -22,5 +22,5 @@ void manejarDispositivo(Dispositivo& d, unsigned long tiempoActual) {
         d.ultimoCambio = tiempoActual;
     }
 
-    d.estadoPrevioBoton = estadoBoton;
+    d.estadoPrevioBoton = estadoBoton;.
 }
