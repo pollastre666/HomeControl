@@ -7,7 +7,7 @@
 
 // --- Configuración de WiFi ---
 const char* ssid = "TU_NOMBRE_DE_WIFI";         // Reemplaza con el nombre de tu red WiFi
-const char* password = "TU_CONTRASEÑA_WIFI"; // Reemplaza con tu contraseña de WiFi
+const char* password = "TU_CONTRASEÑA_WIFI"; // Reemplaza con tu contraseña de WiFii
 
 // --- Configuración del Servidor Intermediario ---
 const char* serverIp = "IP_DEL_SERVIDOR_PYTHON"; // Reemplaza con la IP de la máquina que ejecutará el script Python
