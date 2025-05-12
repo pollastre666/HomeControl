@@ -65,7 +65,7 @@ void loop() {
   delay(100); 
 }
 
-// Función para enviar notificación de movimiento al servidor Python
+// Función para enviar notificación de movimiento al servidor Python (arreglado)
 void sendMotionNotification() {
   if (WiFi.status() == WL_CONNECTED) {
     WiFiClient client;
