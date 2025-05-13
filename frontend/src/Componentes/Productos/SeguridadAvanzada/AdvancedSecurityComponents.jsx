@@ -1,157 +1,255 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Info, SortAsc, SortDesc } from 'lucide-react';
+import {
+  Camera, Bell, Radio, Lock, Smartphone, Mail,
+  ChevronRight, SortAsc, SortDesc
+} from 'lucide-react';
+import { componentData } from './advancedSecurityData';
+import CheckoutModal from '../Detalles/CheckoutModal'; // Verifica esta ruta
 
-const advancedSecurityComponents = [
-  { id: 1, name: 'Cámara', src: 'https://www.somfy.es/common/img/library//500x370_cover/cameras-and-alarms.jpg', alt: 'Cámara de seguridad', link: '/components/camera', description: 'Vigilancia en alta definición con visión nocturna.' },
-  { id: 2, name: 'Sistema de Alarma', src: 'https://www.somfy.es/common/img/library//500x370_cover/cameras-and-alarms.jpg', alt: 'Sistema de alarma', link: '/components/alarm-system', description: 'Alerta inmediata ante intrusos con notificaciones en tiempo real.' },
-  { id: 3, name: 'Detector de Movimiento', src: 'https://www.somfy.es/common/img/library//500x370_cover/cameras-and-alarms.jpg', alt: 'Detector de movimiento', link: '/components/motion-detector', description: 'Sensores avanzados para detectar actividad no autorizada.' },
-  { id: 4, name: 'Cerradura Inteligente', src: 'https://www.somfy.es/common/img/library//500x370_cover/cameras-and-alarms.jpg', alt: 'Cerradura inteligente', link: '/components/smart-lock', description: 'Cerradura con acceso remoto y control por app.' },
-  { id: 5, name: 'App de Control', src: 'https://www.somfy.es/common/img/library//500x370_cover/cameras-and-alarms.jpg', alt: 'App de control de seguridad', link: '/components/control-app', description: 'Gestiona tu seguridad desde cualquier lugar.' },
-  { id: 6, name: 'Sistema de Notificaciones', src: 'https://www.somfy.es/common/img/library//500x370_cover/cameras-and-alarms.jpg', alt: 'Sistema de notificaciones', link: '/components/notification-system', description: 'Alertas personalizadas para eventos de seguridad.' },
-];
-
+// Animation variants
 const cardVariants = {
-  hidden: { opacity: 0, y: 50 },
+  hidden: { opacity: 0, y: 30 },
   visible: (index) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, delay: index * 0.15, ease: 'easeOut' },
+    transition: { duration: 0.5, delay: index * 0.1, ease: 'easeOut' },
   }),
 };
 
+const cardHoverVariants = {
+  initial: { rotateZ: 0, scale: 1 },
+  hover: { rotateZ: 3, scale: 1.03, transition: { duration: 0.4 } },
+};
+
+const textVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+  exit: { opacity: 0, y: 20, transition: { duration: 0.2 } },
+};
+
+const indicatorVariants = {
+  hidden: { opacity: 0, scale: 0 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.3, delay: 0.2 } },
+  pulse: { scale: 1.2, opacity: 0.8, transition: { duration: 0.5, yoyo: Infinity } },
+};
+
 const headerVariants = {
-  hidden: { opacity: 0, y: 60, scale: 0.9 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.8, ease: 'easeOut' } },
+  hidden: { opacity: 0, y: 60 },
+  visible: { opacity: 1, y: 0, transition: { duration: 1, ease: 'easeOut' } },
+};
+
+// Mapeo de íconos para componentes de seguridad
+const getIconById = (id) => {
+  const iconMap = {
+    camera: <Camera size={16} />,
+    'alarm-system': <Bell size={16} />,
+    'motion-detector': <Radio size={16} />,
+    'smart-lock': <Lock size={16} />,
+    'control-app': <Smartphone size={16} />,
+    'notification-system': <Mail size={16} />,
+  };
+  return iconMap[id] || <ChevronRight size={16} />;
 };
 
 const AdvancedSecurityComponents = React.memo(({ title = 'Componentes de Seguridad Avanzada', description = 'Protege tu hogar con los mejores componentes de seguridad.' }) => {
   const [hoveredComponent, setHoveredComponent] = useState(null);
   const [sortOrder, setSortOrder] = useState('asc');
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [components, setComponents] = useState([]);
+  const [error, setError] = useState(null);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [selectedComponent, setSelectedComponent] = useState(null);
 
   useEffect(() => {
-    // Simulate image loading
-    const timer = setTimeout(() => setIsLoaded(true), 1000);
-    return () => clearTimeout(timer);
+    const loadData = async () => {
+      try {
+        const dynamicComponents = Object.values(componentData).map((product) => ({
+          id: product.id,
+          name: product.name,
+          src: product.image,
+          alt: `${product.name} - Vista previa`,
+          link: `/components/${product.id}`,
+          description: product.description,
+          icon: getIconById(product.id),
+          stock: product.stock,
+        }));
+        setComponents(dynamicComponents);
+      } catch (err) {
+        console.error('Error loading security data:', err);
+        setError('No se pudieron cargar los componentes. Intenta de nuevo más tarde.');
+      }
+    };
+    loadData();
   }, []);
 
   const sortedComponents = useMemo(() => {
-    const components = [...advancedSecurityComponents];
-    return components.sort((a, b) =>
+    return [...components].sort((a, b) =>
       sortOrder === 'asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)
     );
-  }, [sortOrder]);
+  }, [components, sortOrder]);
 
-  const getCardBackground = (index) => {
-    const colors = [
-      'bg-white dark:bg-gray-800',
-      'bg-gray-50 dark:bg-gray-700',
-      'bg-amber-50 dark:bg-gray-600',
-    ];
-    return colors[index % colors.length];
+  const handleBuyNow = (component) => {
+    setSelectedComponent(component);
+    setIsCheckoutOpen(true);
   };
 
-  return (
-    <section className="relative bg-gradient-to-br from-amber-50 via-white to-amber-100 dark:bg-gradient-to-br dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 py-16 sm:py-24 lg:py-32 overflow-hidden">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-amber-200/30 to-transparent dark:from-gray-700/30 dark:to-transparent pointer-events-none" />
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          className="text-center mb-12 sm:mb-16 lg:mb-20"
-          variants={headerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 dark:text-white mb-4 sm:mb-6 tracking-tight">
-            {title}
-          </h1>
-          <p className="mx-auto max-w-2xl sm:max-w-3xl text-base sm:text-lg leading-7 text-gray-600 dark:text-gray-300 font-medium">
-            {description}
-          </p>
-        </motion.div>
+  if (error) {
+    return <div className="text-center text-red-600 py-16">{error}</div>;
+  }
 
-        {/* Sort Filter */}
-        <div className="flex justify-end mb-6">
-          <button
-            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-            className="flex items-center bg-amber-600 dark:bg-amber-500 text-white dark:text-gray-100 px-4 py-2 rounded-lg hover:bg-amber-700 dark:hover:bg-amber-600 transition-all duration-200"
-          >
-            Ordenar {sortOrder === 'asc' ? 'Z-A' : 'A-Z'}
-            {sortOrder === 'asc' ? <SortAsc className="ml-2" size={16} /> : <SortDesc className="ml-2" size={16} />}
-          </button>
+  return (
+    <>
+      <section className="relative bg-gradient-to-br from-amber-50 via-white to-amber-100 py-12 sm:py-16 lg:py-20 overflow-hidden">
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-amber-200/30 to-transparent pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 -z-10 h-96 transform-gpu overflow-hidden blur-3xl">
+          <div
+            className="relative aspect-[1155/678] w-full bg-gradient-to-tr from-amber-300 to-amber-600 opacity-20"
+            style={{
+              clipPath:
+                'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+            }}
+          />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {sortedComponents.map((component, index) => (
-            <motion.div
-              key={component.id}
-              className={`relative rounded-xl overflow-hidden ${getCardBackground(index)} shadow-md dark:shadow-gray-700 hover:shadow-lg dark:hover:shadow-gray-600 transition-all duration-300 h-64 sm:h-72 w-full max-w-sm mx-auto ${index === 0 ? 'ring-2 ring-amber-500 scale-105' : ''}`}
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              custom={index}
-              viewport={{ once: true }}
-              onMouseEnter={() => setHoveredComponent(component.id)}
-              onMouseLeave={() => setHoveredComponent(null)}
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            className="text-center mb-8 sm:mb-12 lg:mb-16"
+            variants={headerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 dark:text-white mb-3 sm:mb-4 tracking-tight">
+              {title}
+            </h1>
+            <p className="mx-auto max-w-xl sm:max-w-2xl text-sm sm:text-base leading-6 text-gray-600 dark:text-gray-300 font-medium">
+              {description}
+            </p>
+          </motion.div>
+
+          <div className="flex justify-end mb-6">
+            <button
+              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+              className="flex items-center bg-amber-600 dark:bg-amber-500 text-white dark:text-gray-100 px-4 py-2 rounded-lg hover:bg-amber-700 dark:hover:bg-amber-600 transition-all duration-200"
             >
-              <Link to={component.link}>
-                <div className="relative w-full h-full group">
-                  {!isLoaded ? (
-                    <div className="w-full h-full bg-gray-200 dark:bg-gray-600 animate-pulse" />
-                  ) : (
-                    <img
-                      src={component.src}
-                      alt={component.alt}
-                      className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent dark:from-gray-900/60 transition-opacity duration-300 group-hover:from-black/75 dark:group-hover:from-gray-900/75" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
-                    <div className="flex items-center justify-center mb-2">
-                      <h3 className="text-lg sm:text-xl font-semibold text-white dark:text-gray-100 text-center">
-                        {component.name}
-                      </h3>
-                      <div className="relative group/info ml-2">
-                        <Info size={16} className="text-white dark:text-gray-300 cursor-pointer" />
-                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover/info:block">
-                          <div className="bg-gray-800 dark:bg-gray-700 text-white dark:text-gray-200 text-xs rounded py-1 px-2 whitespace-nowrap">
-                            {component.description}
-                          </div>
+              Ordenar {sortOrder === 'asc' ? 'Z-A' : 'A-Z'}
+              {sortOrder === 'asc' ? <SortAsc className="ml-2" size={16} /> : <SortDesc className="ml-2" size={16} />}
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {components.length > 0 ? (
+              sortedComponents.map((component, index) => (
+                <div key={component.id} className="relative">
+                  <motion.div
+                    className="relative rounded-xl overflow-hidden bg-white dark:bg-gray-800 shadow-md transition-all duration-300 h-56 sm:h-64 w-full max-w-xs mx-auto"
+                    style={{ perspective: 500 }}
+                    variants={cardVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    custom={index}
+                    viewport={{ once: true }}
+                    whileHover="hover"
+                    animate="initial"
+                    role="article"
+                    aria-labelledby={`component-${component.id}`}
+                    onMouseEnter={() => setHoveredComponent(component.id)}
+                    onMouseLeave={() => setHoveredComponent(null)}
+                  >
+                    <Link to={component.link} aria-label={`Explorar ${component.name}`}>
+                      <motion.div className="relative w-full h-full group" variants={cardHoverVariants}>
+                        <div className="absolute top-3 right-3 z-10 bg-amber-600 dark:bg-amber-500 text-white p-1.5 rounded-full shadow-sm group-hover:bg-amber-700 dark:group-hover:bg-amber-600 transition-colors duration-300">
+                          {component.icon}
                         </div>
-                      </div>
-                    </div>
-                    <AnimatePresence>
-                      {hoveredComponent === component.id && (
-                        <motion.div
-                          className="mt-2 text-sm text-white/90 dark:text-gray-200 text-center flex items-center justify-center gap-2"
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <span>{component.description}</span>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                    <motion.div
-                      className="mt-3 flex justify-center"
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <span className="text-white dark:text-gray-200 text-sm font-medium flex items-center gap-1 hover:underline">
-                        Ver más <ChevronRight size={16} />
+                        <img
+                          src={component.src}
+                          alt={component.alt}
+                          loading="lazy"
+                          className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-gray-900/50 via-gray-900/20 to-transparent transition-opacity duration-300 group-hover:from-gray-900/60" />
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <h3 id={`component-${component.id}`} className="text-lg sm:text-xl font-bold text-white dark:text-gray-100 text-left mb-1">
+                            {component.name}
+                          </h3>
+                          <AnimatePresence>
+                            {hoveredComponent === component.id && (
+                              <motion.div
+                                variants={textVariants}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                              >
+                                <motion.p
+                                  className="text-xs sm:text-sm text-gray-200 dark:text-gray-300 text-left mb-2"
+                                >
+                                  {component.description}
+                                </motion.p>
+                                {component.stock === 0 ? (
+                                  <motion.p
+                                    className="text-red-600 font-semibold text-sm"
+                                  >
+                                    Producto agotado
+                                  </motion.p>
+                                ) : (
+                                  <motion.button
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      handleBuyNow(component);
+                                    }}
+                                    className="bg-amber-600 text-white px-2 py-1 rounded-lg hover:bg-amber-700 transition-colors duration-200 text-xs sm:text-sm font-semibold"
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                  >
+                                    Comprar Ahora
+                                  </motion.button>
+                                )}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                        <AnimatePresence>
+                          {hoveredComponent === component.id && (
+                            <motion.div
+                              className="absolute bottom-4 left-4 w-2 h-2 bg-amber-600 rounded-full"
+                              variants={indicatorVariants}
+                              initial="hidden"
+                              animate={['visible', 'pulse']}
+                            />
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+                    </Link>
+                  </motion.div>
+                  <div className="relative w-full mt-2">
+                    <div className="absolute inset-x-0 h-6 bg-gradient-to-r from-amber-200/50 via-amber-400/70 to-amber-200/50 dark:from-amber-700/50 dark:via-amber-900/70 dark:to-amber-700/50 shadow-md rounded-sm flex items-center justify-center">
+                      <span className="text-xs sm:text-sm font-medium text-white dark:text-gray-100 tracking-wide">
+                        {component.name}
                       </span>
-                    </motion.div>
+                    </div>
                   </div>
                 </div>
-              </Link>
-            </motion.div>
-          ))}
+              ))
+            ) : (
+              <div className="text-center text-gray-600 py-16">Cargando componentes...</div>
+            )}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Modal de Checkout */}
+      {CheckoutModal && (
+        <CheckoutModal
+          isOpen={isCheckoutOpen}
+          onClose={() => {
+            setIsCheckoutOpen(false);
+            setSelectedComponent(null);
+          }}
+          component={selectedComponent}
+        />
+      )}
+    </>
   );
 });
 

@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import { db } from "../../../../config/firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 const ContactForm = () => {
-  const { contactType } = useParams(); // e.g., "solicitar-reparacion"
+  const { contactType } = useParams();
   const navigate = useNavigate();
 
-  // Map route to contact type
   const typeMap = {
     "solicitar-reparacion": "Repair",
     "solicitar-presupuesto": "Budget",
@@ -14,9 +15,8 @@ const ContactForm = () => {
     "contacto-atencion-cliente": "CustomerService",
   };
 
-  const currentType = typeMap[contactType] || "CustomerService"; // Default to CustomerService
+  const currentType = typeMap[contactType] || "CustomerService";
 
-  // Form state
   const [formData, setFormData] = useState({
     contactType: currentType,
     name: "",
@@ -30,8 +30,8 @@ const ContactForm = () => {
   });
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
-  // Validation
   const validate = () => {
     const newErrors = {};
     if (!formData.name) newErrors.name = "El nombre es obligatorio";
@@ -58,25 +58,50 @@ const ContactForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log("Form Submission:", formData);
-      setSubmitted(true);
-      setTimeout(() => {
-        navigate("/");
-      }, 2000); // Redirect to home after 2 seconds
+      try {
+        const docData = {
+          type: formData.contactType,
+          name: formData.name,
+          email: formData.email,
+          timestamp: new Date(),
+        };
+        if (currentType === "Repair" || currentType === "Budget") {
+          docData.phone = formData.phone;
+        }
+        if (currentType === "Repair") {
+          docData.address = formData.address;
+          docData.issue = formData.issue;
+        }
+        if (currentType === "Budget") {
+          docData.product = formData.product;
+        }
+        if (currentType === "StoreLocator") {
+          docData.postalCode = formData.postalCode;
+        }
+        if (currentType === "CustomerService") {
+          docData.orderNumber = formData.orderNumber;
+          docData.issue = formData.issue;
+        }
+        await addDoc(collection(db, "contacts"), docData);
+        console.log("Formulario enviado a Firestore:", docData);
+        setSubmitted(true);
+        setSubmitError(null);
+        setTimeout(() => navigate("/"), 2000);
+      } catch (error) {
+        console.error("Error al enviar el formulario a Firestore: ", error);
+        setSubmitError("Error al enviar el formulario. Inténtalo de nuevo.");
+      }
     }
   };
 
-  // Form titles and descriptions
   const formConfig = {
     Repair: {
       title: "Solicitar Reparación",
@@ -271,6 +296,7 @@ const ContactForm = () => {
                 </div>
               </>
             )}
+            {submitError && <p className="text-red-500 text-sm text-center">{submitError}</p>}
             <motion.button
               type="submit"
               className="w-full py-3 bg-amber-400 text-gray-800 font-semibold rounded-full hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-colors duration-200"

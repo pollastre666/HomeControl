@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { db } from "../../../../config/firebase"; // Importa tu configuración de Firestore
+import { collection, addDoc } from "firebase/firestore";
 
 const RepairContactForm = () => {
   const navigate = useNavigate();
@@ -14,6 +16,7 @@ const RepairContactForm = () => {
   });
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
   const validate = () => {
     const newErrors = {};
@@ -33,12 +36,27 @@ const RepairContactForm = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log("Form Submission:", formData);
-      setSubmitted(true);
-      setTimeout(() => navigate("/"), 2000);
+      try {
+        await addDoc(collection(db, "contacts"), {
+          type: formData.contactType,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+          issue: formData.issue,
+          timestamp: new Date(),
+        });
+        console.log("Formulario enviado a Firestore:", formData);
+        setSubmitted(true);
+        setSubmitError(null);
+        setTimeout(() => navigate("/"), 2000);
+      } catch (error) {
+        console.error("Error al enviar el formulario a Firestore: ", error);
+        setSubmitError("Error al enviar el formulario. Inténtalo de nuevo.");
+      }
     }
   };
 
@@ -161,6 +179,7 @@ const RepairContactForm = () => {
                 </div>
               </motion.div>
             </div>
+            {submitError && <p className="text-red-500 text-sm text-center">{submitError}</p>}
             <motion.button
               type="submit"
               className="w-full py-2 px-4 bg-amber-400 text-white font-semibold rounded-full hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-colors duration-200"

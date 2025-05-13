@@ -22,7 +22,7 @@ function PersianasIndex() {
       </Helmet>
 
       <div>
-        <main className="min-h-screen">
+        <main className="min-h-screen pt-16 sm:pt-20 md:pt-24 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-2">
           <PersianasHeroSection />
           <PersianasComponents
             title="Nuestros Componentes de Persianas"

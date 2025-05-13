@@ -1,183 +1,100 @@
-import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { ChevronRight, Info } from 'lucide-react';
+import { useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { motion } from 'framer-motion';
+import AutomationHubComponents from './AutomationHubComponents';
+import AutomationHubHeroSection from '../ComponetesDeCartas/AutomationHubHeroSection';
 
-// Component data
-const automationHubComponents = [
-  {
-    id: 1,
-    name: 'Unidad Central',
-    src: 'https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg',
-    alt: 'Unidad central de automatización',
-    link: '/components/central-unit',
-    description: 'Núcleo de control para todos los dispositivos del hogar.',
-  },
-  {
-    id: 2,
-    name: 'Módulo de Conectividad',
-    src: 'https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg',
-    alt: 'Módulo de conectividad',
-    link: '/components/connectivity-module',
-    description: 'Conexión Wi-Fi y Bluetooth para dispositivos inteligentes.',
-  },
-  {
-    id: 3,
-    name: 'Sensores',
-    src: 'https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg',
-    alt: 'Sensores de automatización',
-    link: '/components/sensors',
-    description: 'Detectores de movimiento y temperatura avanzados.',
-  },
-  {
-    id: 4,
-    name: 'Interfaz de App',
-    src: 'https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg',
-    alt: 'Interfaz de aplicación',
-    link: '/components/app-interface',
-    description: 'Controla tu hogar desde tu smartphone con facilidad.',
-  },
-  {
-    id: 5,
-    name: 'Control por Voz',
-    src: 'https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg',
-    alt: 'Control por voz',
-    link: '/components/voice-control',
-    description: 'Integración con asistentes de voz como Alexa y Google.',
-  },
-  {
-    id: 6,
-    name: 'Fuente de Alimentación',
-    src: 'https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg',
-    alt: 'Fuente de alimentación',
-    link: '/components/power-supply',
-    description: 'Energía eficiente y estable para el hub.',
-  },
-];
-
-// Animation variants for cards
-const cardVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: (index) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, delay: index * 0.15, ease: 'easeOut' },
-  }),
+// Variantes de animación
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.8 } },
 };
 
-// Animation variants for header
-const headerVariants = {
-  hidden: { opacity: 0, y: 60 },
-  visible: { opacity: 1, y: 0, transition: { duration: 1, ease: 'easeOut' } },
-};
+function AutomationHubIndex() {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
-const AutomationHubComponents = ({
-  title = 'Componentes del Automation Hub',
-  description = 'Explora los elementos clave que centralizan la automatización de tu hogar.',
-}) => {
-  const [hoveredComponent, setHoveredComponent] = useState(null);
-
-  // Memoize components to prevent unnecessary re-renders
-  const memoizedComponents = useMemo(() => automationHubComponents, []);
+    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    document.documentElement.classList.toggle('dark', darkModeMediaQuery.matches);
+    const handleChange = (e) => {
+      document.documentElement.classList.toggle('dark', e.matches);
+    };
+    darkModeMediaQuery.addEventListener('change', handleChange);
+    return () => darkModeMediaQuery.removeEventListener('change', handleChange);
+  }, []);
 
   return (
-    <section className="relative bg-gradient-to-br from-amber-50 via-white to-amber-100 py-16 sm:py-24 lg:py-32 overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-amber-200/30 to-transparent pointer-events-none" />
-      <div className="absolute inset-x-0 bottom-0 -z-10 h-96 transform-gpu overflow-hidden blur-3xl">
-        <div
-          className="relative aspect-[1155/678] w-full bg-gradient-to-tr from-amber-300 to-amber-600 opacity-20"
-          style={{
-            clipPath:
-              'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
-          }}
+    <motion.div
+      className="relative bg-gradient-to-br from-gray-50 via-white to-amber-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-amber-900/10 min-h-screen overflow-hidden"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <Helmet>
+        <title>Componentes del Automation Hub - Automatización Centralizada</title>
+        <meta
+          name="description"
+          content="Descubre los componentes del Automation Hub que centralizan la automatización de tu hogar."
         />
+        <meta name="keywords" content="automation hub, componentes, hogar inteligente, automatización" />
+      </Helmet>
+
+      {/* Fondo dinámico */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-100/20 to-transparent dark:from-amber-900/10 dark:to-transparent animate-gradient-x" />
+        <svg className="absolute inset-0 w-full h-full opacity-10 dark:opacity-20" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,193,7,0.1)" strokeWidth="0.5" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header Section */}
+      <main className="relative z-10">
+        <AutomationHubHeroSection />
+        <AutomationHubComponents
+          title="Nuestros Componentes del Automation Hub"
+          description="Explora los elementos que centralizan la automatización de tu hogar."
+        />
         <motion.div
-          className="text-center mb-12 sm:mb-16 lg:mb-20"
-          variants={headerVariants}
-          initial="hidden"
-          whileInView="visible"
+          className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
         >
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 sm:mb-6 tracking-tight">
-            {title}
-          </h1>
-          <p className="mx-auto max-w-2xl sm:max-w-3xl text-base sm:text-lg leading-7 text-gray-600 font-medium">
-            {description}
-          </p>
+          <h3 className="text-2xl sm:text-3xl font-semibold text-amber-700 dark:text-amber-300 mb-6">
+            ¿Tienes alguna pregunta?
+          </h3>
+          <a
+            href="http://localhost:3000/contacto-atencion-cliente"
+            className="inline-block bg-gradient-to-r from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white px-8 py-4 rounded-xl hover:from-amber-700 hover:to-amber-800 transition-all duration-300 shadow-lg relative overflow-hidden group"
+            aria-label="Contactar con atención al cliente"
+          >
+            <span className="absolute inset-0 bg-amber-500/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <span className="relative z-10 font-semibold text-lg">Contactar con Atención al Cliente</span>
+          </a>
         </motion.div>
+      </main>
 
-        {/* Component Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {memoizedComponents.map((component, index) => (
-            <motion.div
-              key={component.id}
-              className="relative rounded-xl overflow-hidden bg-white shadow-lg hover:shadow-2xl transition-shadow duration-300 h-64 sm:h-72 w-full max-w-sm mx-auto"
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              custom={index}
-              viewport={{ once: true }}
-              role="article"
-              aria-labelledby={`component-${component.id}`}
-              onMouseEnter={() => setHoveredComponent(component.id)}
-              onMouseLeave={() => setHoveredComponent(null)}
-            >
-              <Link to={component.link} aria-label={`Explorar ${component.name}`}>
-                <div className="relative w-full h-full group">
-                  {/* Image with Zoom Effect */}
-                  <img
-                    src={component.src}
-                    alt={component.alt}
-                    loading="lazy"
-                    className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
-                  />
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300 group-hover:from-black/80" />
-                  {/* Content */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
-                    <h3
-                      id={`component-${component.id}`}
-                      className="text-lg sm:text-xl font-semibold text-white text-center"
-                    >
-                      {component.name}
-                    </h3>
-                    <AnimatePresence>
-                      {hoveredComponent === component.id && (
-                        <motion.div
-                          className="mt-2 text-sm text-white/90 text-center flex items-center justify-center gap-2"
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <Info size={16} />
-                          <span>{component.description}</span>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                    <motion.div
-                      className="mt-3 flex justify-center"
-                      whileHover={{ x: 5 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <span className="text-white text-sm font-medium flex items-center gap-1 hover:underline">
-                        Ver más <ChevronRight size={16} />
-                      </span>
-                    </motion.div>
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
+      {/* Animaciones CSS personalizadas */}
+      <style>
+        {`
+          @keyframes gradient-x {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+          .animate-gradient-x {
+            background-size: 200% 200%;
+            animation: gradient-x 15s ease infinite;
+          }
+        `}
+      </style>
+    </motion.div>
   );
-};
+}
 
-export default AutomationHubComponents;
+export default AutomationHubIndex;

@@ -16,7 +16,7 @@ function Layout({ children, mainClassName = "" }) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
-        className={`flex-grow ${mainClassName}`}
+        className={`flex-grow ${mainClassName} px-4 sm:px-6 lg:px-8 pt-20 pb-6`} // Ajustado pt-20 y pb-6
       >
         {children}
       </motion.main>

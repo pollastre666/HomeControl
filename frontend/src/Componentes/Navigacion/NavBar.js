@@ -268,7 +268,7 @@ const NavBar = () => {
           {menuAbierto && (
             <motion.div
               id="mobile-menu"
-              className="lg:hidden fixed inset-0 bg-amber-700/95 backdrop-blur-md z-50"
+              className="lg:hidden fixed inset-0 bg-amber-700 z-50 shadow-2xl" // Fondo sólido y sombra
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}

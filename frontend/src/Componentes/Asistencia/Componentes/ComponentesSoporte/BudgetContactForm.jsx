@@ -42,7 +42,7 @@ const BudgetContactForm = () => {
 
   return (
     <motion.div
-      className="max-w-lg mx-auto p-4 sm:p-6 bg-white/90 backdrop-blur-sm rounded-xl shadow-md hover:shadow-xl transition-all duration-300"
+      className="max-w-lg mx-auto p-4 sm:p-6 bg-white/90 backdrop-blur-sm rounded-xl pt-20 shadow-md hover:shadow-xl transition-all duration-300"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}

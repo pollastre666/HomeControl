@@ -1,10 +1,19 @@
-
-import { useEffect } from "react"
-
+// src/Containers/Paginas/HomePage.jsx
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import HeroSection from "../../Componentes/Home/HeroSection "
 import SeccionFeatures from "../../Componentes/Home/Fatures";
 import Dividir from "../../Componentes/Home/div1";
 import GallerySection from "../../Componentes/Home/SectionImg";
+import FeaturedProducts from "../../Componentes/Home/FeaturedProducts";
+import CallToActionBanner from "../../Componentes/Home/CallToActionBanner";
+import StatsSection from "../../Componentes/Home/StatsSection";
+import VirtualTourButton from "../../Componentes/Home/VirtualTourButton";
+import EcoImpactVisualizer from "../../Componentes/Home/EcoImpactVisualizer";
+import Testimonials from "../../Componentes/Home/Testimonials";
+import VideoShowcase from "../../Componentes/Home/VideoShowcase";
+import SmartHomeTimeline from "../../Componentes/Home/SmartHomeTimeline";
+//import InteractiveDemo from "../../Componentes/Home/InteractiveDemo";
 
 function Home() {
   useEffect(() => {
@@ -13,22 +22,19 @@ function Home() {
 
   return (
     <>
-      {/* Sección Hero */}
-      <HeroSection />
-
-      {/* Primer Dividir */}
+<HeroSection />
       <Dividir />
-
-      {/* Sección de Características */}
       <SeccionFeatures />
-
-      {/* Galería */}
+      <VideoShowcase />
+      <SmartHomeTimeline />
+      <StatsSection />
+      <EcoImpactVisualizer />
+      <FeaturedProducts />
       <GallerySection />
-
-      {/* Segundo Dividir */}
+      <Testimonials />
+      <VirtualTourButton />
+      <CallToActionBanner />
       <Dividir />
-
-      {/* Nota: No se incluye un footer aquí, debería estar solo en Layout.js */}
     </>
   );
 }
