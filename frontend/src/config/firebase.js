@@ -1,15 +1,15 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, signInAnonymously } from 'firebase/auth';
 import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY || 'AIzaSyDvVBx0r8MxX6xNe-dHdsvPdzOaORcuEk0',
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || 'homecontrol-dac34.firebaseapp.com',
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || 'homecontrol-dac34',
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET || 'homecontrol-dac34.firebasestorage.app',
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID || '860531471097',
-  appId: process.env.REACT_APP_FIREBASE_APP_ID || '1:860531471097:web:ed0f6c8638e36226092828',
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
 const requiredConfigKeys = [
@@ -36,6 +36,22 @@ try {
   auth = getAuth(app);
   db = getFirestore(app);
 
+  // Iniciar sesión anónima al cargar la app
+  signInAnonymously(auth)
+    .then(() => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Usuario anónimo autenticado');
+      }
+    })
+    .catch((error) => {
+      console.error('Error al autenticar usuario anónimo:', {
+        message: error.message,
+        code: error.code,
+        stack: error.stack,
+      });
+      toast.error('Error al autenticar. Intenta de nuevo.');
+    });
+
   // Enable offline persistence
   enableIndexedDbPersistence(db).catch((err) => {
     if (err.code === 'failed-precondition') {
@@ -51,6 +67,12 @@ try {
   });
 
   if (process.env.NODE_ENV === 'development') {
+    console.log('Proceso de entorno completo:', process.env);
+    console.log('Variables de entorno específicas:', {
+      REACT_APP_FIREBASE_API_KEY: process.env.REACT_APP_FIREBASE_API_KEY,
+      REACT_APP_FIREBASE_AUTH_DOMAIN: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+      REACT_APP_FIREBASE_PROJECT_ID: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+    });
     console.log('Firebase initialized with project:', firebaseConfig.projectId);
   }
 } catch (error) {

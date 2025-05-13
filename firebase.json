@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> Mohamed
 {
   "hosting": {
     "public": "frontend/build",
@@ -9,4 +13,8 @@
       }
     ]
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> Mohamed

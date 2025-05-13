@@ -1,0 +1,85 @@
+// src/AutomationHub/automationHubData.js
+
+export const componentData = {
+  'central-unit': {
+    id: 'central-unit',
+    name: 'Unidad Central',
+    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
+    description: 'Núcleo de control para todos los dispositivos del hogar.',
+    features: ['Control centralizado', 'Conexión multi-dispositivo', 'Actualizaciones OTA', 'Interfaz web'],
+    specs: { 'Procesador': 'Quad-core', 'Memoria': '2GB RAM', 'Conectividad': 'Wi-Fi/Zigbee' },
+    installationTips: 'Coloque en un lugar ventilado y con buena señal Wi-Fi.',
+    price: 299.99,
+    stock: 7,
+  },
+  'connectivity-module': {
+    id: 'connectivity-module',
+    name: 'Módulo de Conectividad',
+    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
+    description: 'Conexión Wi-Fi y Bluetooth para dispositivos inteligentes.',
+    features: ['Wi-Fi 2.4G/5G', 'Bluetooth 5.0', 'Rango extendido', 'Compatibilidad universal'],
+    specs: { 'Frecuencia': '2.4/5 GHz', 'Rango': '50m', 'Alimentación': '5V USB' },
+    installationTips: 'Conecte cerca de un enrutador para optimizar la señal.',
+    price: 79.99,
+    stock: 15,
+  },
+  sensors: {
+    id: 'sensors',
+    name: 'Sensores',
+    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
+    description: 'Detectores de movimiento y temperatura avanzados.',
+    features: ['Detección de movimiento', 'Sensor de temperatura', 'Batería recargable', 'Alarma integrada'],
+    specs: { 'Rango': '10m', 'Batería': '1 año', 'Conectividad': 'Zigbee' },
+    installationTips: 'Coloque a 2 metros de altura para mejor cobertura.',
+    price: 49.99,
+    stock: 20,
+  },
+  'app-interface': {
+    id: 'app-interface',
+    name: 'Interfaz de App',
+    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
+    description: 'Controla tu hogar desde tu smartphone con facilidad.',
+    features: ['Interfaz intuitiva', 'Notificaciones push', 'Control remoto', 'Soporte multilingüe'],
+    specs: { 'Compatibilidad': 'iOS/Android', 'Tamaño': '50MB', 'Actualizaciones': 'Mensuales' },
+    installationTips: 'Descargue la app desde la tienda oficial y regístrese.',
+    price: 0.00, // Gratuito con compra de hardware
+    stock: Infinity,
+  },
+  'voice-control': {
+    id: 'voice-control',
+    name: 'Control por Voz',
+    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
+    description: 'Integración con asistentes de voz como Alexa y Google.',
+    features: ['Compatibilidad con Alexa', 'Google Assistant', 'Comandos personalizados', 'Respuesta rápida'],
+    specs: { 'Conectividad': 'Wi-Fi', 'Micrófono': 'Sensibilidad 360°', 'Alimentación': 'USB' },
+    installationTips: 'Conecte al hub y configure en la app asociada.',
+    price: 59.99,
+    stock: 10,
+  },
+  'power-supply': {
+    id: 'power-supply',
+    name: 'Fuente de Alimentación',
+    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
+    description: 'Energía eficiente y estable para el hub.',
+    features: ['Salida estable', 'Protección contra sobrecarga', 'Diseño compacto', 'Batería de respaldo'],
+    specs: { 'Voltaje': '12V/5A', 'Eficiencia': '85%', 'Dimensiones': '10x5x3 cm' },
+    installationTips: 'Conecte a un tomacorriente cercano al hub.',
+    price: 39.99,
+    stock: 25,
+  },
+};
+
+export const getCompatibilityMessage = (componentId) => {
+  const compatibleProducts = {
+    'central-unit': ['connectivity-module', 'sensors', 'app-interface', 'voice-control', 'power-supply'],
+    'connectivity-module': ['central-unit', 'sensors', 'app-interface', 'voice-control'],
+    sensors: ['central-unit', 'connectivity-module', 'app-interface', 'voice-control'],
+    'app-interface': ['central-unit', 'connectivity-module', 'sensors', 'voice-control', 'power-supply'],
+    'voice-control': ['central-unit', 'connectivity-module', 'sensors', 'app-interface'],
+    'power-supply': ['central-unit', 'app-interface'],
+  };
+  const compatible = compatibleProducts[componentId] || [];
+  return compatible.length > 0
+    ? `Este producto es compatible con: ${compatible.map(id => componentData[id]?.name || id).join(', ')}.`
+    : 'No hay información de compatibilidad disponible.';
+};

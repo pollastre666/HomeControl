@@ -1,65 +1,102 @@
-import React, { useState } from 'react';
-import { useAuth } from '../Autenticacion/AuthProvider';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-import Logo from '../../Assets/Logos/LogoH.png';
-import VerticalMenu from '../Asistencia/Componentes/MenuVertical';
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../Autenticacion/AuthProvider";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import Logo from "../../Assets/Logos/LogoH.png";
+import VerticalMenu from "../Asistencia/Componentes/MenuVertical";
 
 const NavBar = () => {
   const { user, logout } = useAuth();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isVerticalMenuOpen, setIsVerticalMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const cerrarMenu = () => {
     setMenuAbierto(false);
-    setIsVerticalMenuOpen(false); // Cierra el menú vertical al cerrar el menú móvil
+    setIsDropdownOpen(false);
+    setIsVerticalMenuOpen(false);
   };
 
   const handleLogout = async () => {
     try {
       await logout();
       cerrarMenu();
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
-      console.error('Logout failed:', error);
-      alert('No se pudo cerrar sesión. Intenta de nuevo.');
+      console.error("Logout failed:", error);
+      alert("No se pudo cerrar sesión. Intenta de nuevo.");
     }
-  };
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark');
   };
 
   const toggleVerticalMenu = () => {
     setIsVerticalMenuOpen(!isVerticalMenuOpen);
-    setMenuAbierto(false); // Cierra el menú móvil si está abierto
+    setMenuAbierto(false);
   };
+
+  const PlaceholderLogo = () => (
+    <svg
+      className="h-12 w-12 text-amber-400"
+      fill="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z" />
+    </svg>
+  );
 
   return (
     <>
-      <nav className="w-full py-6 top-0 flex justify-between items-center transition duration-300 ease-in-out z-40 bg-blue-700 shadow-lg">
-        {/* Contenedor principal */}
-        <div className="px-4 sm:px-6 flex items-center justify-between w-full">
-          {/* Logo y Nombre de la Marca */}
-          <div className="flex items-center space-x-4">
-            <Link to="/" className="flex items-center">
+      <motion.nav
+        className={`w-full fixed top-0 z-50 bg-amber-600 shadow-lg transition-all duration-300 ${
+          isScrolled ? "py-2 shadow-xl" : "py-4"
+        } backdrop-blur-md border-b border-amber-400/50`}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        aria-label="Navegación principal"
+      >
+        <div className="px-4 sm:px-6 md:px-8 lg:px-10 flex items-center justify-between max-w-7xl mx-auto">
+          <motion.div
+            className="flex items-center space-x-3 flex-shrink-0"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, type: "spring", stiffness: 120 }}
+            whileHover={{ scale: 1.05 }}
+          >
+            <Link
+              to="/"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              aria-label="HomeControl Inicio"
+            >
               <img
                 src={Logo}
                 alt="HomeControl Logo"
-                className="h-12 w-auto transition-transform duration-300 hover:scale-105"
+                className="h-12 sm:h-14 w-auto object-contain shadow-md rounded-sm"
+                onError={(e) => (e.target.outerHTML = PlaceholderLogo().props.children)}
               />
             </Link>
             <Link
               to="/"
-              className="text-2xl font-serif font-bold tracking-wide text-white hover:text-amber-200 transition-colors duration-300"
+              className="text-xl sm:text-2xl font-extrabold tracking-tight text-white hover:text-amber-400 transition-colors duration-200"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
               HomeControl
+              <span className="block text-sm font-medium text-amber-400">
+                Soluciones Inteligentes
+              </span>
             </Link>
-          </div>
+          </motion.div>
 
+<<<<<<< HEAD
           {/* Menú Desktop */}
           <div className="hidden lg:flex items-center space-x-8">
             <NavLink
@@ -92,71 +129,64 @@ const NavBar = () => {
 >>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
             </NavLink>
             <button
+=======
+          <div className="hidden lg:flex items-center space-x-5">
+            {[
+              { to: "/", label: "Inicio" },
+              { to: "/Productos", label: "Productos" },
+              { to: "/Nosotros", label: "Nosotros" },
+              { to: "/Tareas", label: "Tareas" },
+              { to: "/Contacto", label: "Contacto" },
+            ].map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                className={({ isActive }) =>
+                  `text-base font-medium text-white transition-colors duration-200 relative ${
+                    isActive ? "text-amber-400" : "hover:text-amber-400"
+                  } after:content-[''] after:absolute after:w-0 after:h-1 after:bg-amber-400 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full`
+                }
+                onClick={cerrarMenu}
+                aria-current={({ isActive }) => (isActive ? "page" : undefined)}
+              >
+                {link.label}
+              </NavLink>
+            ))}
+            <motion.button
+>>>>>>> Mohamed
               onClick={toggleVerticalMenu}
-              className="text-lg font-medium text-white hover:text-amber-200 transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-200 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full"
+              className="text-base font-medium text-white hover:text-amber-400 transition-colors duration-200 relative after:content-[''] after:absolute after:w-0 after:h-1 after:bg-amber-400 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              aria-label="Abrir menú de asistencia"
+              aria-expanded={isVerticalMenuOpen}
             >
               Asistencia
-            </button>
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-full bg-amber-600 hover:bg-amber-500 transition-colors duration-300"
-              aria-label="Cambiar Modo Oscuro"
-            >
-              {isDarkMode ? (
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                  />
-                </svg>
-              )}
-            </button>
+            </motion.button>
 
-            {/* User Profile or Login Button */}
             {user ? (
               <div className="relative">
-                <button
+                <motion.button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="flex items-center space-x-2 focus:outline-none"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  aria-label={`Menú de usuario ${user.username || "Usuario"}`}
+                  aria-expanded={isDropdownOpen}
                 >
-                  <div className="w-10 h-10 rounded-full bg-amber-200 flex items-center justify-center text-amber-800 font-semibold">
-                    {user?.username?.charAt(0).toUpperCase() || 'U'}
+                  <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center text-white font-semibold shadow-md">
+                    {user?.username?.charAt(0).toUpperCase() || "U"}
                   </div>
-                  <span className="hidden md:inline text-lg font-medium text-white">
-                    {user?.username || 'Usuario'}
+                  <span className="hidden md:inline text-base font-medium text-white">
+                    {user?.username || "Usuario"}
                   </span>
                   <svg
-                    className={`w-5 h-5 transition-transform duration-300 ${
-                      isDropdownOpen ? 'rotate-180' : ''
+                    className={`w-4 h-4 text-white transition-transform duration-200 ${
+                      isDropdownOpen ? "rotate-180" : ""
                     }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
                       strokeLinecap="round"
@@ -165,22 +195,201 @@ const NavBar = () => {
                       d="M19 9l-7 7-7-7"
                     />
                   </svg>
-                </button>
-                {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-lg py-2 z-10 animate-fadeIn">
-                    <button
+                </motion.button>
+                <AnimatePresence>
+                  {isDropdownOpen && (
+                    <motion.div
+                      className="absolute right-0 mt-2 w-52 bg-white/90 backdrop-blur-md rounded-lg shadow-xl py-2 border border-amber-200/50"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <button
+                        onClick={() => {
+                          navigate("/user/profile");
+                          cerrarMenu();
+                        }}
+                        className="w-full text-left px-4 py-2 text-gray-800 hover:bg-amber-100 transition-colors duration-200 flex items-center space-x-2"
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          />
+                        </svg>
+                        <span>Perfil</span>
+                      </button>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left px-4 py-2 text-red-600 hover:bg-amber-100 transition-colors duration-200 flex items-center space-x-2"
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                          />
+                        </svg>
+                        <span>Cerrar Sesión</span>
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  to="/login"
+                  className="px-5 py-2 text-base font-medium bg-white text-amber-600 rounded-lg hover:bg-amber-50 transition-colors duration-200 shadow-md"
+                  onClick={cerrarMenu}
+                  aria-label="Iniciar Sesión"
+                >
+                  Iniciar Sesión
+                </Link>
+              </motion.div>
+            )}
+          </div>
+
+          <motion.button
+            onClick={() => setMenuAbierto(!menuAbierto)}
+            className="lg:hidden text-white focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-md"
+            whileTap={{ scale: 0.9 }}
+            aria-label={menuAbierto ? "Cerrar menú" : "Abrir menú"}
+            aria-controls="mobile-menu"
+            aria-expanded={menuAbierto}
+          >
+            <svg
+              className={`w-7 h-7 transition-transform duration-300 ${
+                menuAbierto ? "rotate-90" : ""
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              {menuAbierto ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </svg>
+          </motion.button>
+        </div>
+
+        <AnimatePresence>
+          {menuAbierto && (
+            <motion.div
+              id="mobile-menu"
+              className="lg:hidden fixed inset-0 bg-amber-700 z-50 shadow-2xl" // Fondo sólido y sombra
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              <div className="w-full h-full p-6 flex flex-col">
+                <motion.button
+                  onClick={cerrarMenu}
+                  className="self-end text-white text-3xl"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  aria-label="Cerrar menú"
+                >
+                  ×
+                </motion.button>
+                {[
+                  { to: "/", label: "Inicio" },
+                  { to: "/Productos", label: "Productos" },
+                  { to: "/Nosotros", label: "Nosotros" },
+                  { to: "/Tareas", label: "Tareas" },
+                  { to: "/Contacto", label: "Contacto" },
+                ].map((link, index) => (
+                  <motion.div
+                    key={link.to}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                  >
+                    <NavLink
+                      to={link.to}
+                      className={({ isActive }) =>
+                        `text-lg font-medium text-white py-3 transition-colors duration-200 ${
+                          isActive ? "text-amber-400" : "hover:text-amber-400"
+                        }`
+                      }
+                      onClick={cerrarMenu}
+                      aria-current={({ isActive }) => (isActive ? "page" : undefined)}
+                    >
+                      {link.label}
+                    </NavLink>
+                  </motion.div>
+                ))}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: 0.5 }}
+                >
+                  <button
+                    onClick={toggleVerticalMenu}
+                    className="text-lg font-medium text-white py-3 hover:text-amber-400 transition-colors duration-200 text-left"
+                    aria-label="Abrir menú de asistencia"
+                    aria-expanded={isVerticalMenuOpen}
+                  >
+                    Asistencia
+                  </button>
+                </motion.div>
+                {user ? (
+                  <>
+                    <motion.div
+                      className="mt-6 flex items-center space-x-3 text-white py-3"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: 0.6 }}
+                    >
+                      <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center text-white font-semibold shadow-md">
+                        {user.username.charAt(0).toUpperCase() || "U"}
+                      </div>
+                      <span className="text-lg font-medium">
+                        {user?.username || "Usuario"}
+                      </span>
+                    </motion.div>
+                    <motion.button
                       onClick={() => {
-                        navigate('/user/profile');
+                        navigate("/user/profile");
                         cerrarMenu();
                       }}
-                      className="w-full text-left px-4 py-2 hover:bg-amber-100 transition-colors duration-200 flex items-center space-x-2"
+                      className="text-lg font-medium text-white py-3 hover:text-amber-400 transition-colors duration-200 flex items-center space-x-2"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: 0.7 }}
                     >
                       <svg
                         className="w-5 h-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
                           strokeLinecap="round"
@@ -190,17 +399,19 @@ const NavBar = () => {
                         />
                       </svg>
                       <span>Perfil</span>
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 hover:bg-amber-100 transition-colors duration-200 flex items-center space-x-2 text-red-600"
+                      className="text-lg font-medium text-red-400 py-3 hover:text-red-300 transition-colors duration-200 flex items-center space-x-2"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: 0.8 }}
                     >
                       <svg
                         className="w-5 h-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
                           strokeLinecap="round"
@@ -210,177 +421,38 @@ const NavBar = () => {
                         />
                       </svg>
                       <span>Cerrar Sesión</span>
-                    </button>
-                  </div>
+                    </motion.button>
+                  </>
+                ) : (
+                  <motion.div
+                    className="mt-6"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: 0.6 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Link
+                      to="/login"
+                      className="block px-6 py-3 bg-white text-amber-600 text-center rounded-lg hover:bg-amber-50 transition-colors duration-200 shadow-md"
+                      onClick={cerrarMenu}
+                      aria-label="Iniciar Sesión"
+                    >
+                      Iniciar Sesión
+                    </Link>
+                  </motion.div>
                 )}
               </div>
-            ) : (
-              <Link
-                to="/login"
-                className="px-6 py-2 text-base font-medium bg-amber-600 text-white rounded-md hover:bg-amber-500 transition-colors duration-300"
-                onClick={cerrarMenu}
-              >
-                Iniciar Sesión
-              </Link>
-            )}
-          </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.nav>
 
-          {/* Botón menú móvil */}
-          <button
-            onClick={() => setMenuAbierto(!menuAbierto)}
-            className="lg:hidden text-white focus:outline-none"
-            aria-label="Abrir menú"
-          >
-            <span className="block w-6 h-0.5 bg-white mb-1"></span>
-            <span className="block w-6 h-0.5 bg-white mb-1"></span>
-            <span className="block w-6 h-0.5 bg-white"></span>
-          </button>
-        </div>
-
-        {/* Menú móvil */}
-        <div
-          className={`lg:hidden fixed inset-0 bg-black bg-opacity-50 z-50 transition-transform duration-300 ${
-            menuAbierto ? 'translate-x-0' : 'translate-x-full'
-          }`}
-        >
-          <div className="bg-amber-800 w-64 h-full shadow-lg p-5 flex flex-col">
-            <button onClick={cerrarMenu} className="self-end text-white text-2xl">
-              ×
-            </button>
-            <NavLink
-              to="/"
-              className="text-white py-2 hover:text-amber-200 transition-colors duration-300"
-              onClick={cerrarMenu}
-            >
-              Inicio
-            </NavLink>
-            <NavLink
-              to="/Horarios"
-              className="text-white py-2 hover:text-amber-200 transition-colors duration-300"
-              onClick={cerrarMenu}
-            >
-              Horarios
-            </NavLink>
-            <NavLink
-              to="/Tareas"
-              className="text-white py-2 hover:text-amber-200 transition-colors duration-300"
-              onClick={cerrarMenu}
-            >
-              Tareas
-            </NavLink>
-            <button
-              onClick={toggleVerticalMenu}
-              className="text-white py-2 hover:text-amber-200 transition-colors duration-300 text-left"
-            >
-              Asistencia
-            </button>
-            {/* Theme Toggle in Mobile Menu */}
-            <button
-              onClick={toggleDarkMode}
-              className="mt-4 flex items-center space-x-2 text-white py-2 hover:text-amber-200 transition-colors duration-300"
-              aria-label="Cambiar Modo Oscuro"
-            >
-              {isDarkMode ? (
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                  />
-                </svg>
-              )}
-              <span>{isDarkMode ? 'Modo Claro' : 'Modo Oscuro'}</span>
-            </button>
-
-            {user ? (
-              <>
-                <div className="mt-4 flex items-center space-x-2 text-white py-2">
-                  <div className="w-8 h-8 rounded-full bg-amber-200 flex items-center justify-center text-amber-800 font-semibold">
-                    {user.username.charAt(0).toUpperCase() || 'U'}
-                  </div>
-                  <span>{user?.username || 'Usuario'}</span>
-                </div>
-                <button
-                  onClick={() => {
-                    navigate('/user/profile');
-                    cerrarMenu();
-                  }}
-                  className="mt-2 text-white py-2 hover:text-amber-200 transition-colors duration-300 flex items-center space-x-2"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                  <span>Perfil</span>
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="mt-2 text-red-400 py-2 hover:text-red-300 transition-colors duration-300 flex items-center space-x-2"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                    />
-                  </svg>
-                  <span>Cerrar Sesión</span>
-                </button>
-              </>
-            ) : (
-              <Link
-                to="/login"
-                className="mt-4 px-6 py-3 bg-amber-600 text-white text-center rounded-md hover:bg-amber-500 transition-colors duration-300"
-                onClick={cerrarMenu}
-              >
-                Iniciar Sesión
-              </Link>
-            )}
-          </div>
-        </div>
-      </nav>
-
-      {/* Renderiza el menú vertical si está abierto */}
-      {isVerticalMenuOpen && <VerticalMenu />}
+      <AnimatePresence>
+        {isVerticalMenuOpen && (
+          <VerticalMenu isOpen={isVerticalMenuOpen} setIsOpen={setIsVerticalMenuOpen} />
+        )}
+      </AnimatePresence>
     </>
   );
 };
