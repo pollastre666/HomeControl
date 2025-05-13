@@ -139,98 +139,6 @@ const VerticalMenu = ({ isOpen, setIsOpen }) => {
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
-<<<<<<< HEAD
-<<<<<<< HEAD
-              Descarga manuales
-=======
-              texto
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
-            </a>
-          </li>
-          <li>
-            <a
-              href="#preguntas-frecuentes"
-              className="flex items-center text-blue-700 hover:text-blue-900 text-lg font-medium transition-colors duration-200"
-            >
-              <svg
-                className="w-5 h-5 mr-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M8 12h.01M12 12h.01M16 12h.01M9 16h6m-7 4h8a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-<<<<<<< HEAD
-              Preguntas frecuentes
-=======
-              texto
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
-            </a>
-          </li>
-          <li>
-            <a
-              href="#videos-tutoriales"
-              className="flex items-center text-blue-700 hover:text-blue-900 text-lg font-medium transition-colors duration-200"
-            >
-              <svg
-                className="w-5 h-5 mr-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M14.752 11.168l-3.197-2.2A1 1 0 0010 9.768v4.464a1 1 0 001.555.832l3.197-2.2a1 1 0 000-1.664z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-<<<<<<< HEAD
-              Videos y tutoriales
-=======
-              texto
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
-            </a>
-          </li>
-          <li>
-            <a
-              href="/contacto"
-              className="flex items-center text-blue-700 hover:text-blue-900 text-lg font-medium transition-colors duration-200"
-            >
-              <svg
-                className="w-5 h-5 mr-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
-              Contacto
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-=======
             </motion.button>
           </div>
           <div className="px-6 py-4">
@@ -280,7 +188,6 @@ const VerticalMenu = ({ isOpen, setIsOpen }) => {
         </motion.div>
       )}
     </AnimatePresence>
->>>>>>> Mohamed
   );
 };
 

@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
-<<<<<<< HEAD
-import { useAuth } from './AuthProvider';
-=======
 import { useAuth } from '../Autenticacion/AuthProvider';
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
 import { Navigate, useNavigate } from 'react-router-dom';
 import Layout from '../../hocs/layouts/layout';
 import { toast } from 'react-toastify';
@@ -79,11 +75,7 @@ const EditorContent = () => {
     );
   }
 
-<<<<<<< HEAD
-  // Redirect if user is not authenticated
-=======
   // Redirect if not authenticated
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
   if (!user) {
     toast.warn('Por favor, inicia sesión para acceder a esta página.');
     return <Navigate to="/login" replace />;

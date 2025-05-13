@@ -1,37 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
-import { useAuth } from './AuthProvider';
-=======
 import { useAuth } from '../Autenticacion/AuthProvider';
 import { toast } from 'react-toastify';
 import { sendEmailVerification } from 'firebase/auth';
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
 
 const ERROR_MESSAGES = {
   'auth/wrong-password': 'Contraseña incorrecta',
   'auth/user-not-found': 'Usuario no encontrado',
   'auth/invalid-email': 'Formato de correo inválido',
   'auth/invalid-credential': 'Credenciales inválidas',
-<<<<<<< HEAD
-=======
   'auth/email-already-in-use': 'El correo ya está registrado',
   'auth/weak-password': 'La contraseña debe tener al menos 6 caracteres',
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
   default: 'Error de autenticación',
 };
 
 const LoginForm = () => {
-<<<<<<< HEAD
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [error, setError] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // Added for password visibility
-  const { login, user, isLoading } = useAuth();
-  const navigate = useNavigate();
-
-  // Redirect authenticated users based on role (handled in AuthProvider.js, but keep as fallback)
-=======
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ email: '', password: '', confirmPassword: '' });
   const [error, setError] = useState(null);
@@ -43,7 +26,6 @@ const LoginForm = () => {
   const { login, createUser, user, isLoading } = useAuth();
   const navigate = useNavigate();
 
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
   useEffect(() => {
     if (user && !isLoading) {
       console.log('Redirecting authenticated user:', user.email, 'Role:', user.role);
@@ -51,19 +33,12 @@ const LoginForm = () => {
         user.role === 'admin'
           ? '/admin/dashboard'
           : user.role === 'editor'
-<<<<<<< HEAD
-          ? '/editor/content'
-          : '/user/profile';
-=======
           ? '/editor/dashboard'
           : '/user/dashboard';
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
       navigate(redirectPath, { replace: true });
     }
   }, [user, isLoading, navigate]);
 
-<<<<<<< HEAD
-=======
   useEffect(() => {
     if (resendCooldown > 0) {
       const timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
@@ -71,7 +46,6 @@ const LoginForm = () => {
     }
   }, [resendCooldown]);
 
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 flex items-center justify-center p-4">
@@ -108,31 +82,6 @@ const LoginForm = () => {
     setError(null);
   };
 
-<<<<<<< HEAD
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
-
-    const { email, password } = formData;
-
-    // Basic client-side email validation
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setError('Formato de correo inválido');
-      setIsSubmitting(false);
-      return;
-    }
-
-    try {
-      console.log('Submitting login form with:', email.trim());
-      const response = await login({ email: email.trim(), password });
-      console.log('Login response:', response);
-      // Navigation is handled in AuthProvider.js
-    } catch (err) {
-      console.error('Login error:', err.code, err.message);
-      const errorMessage = ERROR_MESSAGES[err.code] || `${ERROR_MESSAGES.default}: ${err.message}`;
-      setError(errorMessage);
-=======
   const handleResendVerification = async () => {
     if (!lastFirebaseUser) {
       setError('No hay usuario registrado para reenviar el correo.');
@@ -158,18 +107,11 @@ const LoginForm = () => {
       const errorMessage = 'Error al reenviar el correo de verificación: ' + verificationError.message;
       setError(errorMessage);
       toast.error(errorMessage);
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
     } finally {
       setIsSubmitting(false);
     }
   };
 
-<<<<<<< HEAD
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">Iniciar Sesión</h1>
-=======
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -297,7 +239,6 @@ const LoginForm = () => {
         <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
           {isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}
         </h1>
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
 
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm" role="alert">
@@ -317,11 +258,7 @@ const LoginForm = () => {
               value={formData.email}
               onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all disabled:bg-gray-100"
-<<<<<<< HEAD
-              placeholder="ejemplo@dominio.com"
-=======
               placeholder="email@dominio.com"
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
               required
               disabled={isSubmitting}
             />
@@ -351,8 +288,6 @@ const LoginForm = () => {
             </button>
           </div>
 
-<<<<<<< HEAD
-=======
           {!isLogin && (
             <div className="relative">
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
@@ -372,7 +307,6 @@ const LoginForm = () => {
             </div>
           )}
 
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
           <button
             type="submit"
             disabled={isSubmitting}
@@ -400,15 +334,6 @@ const LoginForm = () => {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   />
                 </svg>
-<<<<<<< HEAD
-                Autenticando...
-              </>
-            ) : (
-              'Iniciar Sesión'
-            )}
-          </button>
-        </form>
-=======
                 {isLogin ? 'Autenticando...' : 'Creando cuenta...'}
               </>
             ) : (
@@ -432,7 +357,6 @@ const LoginForm = () => {
             {isLogin ? 'Crear una cuenta' : 'Iniciar sesión'}
           </button>
         </p>
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
       </div>
     </div>
   );

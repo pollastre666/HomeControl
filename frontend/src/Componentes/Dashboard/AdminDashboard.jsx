@@ -1,54 +1,5 @@
 import React from 'react';
 import { useAuth } from '../Autenticacion/AuthProvider';
-<<<<<<< HEAD
-import { useNavigate } from 'react-router-dom';
-import Layout from '../../hocs/layouts/layout';
-
-const AdminDashboard = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  // Redirect if not authenticated
-  if (!user) {
-    navigate('/login', { replace: true });
-    return null;
-  }
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      navigate('/');
-    } catch (error) {
-      console.error('Logout failed:', error);
-      alert('Failed to log out. Please try again.');
-    }
-  };
-
-  // Sidebar options (some options are admin-only)
-  const sidebarItems = [
-    {
-      name: 'Dashboard',
-      path: '/admin/dashboard',
-      icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
-    },
-    ...(user.role === 'admin'
-      ? [
-          {
-            name: 'Users',
-            path: '/admin/users',
-            icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z',
-          },
-          {
-            name: 'Devices',
-            path: '/admin/devices',
-            icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
-          },
-        ]
-      : []),
-    {
-      name: 'Log Out',
-      action: handleLogout,
-=======
 import { Navigate, useNavigate } from 'react-router-dom';
 import Layout from '../../hocs/layouts/layout';
 import { toast } from 'react-toastify';
@@ -134,7 +85,6 @@ const AdminDashboard = () => {
     {
       name: 'Log Out',
       action: logout,
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
       icon: 'M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1',
     },
   ];
@@ -143,13 +93,7 @@ const AdminDashboard = () => {
   const stats = [
     { title: 'Connected Devices', value: 12, subtext: '+2 since yesterday' },
     { title: 'Active Schedules', value: 8, subtext: '2 upcoming in 1 hour' },
-<<<<<<< HEAD
-    ...(user.role === 'admin'
-      ? [{ title: 'Registered Users', value: 45, subtext: '+5 this week' }]
-      : []),
-=======
     { title: 'Registered Users', value: 45, subtext: '+5 this week' },
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
   ];
 
   const recentActivity = [
@@ -177,17 +121,8 @@ const AdminDashboard = () => {
         {/* Sidebar */}
         <aside className="w-64 bg-blue-800 text-white flex-shrink-0 shadow-lg">
           <div className="p-6">
-<<<<<<< HEAD
-            <h2 className="text-2xl font-bold">
-              {user.role === 'admin' ? 'Admin Panel' : 'Dashboard'}
-            </h2>
-            <p className="text-sm text-blue-200 mt-1">
-              {user.role === 'admin' ? 'System Management' : 'User Overview'}
-            </p>
-=======
             <h2 className="text-2xl font-bold">Admin Panel</h2>
             <p className="text-sm text-blue-200 mt-1">System Management</p>
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
           </div>
           <nav className="mt-6">
             <ul className="space-y-2">
@@ -224,27 +159,15 @@ const AdminDashboard = () => {
           {/* Header */}
           <header className="bg-white shadow-md rounded-lg p-6 mb-6 flex items-center justify-between">
             <div>
-<<<<<<< HEAD
-              <h1 className="text-2xl font-bold text-blue-800">
-                {user.role === 'admin' ? 'Admin Dashboard' : 'Dashboard'}
-              </h1>
-              <p className="text-sm text-gray-500">
-                Welcome, {user?.username || 'User'} (Role: {user?.role || 'User'})
-=======
               <h1 className="text-2xl font-bold text-blue-800">Admin Dashboard</h1>
               <p className="text-sm text-gray-500">
                 Welcome, {user?.username || 'User'} (Role: {user?.role || 'Admin'})
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
               </p>
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-gray-600">{new Date().toLocaleDateString()}</span>
               <button
-<<<<<<< HEAD
-                onClick={handleLogout}
-=======
                 onClick={logout}
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
                 className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-200"
               >
                 Log Out

@@ -96,40 +96,6 @@ const NavBar = () => {
             </Link>
           </motion.div>
 
-<<<<<<< HEAD
-          {/* Menú Desktop */}
-          <div className="hidden lg:flex items-center space-x-8">
-            <NavLink
-              to="/"
-              className="text-lg font-medium text-white hover:text-amber-200 transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-200 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full"
-              onClick={cerrarMenu}
-            >
-              Inicio
-            </NavLink>
-            <NavLink
-              to="/Horarios"
-              className="text-lg font-medium text-white hover:text-amber-200 transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-200 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full"
-              onClick={cerrarMenu}
-            >
-              Horarios
-            </NavLink>
-            <NavLink
-<<<<<<< HEAD
-              to="/Tareas"
-              className="text-lg font-medium text-white hover:text-amber-200 transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-200 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full"
-              onClick={cerrarMenu}
-            >
-              Tareas
-=======
-              to="/Nosotros"
-              className="text-lg font-medium text-white hover:text-amber-200 transition-colors duration-300 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-200 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full"
-              onClick={cerrarMenu}
-            >
-              Nosotros
->>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
-            </NavLink>
-            <button
-=======
           <div className="hidden lg:flex items-center space-x-5">
             {[
               { to: "/", label: "Inicio" },
@@ -153,7 +119,6 @@ const NavBar = () => {
               </NavLink>
             ))}
             <motion.button
->>>>>>> Mohamed
               onClick={toggleVerticalMenu}
               className="text-base font-medium text-white hover:text-amber-400 transition-colors duration-200 relative after:content-[''] after:absolute after:w-0 after:h-1 after:bg-amber-400 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full"
               whileHover={{ scale: 1.05 }}
