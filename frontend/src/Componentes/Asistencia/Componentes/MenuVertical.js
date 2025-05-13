@@ -73,7 +73,11 @@ function VerticalMenu() {
                   d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 />
               </svg>
+<<<<<<< HEAD
               Descarga manuales
+=======
+              texto
+>>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
             </a>
           </li>
           <li>
@@ -95,7 +99,11 @@ function VerticalMenu() {
                   d="M8 12h.01M12 12h.01M16 12h.01M9 16h6m-7 4h8a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
+<<<<<<< HEAD
               Preguntas frecuentes
+=======
+              texto
+>>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
             </a>
           </li>
           <li>
@@ -123,7 +131,11 @@ function VerticalMenu() {
                   d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
+<<<<<<< HEAD
               Videos y tutoriales
+=======
+              texto
+>>>>>>> bc0e0e14238914bbff5a4bebb5af473930eb46e6
             </a>
           </li>
           <li>
