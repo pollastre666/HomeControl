@@ -1,151 +1,149 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../Autenticacion/AuthProvider';
-import { Navigate, useNavigate } from 'react-router-dom';
-import Layout from '../../hocs/layouts/layout';
-import { toast } from 'react-toastify';
-import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
+import { collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
+import Layout from '../../hocs/layouts/layout';
+import Spinner from '../Spinner';
+import { toast } from 'react-toastify';
 
 const EditorContent = () => {
-  const { user, isLoading, logout } = useAuth();
-  const navigate = useNavigate();
-  const [recentActivities, setRecentActivities] = useState([]);
+  const { user } = useAuth();
+  const [content, setContent] = useState([]);
+  const [newContent, setNewContent] = useState({ title: '', body: '' });
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch recent activities from Firestore
   useEffect(() => {
-    const fetchActivities = async () => {
+    const fetchContent = async () => {
       try {
-        const activitiesRef = collection(db, `users/${user.uid}/activities`);
-        const q = query(activitiesRef, orderBy('timestamp', 'desc'), limit(5));
-        const snapshot = await getDocs(q);
-        const activities = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          action: doc.data().action,
-          time: new Date(doc.data().timestamp.toDate()).toLocaleTimeString('es-ES', {
-            hour: '2-digit',
-            minute: '2-digit',
-          }),
-        }));
-        setRecentActivities(activities);
+        const contentCollection = await getDocs(collection(db, 'content'));
+        setContent(contentCollection.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setIsLoading(false);
       } catch (error) {
-        console.error('Error fetching recent activities:', error);
-        setRecentActivities([
-          { id: 1, action: 'Actualizó el horario de luces', time: 'Hace 15 minutos' },
-          { id: 2, action: 'Programó tarea de riego', time: 'Hace 2 horas' },
-        ]); // Fallback to static data
-        toast.error('Error al cargar actividad reciente');
+        console.error('EditorContent: Content fetch error:', error);
+        toast.error('Error al cargar contenido');
+        setIsLoading(false);
       }
     };
+    fetchContent();
+  }, []);
 
-    if (user) {
-      fetchActivities();
+  const addContent = async (e) => {
+    e.preventDefault();
+    if (!newContent.title || !newContent.body) {
+      toast.error('Título y contenido son requeridos');
+      return;
     }
-  }, [user]);
+    try {
+      const docRef = await addDoc(collection(db, 'content'), {
+        ...newContent,
+        createdBy: user.uid,
+        createdAt: new Date(),
+      });
+      setContent([...content, { id: docRef.id, ...newContent, createdBy: user.uid }]);
+      setNewContent({ title: '', body: '' });
+      toast.success('Contenido añadido');
+    } catch (error) {
+      console.error('EditorContent: Content add error:', error);
+      toast.error('Error al añadir contenido');
+    }
+  };
 
-  // Handle loading state
-  if (isLoading) {
-    return (
-      <Layout>
-        <div className="flex justify-center items-center h-screen">
-          <div className="flex flex-col items-center space-y-4">
-            <svg
-              className="animate-spin h-12 w-12 text-teal-600"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-            <p className="text-lg font-semibold text-teal-800">Cargando...</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
+  const deleteContent = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'content', id));
+      setContent(content.filter(c => c.id !== id));
+      toast.success('Contenido eliminado');
+    } catch (error) {
+      console.error('EditorContent: Content delete error:', error);
+      toast.error('Error al eliminar contenido');
+    }
+  };
 
-  // Redirect if not authenticated
-  if (!user) {
-    toast.warn('Por favor, inicia sesión para acceder a esta página.');
-    return <Navigate to="/login" replace />;
-  }
-
-  // Restrict access to editor and admin roles
-  if (!['editor', 'admin'].includes(user.role)) {
-    toast.error('Acceso denegado: No tienes permisos para esta página.');
-    return <Navigate to={`/unauthorized?role=editor`} replace />;
-  }
+  if (isLoading || !user) return <Layout><Spinner /></Layout>;
 
   return (
     <Layout>
-      <main className="p-6">
-        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold text-teal-800">Panel del Editor</h1>
-            <button
-              onClick={logout}
-              className="bg-red-600 text-white py-1 px-3 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200"
-            >
-              Cerrar Sesión
+      <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+        <h1 className="text-3xl font-bold text-primary mb-6">Gestión de Contenido</h1>
+        <p className="text-gray-700 dark:text-gray-200">
+          Bienvenido, {user.name || user.username || 'Editor'}!
+        </p>
+        <p className="text-gray-700 dark:text-gray-200">Rol: {user.role}</p>
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold text-primary">Añadir Contenido</h2>
+          <form onSubmit={addContent} className="space-y-4" aria-label="Formulario para añadir contenido">
+            <div>
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                Título
+              </label>
+              <input
+                type="text"
+                id="title"
+                value={newContent.title}
+                onChange={(e) => setNewContent({ ...newContent, title: e.target.value })}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-gray-200"
+                required
+                aria-required="true"
+              />
+            </div>
+            <div>
+              <label htmlFor="body" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                Contenido
+              </label>
+              <textarea
+                id="body"
+                value={newContent.body}
+                onChange={(e) => setNewContent({ ...newContent, body: e.target.value })}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:text-gray-200"
+                rows="5"
+                required
+                aria-required="true"
+              />
+            </div>
+            <button type="submit" className="btn-primary" aria-label="Añadir contenido">
+              Añadir
             </button>
-          </div>
-
-          <p className="text-gray-600 mb-6">
-            Bienvenido, {user?.username} (Rol: {user?.role})
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div className="bg-teal-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
-              <h3 className="text-lg font-semibold text-teal-800">Administrar Horarios</h3>
-              <p className="text-gray-600">Edita los horarios de los dispositivos</p>
-              <button
-                onClick={() => navigate('/Horarios')}
-                className="mt-2 bg-teal-600 text-white py-1 px-3 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors duration-200 w-full"
-              >
-                Editar
-              </button>
-            </div>
-            <div className="bg-teal-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
-              <h3 className="text-lg font-semibold text-teal-800">Administrar Tareas</h3>
-              <p className="text-gray-600">Crea y edita tareas automatizadas</p>
-              <button
-                onClick={() => navigate('/Tareas')}
-                className="mt-2 bg-teal-600 text-white py-1 px-3 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors duration-200 w-full"
-              >
-                Editar
-              </button>
-            </div>
-          </div>
-
-          <div className="bg-teal-50 rounded-lg p-6 shadow-md">
-            <h2 className="text-xl font-semibold text-teal-800 mb-4">Actividad Reciente</h2>
-            {recentActivities.length ? (
-              <ul className="space-y-3">
-                {recentActivities.map((activity) => (
-                  <li key={activity.id} className="flex items-center space-x-3">
-                    <span className="w-2 h-2 bg-teal-600 rounded-full" />
-                    <p className="text-gray-600">{activity.action}</p>
-                    <span className="text-sm text-gray-400">{activity.time}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-gray-600">No hay actividad reciente.</p>
-            )}
-          </div>
+          </form>
         </div>
-      </main>
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold text-primary">Contenido Existente</h2>
+          {content.length === 0 ? (
+            <p className="text-gray-600 dark:text-gray-400">No hay contenido disponible.</p>
+          ) : (
+            <div className="space-y-4 mt-4">
+              {content.map(item => (
+                <div key={item.id} className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                  <h3 className="font-medium text-primary">{item.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300">{item.body}</p>
+                  <button
+                    onClick={() => deleteContent(item.id)}
+                    className="mt-2 text-red-600 hover:underline"
+                    aria-label={`Eliminar contenido ${item.title}`}
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold text-primary">Acciones</h2>
+          <ul className="mt-2 space-y-2">
+            <li>
+              <Link to="/user/profile" className="text-primary hover:underline" aria-label="Editar perfil">
+                Editar Perfil
+              </Link>
+            </li>
+            <li>
+              <Link to="/editor/dashboard" className="text-primary hover:underline" aria-label="Volver al dashboard">
+                Volver al Dashboard
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </div>
     </Layout>
   );
 };

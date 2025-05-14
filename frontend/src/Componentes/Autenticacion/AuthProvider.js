@@ -1,17 +1,17 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback, useRef } from 'react';
 import { auth, db } from '../../config/firebase';
 import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
   createUserWithEmailAndPassword,
+  sendEmailVerification
 } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const AuthContext = createContext();
-
 const toastTimestamps = new Map();
 const TOAST_DEBOUNCE_MS = 5000;
 
@@ -19,266 +19,274 @@ const showToast = (message, type = 'warn') => {
   const now = Date.now();
   const lastShown = toastTimestamps.get(message) || 0;
   if (now - lastShown > TOAST_DEBOUNCE_MS) {
-    toast[type](message);
+    toast[type](message, { autoClose: 3000 });
     toastTimestamps.set(message, now);
   }
+};
+
+const fetchOrCreateUserData = async (firebaseUser) => {
+  const userDocRef = doc(db, 'users', firebaseUser.uid);
+  try {
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists()) {
+      const data = userDoc.data();
+      return {
+        role: data.role || 'user',
+        permissions: data.permissions || ['view:profile', 'view:devices'],
+        username: data.username || firebaseUser.email.split('@')[0],
+        name: data.name || '',
+        address: data.address || { street: '', city: '', postalCode: '', country: '' },
+        phone: data.phone || '',
+        notificationPrefs: data.notificationPrefs || { email: true, sms: false },
+        devices: data.devices || [],
+        profileIncomplete: data.profileIncomplete ?? true,
+        fcmToken: data.fcmToken || '',
+      };
+    }
+    const defaultData = {
+      role: 'user',
+      permissions: ['view:profile', 'view:devices', 'control:own_devices'],
+      email: firebaseUser.email,
+      username: firebaseUser.email.split('@')[0],
+      name: '',
+      address: { street: '', city: '', postalCode: '', country: '' },
+      phone: '',
+      notificationPrefs: { email: true, sms: false },
+      devices: [],
+      createdAt: new Date(),
+      profileIncomplete: true,
+      fcmToken: '',
+    };
+    await setDoc(userDocRef, defaultData);
+    showToast('Por favor, completa tu perfil.', 'info');
+    return defaultData;
+  } catch (error) {
+    console.error('AuthProvider: Firestore error:', error);
+    showToast('Error al acceder a datos de usuario', 'error');
+    throw error;
+  }
+};
+
+const checkPermissionAccess = (user, requiredPermissions) => {
+  if (!user) return false;
+  const userPermissions = user.permissions || [];
+  return requiredPermissions.every(perm => userPermissions.includes(perm));
+};
+
+const checkDeviceAccess = async (user, deviceId) => {
+  if (!user) return false;
+  const deviceRef = doc(db, 'devices', deviceId);
+  const deviceDoc = await getDoc(deviceRef);
+  return deviceDoc.exists() && deviceDoc.data().owner === user.uid;
 };
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
+  const hasRedirectedOnce = useRef(false);
+  const authListenerInitialized = useRef(false);
+
+  const handleInitialRedirect = useCallback((userData) => {
+    if (hasRedirectedOnce.current) return;
+
+    const currentPath = location.pathname;
+    const target = userData.profileIncomplete
+      ? '/user/profile'
+      : userData.role === 'admin'
+      ? '/admin/dashboard'
+      : userData.role === 'editor'
+      ? '/editor/dashboard'
+      : '/user/dashboard';
+
+    const allowedInitialRoutes = ['/login', '/unauthorized'];
+    const shouldRedirect = allowedInitialRoutes.includes(currentPath) && currentPath !== target;
+
+    if (shouldRedirect) {
+      console.log('AuthProvider: Redirecting to:', target);
+      navigate(target, { replace: true });
+      hasRedirectedOnce.current = true;
+    } else {
+      console.log('AuthProvider: No redirect needed for path:', currentPath);
+    }
+  }, [location.pathname, navigate]);
+
+  const login = useCallback(async (credentials) => {
+    if (!auth || !credentials?.email || !credentials?.password) {
+      showToast('Correo/contraseña requeridos', 'error');
+      throw new Error('Credenciales inválidas');
+    }
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, credentials.email, credentials.password);
+      if (!userCredential.user.emailVerified) {
+        await sendEmailVerification(userCredential.user);
+        showToast('Por favor, verifica tu correo electrónico', 'warn');
+        throw new Error('Correo no verificado');
+      }
+      const userData = await fetchOrCreateUserData(userCredential.user);
+      const mappedUser = {
+        ...userData,
+        email: credentials.email,
+        uid: userCredential.user.uid,
+      };
+      setUser(mappedUser);
+      showToast('Inicio de sesión exitoso', 'success');
+      handleInitialRedirect(userData);
+      return { success: true, user: mappedUser };
+    } catch (error) {
+      const errorMessages = {
+        'auth/invalid-email': 'Correo inválido',
+        'auth/wrong-password': 'Contraseña incorrecta',
+        'auth/user-not-found': 'Usuario no encontrado',
+        'auth/too-many-requests': 'Demasiados intentos, intenta de nuevo más tarde',
+      };
+      const errorMessage = errorMessages[error.code] || 'Error al iniciar sesión';
+      showToast(errorMessage, 'error');
+      throw new Error(errorMessage);
+    }
+  }, [navigate, handleInitialRedirect]);
+
+  const logout = useCallback(async () => {
+    try {
+      await signOut(auth);
+      setUser(null);
+      hasRedirectedOnce.current = false; // Permitir redirección tras próximo login
+      showToast('Sesión cerrada', 'success');
+      navigate('/login', { replace: true });
+    } catch (error) {
+      showToast('Error al cerrar sesión', 'error');
+      throw error;
+    }
+  }, [navigate]);
+
+  const signup = useCallback(async ({ email, password, username }) => {
+    if (!auth || !email || !password || !username) {
+      showToast('Datos requeridos', 'error');
+      throw new Error('Datos incompletos');
+    }
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const firebaseUser = userCredential.user;
+      await sendEmailVerification(firebaseUser);
+      const userData = {
+        role: 'user',
+        permissions: ['view:profile', 'view:devices', 'control:own_devices'],
+        email,
+        username,
+        name: '',
+        address: { street: '', city: '', postalCode: '', country: '' },
+        phone: '',
+        notificationPrefs: { email: true, sms: false },
+        devices: [],
+        createdAt: new Date(),
+        profileIncomplete: true,
+        fcmToken: '',
+      };
+      await setDoc(doc(db, 'users', firebaseUser.uid), userData);
+      setUser({ ...userData, email, uid: firebaseUser.uid });
+      showToast('Registro exitoso. Por favor, verifica tu correo.', 'success');
+      navigate('/login', { replace: true });
+      return { success: true, user: { ...userData, email, uid: firebaseUser.uid } };
+    } catch (error) {
+      const errorMessages = {
+        'auth/email-already-in-use': 'El correo ya está registrado',
+        'auth/invalid-email': 'Correo inválido',
+        'auth/weak-password': 'La contraseña es demasiado débil',
+      };
+      const errorMessage = errorMessages[error.code] || 'Error al registrarse';
+      showToast(errorMessage, 'error');
+      throw new Error(errorMessage);
+    }
+  }, [navigate]);
+
+  const updateUserProfile = useCallback(async (updates) => {
+    if (!user || !auth.currentUser) {
+      showToast('No estás autenticado', 'error');
+      throw new Error('No autenticado');
+    }
+    try {
+      const userDocRef = doc(db, 'users', auth.currentUser.uid);
+      await updateDoc(userDocRef, updates);
+      const updatedUser = { ...user, ...updates };
+      setUser(updatedUser);
+      showToast('Perfil actualizado', 'success');
+      return { success: true, user: updatedUser };
+    } catch (error) {
+      showToast('Error al actualizar perfil', 'error');
+      throw error;
+    }
+  }, [user]);
 
   useEffect(() => {
-    if (!auth) {
-      console.error('Firebase auth is not initialized');
-      setIsLoading(false);
-      showToast('Error de autenticación: Firebase no está inicializado', 'error');
-      return;
-    }
-
-    console.log('Setting up Firebase auth listener...');
+    if (!auth || authListenerInitialized.current) return;
+    authListenerInitialized.current = true;
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       try {
         if (firebaseUser) {
           if (!firebaseUser.emailVerified) {
-            console.log('User email not verified:', firebaseUser.email);
-            showToast('Por favor, verifica tu correo electrónico para continuar.', 'warn');
-            await signOut(auth);
+            showToast('Por favor, verifica tu correo electrónico', 'warn');
             setUser(null);
-            navigate('/login', { replace: true });
+            if (location.pathname !== '/login') navigate('/login', { replace: true });
             return;
           }
-
-          console.log('Firebase user authenticated:', {
-            email: firebaseUser.email,
-            uid: firebaseUser.uid,
-          });
-          let role = 'user';
-          try {
-            const userDocRef = doc(db, 'users', firebaseUser.uid);
-            const userDoc = await getDoc(userDocRef);
-            if (userDoc.exists()) {
-              role = userDoc.data().role || 'user';
-              console.log('User role fetched from Firestore:', role);
-            } else {
-              console.warn('User document does not exist in Firestore:', firebaseUser.uid);
-              try {
-                await setDoc(userDocRef, {
-                  role: 'user',
-                  email: firebaseUser.email,
-                  createdAt: new Date(),
-                });
-                console.log('User document created successfully for UID:', firebaseUser.uid);
-                showToast('Se creó un nuevo perfil de usuario con rol por defecto: user', 'info');
-              } catch (createError) {
-                console.error('Error creating user document in Firestore:', {
-                  message: createError.message,
-                  code: createError.code,
-                  details: createError.details,
-                });
-                showToast(`Error al crear el perfil de usuario: ${createError.message}`, 'error');
-                role = 'user';
-              }
-            }
-          } catch (error) {
-            console.error('Error fetching user role from Firestore:', {
-              message: error.message,
-              code: error.code,
-              details: error.details,
-            });
-            if (error.message.includes('offline')) {
-              showToast('No se puede acceder a Firestore: estás offline. Usando rol por defecto:售user');
-            } else {
-              showToast(`Error al obtener el rol del usuario: ${error.message}`, 'error');
-            }
-            role = 'user';
-          }
-
+          const userData = await fetchOrCreateUserData(firebaseUser);
           const mappedUser = {
-            username: firebaseUser.email.split('@')[0],
-            role: role || 'user',
+            ...userData,
             email: firebaseUser.email,
             uid: firebaseUser.uid,
           };
-          console.log('User data set:', mappedUser);
           setUser(mappedUser);
+          handleInitialRedirect(userData);
         } else {
-          console.log('No Firebase user authenticated');
           setUser(null);
+          const protectedRoutes = ['/user', '/admin', '/editor', '/Horarios', '/Tareas'];
+          if (protectedRoutes.some(route => location.pathname.startsWith(route))) {
+            navigate('/login', { replace: true });
+          }
         }
       } catch (error) {
-        console.error('Error processing auth state:', error);
-        showToast('Error al procesar autenticación', 'error');
+        showToast('Error de autenticación', 'error');
+        setUser(null);
       } finally {
         setIsLoading(false);
       }
     }, (error) => {
-      console.error('Firebase auth error:', error);
-      showToast('Error de autenticación de Firebase', 'error');
+      showToast('Error de Firebase', 'error');
       setIsLoading(false);
     });
-
     return () => {
-      console.log('Cleaning up Firebase auth listener');
+      authListenerInitialized.current = false;
       unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate, handleInitialRedirect]);
 
-  const login = async (credentials) => {
-    if (!auth) {
-      showToast('Firebase no está inicializado', 'error');
-      throw new Error('Firebase auth is not initialized');
-    }
-
-    if (!credentials?.email || !credentials?.password) {
-      showToast('Correo y contraseña son requeridos', 'error');
-      throw new Error('Email and password are required');
-    }
-
-    console.log('Attempting Firebase login with:', credentials.email);
-    try {
-      const { email, password } = credentials;
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const firebaseUser = userCredential.user;
-
-      if (!firebaseUser.emailVerified) {
-        await signOut(auth);
-        showToast('Por favor, verifica tu correo electrónico antes de iniciar sesión.', 'warn');
-        throw new Error('Email not verified');
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (user) {
+        logout();
+        showToast('Sesión expirada', 'warn');
       }
+    }, 30 * 60 * 1000); // 30 minutos
+    return () => clearTimeout(timeout);
+  }, [user, logout]);
 
-      console.log('Firebase login successful:', firebaseUser.email);
-
-      let role = 'user';
-      try {
-        const userDocRef = doc(db, 'users', firebaseUser.uid);
-        const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists()) {
-          role = userDoc.data().role || 'user';
-          console.log('User role fetched from Firestore:', role);
-        } else {
-          console.warn('User document does not exist in Firestore:', firebaseUser.uid);
-          try {
-            await setDoc(userDocRef, {
-              role: 'user',
-              email: firebaseUser.email,
-              createdAt: new Date(),
-            });
-            console.log('User document created successfully for UID:', firebaseUser.uid);
-            showToast('Se creó un nuevo perfil de usuario con rol por defecto: user', 'info');
-          } catch (createError) {
-            console.error('Error creating user document in Firestore:', {
-              message: createError.message,
-              code: createError.code,
-              details: createError.details,
-            });
-            showToast(`Error al crear el perfil de usuario: ${createError.message}`, 'error');
-            role = 'user';
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching user role from Firestore:', {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-        });
-        if (error.message.includes('offline')) {
-          showToast('No se puede acceder a Firestore: estás offline. Usando rol por defecto: user');
-        } else {
-          showToast(`Error al obtener el rol del usuario: ${error.message}`, 'error');
-        }
-        role = 'user';
-      }
-
-      const mappedUser = {
-        username: firebaseUser.email.split('@')[0],
-        role: role || 'user',
-        email: firebaseUser.email,
-        uid: firebaseUser.uid,
-      };
-
-      setUser(mappedUser);
-      showToast('Inicio de sesión exitoso', 'success');
-      const redirectPath =
-        role === 'admin' ? '/admin/dashboard' :
-        role === 'editor' ? '/editor/dashboard' :
-        '/user/dashboard';
-      navigate(redirectPath, { replace: true });
-      return { success: true, user: mappedUser };
-    } catch (error) {
-      console.error('Firebase login error:', error.code, error.message);
-      throw error;
-    }
+  const value = {
+    user,
+    isLoading,
+    login,
+    logout,
+    signup,
+    updateUserProfile,
+    checkPermissionAccess,
+    checkDeviceAccess,
   };
 
-  const logout = async () => {
-    if (!auth) {
-      showToast('Firebase no está inicializado', 'error');
-      throw new Error('Firebase auth is not initialized');
-    }
-
-    console.log('Attempting Firebase logout');
-    try {
-      await signOut(auth);
-      console.log('Firebase logout successful');
-      setUser(null);
-      showToast('Cierre de sesión exitoso', 'success');
-      navigate('/login', { replace: true });
-    } catch (error) {
-      console.error('Firebase logout error:', error);
-      showToast('Error al cerrar sesión', 'error');
-      throw error;
-    }
-  };
-
-  const createUser = async (email, password, role = 'user') => {
-    if (!auth) {
-      showToast('Firebase no está inicializado', 'error');
-      throw new Error('Firebase auth is not initialized');
-    }
-
-    if (!email || !password) {
-      showToast('Correo y contraseña son requeridos', 'error');
-      throw new Error('Email and password are required');
-    }
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const firebaseUser = userCredential.user;
-      console.log('Firebase user created successfully:', firebaseUser.email);
-
-      const userDocRef = doc(db, 'users', firebaseUser.uid);
-      await setDoc(userDocRef, {
-        role,
-        email: firebaseUser.email,
-        createdAt: new Date(),
-      });
-      console.log('User document created successfully for UID:', firebaseUser.uid);
-      showToast(`Usuario creado con rol: ${role}`, 'success');
-      return firebaseUser;
-    } catch (error) {
-      console.error('Error creating user:', {
-        message: error.message,
-        code: error.code,
-        details: error.details,
-      });
-      showToast(`Error al crear usuario: ${error.message}`, 'error');
-      throw error;
-    }
-  };
-
-  return (
-    <AuthContext.Provider value={{ user, login, logout, createUser, isLoading }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{!isLoading && children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error('useAuth debe usarse dentro de AuthProvider');
   return context;
 };

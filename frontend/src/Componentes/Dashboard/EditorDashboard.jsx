@@ -1,236 +1,212 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../Autenticacion/AuthProvider';
-import { Navigate, useNavigate } from 'react-router-dom';
-import Layout from '../../hocs/layouts/layout';
-import { toast } from 'react-toastify';
-import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
+import { collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import Layout from '../../hocs/layouts/layout';
+import Spinner from '../Spinner';
+import { toast } from 'react-toastify';
 
 const EditorDashboard = () => {
-  const { user, isLoading, logout } = useAuth();
-  const navigate = useNavigate();
-  const [recentActivities, setRecentActivities] = useState([]);
+  const { user } = useAuth();
+  const [content, setContent] = useState([]);
+  const [newContent, setNewContent] = useState({ title: '', body: '' });
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch recent activities from Firestore
   useEffect(() => {
-    const fetchActivities = async () => {
+    const fetchContent = async () => {
       try {
-        const activitiesRef = collection(db, `users/${user.uid}/activities`);
-        const q = query(activitiesRef, orderBy('timestamp', 'desc'), limit(5));
-        const snapshot = await getDocs(q);
-        const activities = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          action: doc.data().action,
-          time: new Date(doc.data().timestamp.toDate()).toLocaleTimeString('es-ES', {
-            hour: '2-digit',
-            minute: '2-digit',
-          }),
-        }));
-        setRecentActivities(activities);
+        const contentCollection = await getDocs(collection(db, 'content'));
+        setContent(contentCollection.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setIsLoading(false);
       } catch (error) {
-        console.error('Error fetching recent activities:', error);
-        setRecentActivities([
-          { id: 1, action: 'Updated light schedule', time: '15 minutes ago' },
-          { id: 2, action: 'Created irrigation task', time: '2 hours ago' },
-        ]);
-        toast.error('Error al cargar actividad reciente');
+        console.error('EditorDashboard: Content fetch error:', error);
+        toast.error('Error al cargar contenido');
+        setIsLoading(false);
       }
     };
+    fetchContent();
+  }, []);
 
-    if (user) {
-      fetchActivities();
+  const addContent = async (e) => {
+    e.preventDefault();
+    if (!newContent.title || !newContent.body) {
+      toast.error('Título y contenido son requeridos');
+      return;
     }
-  }, [user]);
+    try {
+      const docRef = await addDoc(collection(db, 'content'), {
+        ...newContent,
+        createdBy: user.uid,
+        createdAt: new Date(),
+      });
+      setContent([...content, { id: docRef.id, ...newContent, createdBy: user.uid }]);
+      setNewContent({ title: '', body: '' });
+      toast.success('Contenido añadido');
+    } catch (error) {
+      console.error('EditorDashboard: Content add error:', error);
+      toast.error('Error al añadir contenido');
+    }
+  };
 
-  // Handle loading state
-  if (isLoading) {
-    return (
-      <Layout>
-        <div className="flex justify-center items-center h-screen">
-          <div className="flex flex-col items-center space-y-4">
-            <svg
-              className="animate-spin h-12 w-12 text-teal-600"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-            <p className="text-lg font-semibold text-teal-800">Cargando...</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
+  const deleteContent = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'content', id));
+      setContent(content.filter(c => c.id !== id));
+      toast.success('Contenido eliminado');
+    } catch (error) {
+      console.error('EditorDashboard: Content delete error:', error);
+      toast.error('Error al eliminar contenido');
+    }
+  };
 
-  // Redirect if not authenticated
-  if (!user) {
-    toast.warn('Por favor, inicia sesión para acceder a esta página.');
-    return <Navigate to="/login" replace />;
-  }
-
-  // Restrict access to editor and admin roles
-  if (!['editor', 'admin'].includes(user.role)) {
-    toast.error('Acceso denegado: No tienes permisos para esta página.');
-    return <Navigate to={`/unauthorized?role=editor`} replace />;
-  }
-
-  // Sidebar options
-  const sidebarItems = [
-    {
-      name: 'Dashboard',
-      path: '/editor/dashboard',
-      icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
-    },
-    {
-      name: 'Content',
-      path: '/editor/content',
-      icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
-    },
-    {
-      name: 'Log Out',
-      action: logout,
-      icon: 'M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1',
-    },
-  ];
-
-  // Placeholder for stats
-  const stats = [
-    { title: 'Connected Devices', value: 10, subtext: '+1 since yesterday' },
-    { title: 'Active Schedules', value: 6, subtext: '2 upcoming in 1 hour' },
-    { title: 'Pending Tasks', value: 4, subtext: '1 due today' },
-  ];
+  if (isLoading || !user) return <Layout><Spinner /></Layout>;
 
   return (
     <Layout>
-      <div className="flex min-h-screen bg-gray-100">
-        {/* Sidebar */}
-        <aside className="w-64 bg-teal-800 text-white flex-shrink-0 shadow-lg">
-          <div className="p-6">
-            <h2 className="text-2xl font-bold">Editor Dashboard</h2>
-            <p className="text-sm text-teal-200 mt-1">Manage Schedules & Tasks</p>
-          </div>
-          <nav className="mt-6">
-            <ul className="space-y-2">
-              {sidebarItems.map((item) => (
-                <li key={item.name}>
-                  <button
-                    onClick={item.action || (() => navigate(item.path))}
-                    className="w-full text-left px-6 py-3 hover:bg-teal-700 transition-colors duration-200 flex items-center space-x-3"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d={item.icon}
-                      />
-                    </svg>
-                    <span>{item.name}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1 p-6">
-          {/* Header */}
-          <header className="bg-white shadow-md rounded-lg p-6 mb-6 flex items-center justify-between">
+      <motion.div
+        className="max-w-6xl mx-auto p-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <h1 className="text-4xl font-bold text-yellow-400 mb-8">Dashboard de Editor - IoT Solutions</h1>
+        <motion.div
+          className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          <div className="flex items-center space-x-4 mb-6">
+            <svg
+              className="w-10 h-10 text-yellow-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
             <div>
-              <stockexchange.com.au
-              <h1 className="text-2xl font-bold text-teal-800">Editor Dashboard</h1>
-              <p className="text-sm text-gray-500">
-                Welcome, {user?.username || 'User'} (Role: {user?.role || 'Editor'})
+              <p className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                Bienvenido, {user.name || user.username || 'Editor'}!
               </p>
+              <p className="text-gray-600 dark:text-gray-400">Rol: {user.role}</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-600">{new Date().toLocaleDateString()}</span>
-              <button
-                onClick={logout}
-                className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-200"
-              >
-                Log Out
-              </button>
-            </div>
-          </header>
+          </div>
 
-          {/* Stats */}
-          <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            {stats.map((stat) => (
-              <div
-                key={stat.title}
-                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200"
-              >
-                <h3 className="text-lg font-semibold text-teal-800">{stat.title}</h3>
-                <p className="text-3xl font-bold text-teal-600 mt-2">{stat.value}</p>
-                <p className="text-sm text-gray-500 mt-1">{stat.subtext}</p>
+          <div className="mt-8">
+            <h2 className="text-2xl font-semibold text-yellow-400 mb-4">Añadir Contenido</h2>
+            <motion.form
+              onSubmit={addContent}
+              className="space-y-6 bg-gray-100 dark:bg-gray-700 p-6 rounded-lg"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.4 }}
+              aria-label="Formulario para añadir contenido"
+            >
+              <div>
+                <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Título
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  value={newContent.title}
+                  onChange={(e) => setNewContent({ ...newContent, title: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 dark:bg-gray-600 dark:text-gray-200 dark:border-gray-500 transition-all duration-200"
+                  required
+                  aria-required="true"
+                />
               </div>
-            ))}
-          </section>
-
-          {/* Management Options */}
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div className="bg-teal-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
-              <h3 className="text-lg font-semibold text-teal-800">Manage Schedules</h3>
-              <p className="text-gray-600">Edit device schedules</p>
-              <button
-                onClick={() => navigate('/Horarios')}
-                className="mt-2 bg-teal-600 text-white py-1 px-3 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors duration-200 w-full"
+              <div>
+                <label htmlFor="body" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Contenido
+                </label>
+                <textarea
+                  id="body"
+                  value={newContent.body}
+                  onChange={(e) => setNewContent({ ...newContent, body: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 dark:bg-gray-600 dark:text-gray-200 dark:border-gray-500 transition-all duration-200"
+                  rows="5"
+                  required
+                  aria-required="true"
+                />
+              </div>
+              <motion.button
+                type="submit"
+                className="px-6 py-2 bg-yellow-400 text-gray-900 font-semibold rounded-lg hover:bg-yellow-500 transition-all duration-200"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                aria-label="Añadir contenido"
               >
-                Edit
-              </button>
-            </div>
-            <div className="bg-teal-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow">
-              <h3 className="text-lg font-semibold text-teal-800">Manage Tasks</h3>
-              <p className="text-gray-600">Create and edit automated tasks</p>
-              <button
-                onClick={() => navigate('/Tareas')}
-                className="mt-2 bg-teal-600 text-white py-1 px-3 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors duration-200 w-full"
-              >
-                Edit
-              </button>
-            </div>
-          </section>
+                Añadir
+              </motion.button>
+            </motion.form>
+          </div>
 
-          {/* Recent Activity */}
-          <section className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-teal-800 mb-4">Recent Activity</h2>
-            {recentActivities.length ? (
-              <ul className="space-y-3">
-                {recentActivities.map((activity) => (
-                  <li key={activity.id} className="flex items-center space-x-3">
-                    <span className="w-2 h-2 bg-teal-600 rounded-full" />
-                    <p className="text-gray-600 flex-1">{activity.action}</p>
-                    <span className="text-sm text-gray-400">{activity.time}</span>
-                  </li>
-                ))}
-              </ul>
+          <div className="mt-8">
+            <h2 className="text-2xl font-semibold text-yellow-400 mb-4">Contenido Existente</h2>
+            {content.length === 0 ? (
+              <p className="text-gray-600 dark:text-gray-400">No hay contenido disponible.</p>
             ) : (
-              <p className="text-gray-600">No recent activity.</p>
+              <div className="space-y-4">
+                {content.map((item) => (
+                  <motion.div
+                    key={item.id}
+                    className="p-6 bg-gray-100 dark:bg-gray-700 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <h3 className="font-medium text-gray-800 dark:text-gray-200">{item.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-400 mt-2">{item.body}</p>
+                    <motion.button
+                      onClick={() => deleteContent(item.id)}
+                      className="mt-3 text-red-500 hover:text-red-600 font-medium transition-colors duration-200"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      aria-label={`Eliminar contenido ${item.title}`}
+                    >
+                      Eliminar
+                    </motion.button>
+                  </motion.div>
+                ))}
+              </div>
             )}
-          </section>
-        </main>
-      </div>
+          </div>
+
+          <div className="mt-8">
+            <h2 className="text-2xl font-semibold text-yellow-400 mb-4">Acciones</h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <li>
+                <Link
+                  to="/user/profile"
+                  className="block p-4 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+                  aria-label="Editar perfil"
+                >
+                  Editar Perfil
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/editor/content"
+                  className="block p-4 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+                  aria-label="Gestionar contenido"
+                >
+                  Gestionar Contenido
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </motion.div>
+      </motion.div>
     </Layout>
   );
 };

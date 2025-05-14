@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { db } from "../../../../config/firebase";
+import { collection, addDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 const BudgetContactForm = () => {
   const navigate = useNavigate();
@@ -13,6 +16,7 @@ const BudgetContactForm = () => {
   });
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
   const validate = () => {
     const newErrors = {};
@@ -31,12 +35,32 @@ const BudgetContactForm = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log("Form Submission:", formData);
-      setSubmitted(true);
-      setTimeout(() => navigate("/"), 2000);
+      try {
+        console.log("BudgetContactForm: Submitting form:", formData);
+        await addDoc(collection(db, "contacts"), {
+          type: formData.contactType,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          product: formData.product,
+          timestamp: new Date(),
+        });
+        console.log("BudgetContactForm: Form submitted to Firestore:", formData);
+        setSubmitted(true);
+        setSubmitError(null);
+        toast.success("¡Solicitud de presupuesto enviada con éxito!");
+        setTimeout(() => navigate("/"), 2000);
+      } catch (error) {
+        console.error("BudgetContactForm: Error submitting form:", error.code, error.message);
+        const errorMessage = error.code === "permission-denied"
+          ? "No tienes permiso para enviar el formulario. Verifica tu autenticación."
+          : "Error al enviar el formulario. Inténtalo de nuevo.";
+        setSubmitError(errorMessage);
+        toast.error(errorMessage);
+      }
     }
   };
 
@@ -66,6 +90,7 @@ const BudgetContactForm = () => {
           <p className="text-gray-600 text-sm sm:text-base mb-6 text-center">
             Obtén un presupuesto personalizado para nuestros productos o servicios.
           </p>
+          {submitError && <p className="text-red-500 text-sm text-center mb-4">{submitError}</p>}
           <form onSubmit={handleSubmit} className="space-y-6">
             <input type="hidden" name="contactType" value="Budget" />
             <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.3 }}>

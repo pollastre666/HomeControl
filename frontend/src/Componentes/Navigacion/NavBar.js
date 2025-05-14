@@ -53,6 +53,19 @@ const NavBar = () => {
     </svg>
   );
 
+  // Enlaces base (públicos)
+  const navLinks = [
+    { to: "/", label: "Inicio" },
+    { to: "/Productos", label: "Productos" },
+    { to: "/Nosotros", label: "Nosotros" },
+    { to: "/Contacto", label: "Contacto" },
+  ];
+
+  // Añadir Tareas solo si el usuario está autenticado
+  if (user) {
+    navLinks.splice(3, 0, { to: "/Tareas", label: "Tareas" });
+  }
+
   return (
     <>
       <motion.nav
@@ -97,13 +110,7 @@ const NavBar = () => {
           </motion.div>
 
           <div className="hidden lg:flex items-center space-x-5">
-            {[
-              { to: "/", label: "Inicio" },
-              { to: "/Productos", label: "Productos" },
-              { to: "/Nosotros", label: "Nosotros" },
-              { to: "/Tareas", label: "Tareas" },
-              { to: "/Contacto", label: "Contacto" },
-            ].map((link) => (
+            {navLinks.map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}
@@ -268,7 +275,7 @@ const NavBar = () => {
           {menuAbierto && (
             <motion.div
               id="mobile-menu"
-              className="lg:hidden fixed inset-0 bg-amber-700 z-50 shadow-2xl" // Fondo sólido y sombra
+              className="lg:hidden fixed inset-0 bg-amber-700 z-50 shadow-2xl"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
@@ -284,13 +291,7 @@ const NavBar = () => {
                 >
                   ×
                 </motion.button>
-                {[
-                  { to: "/", label: "Inicio" },
-                  { to: "/Productos", label: "Productos" },
-                  { to: "/Nosotros", label: "Nosotros" },
-                  { to: "/Tareas", label: "Tareas" },
-                  { to: "/Contacto", label: "Contacto" },
-                ].map((link, index) => (
+                {navLinks.map((link, index) => (
                   <motion.div
                     key={link.to}
                     initial={{ opacity: 0, x: 20 }}
@@ -314,7 +315,7 @@ const NavBar = () => {
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: 0.5 }}
+                  transition={{ duration: 0.3, delay: navLinks.length * 0.1 }}
                 >
                   <button
                     onClick={toggleVerticalMenu}
@@ -331,7 +332,7 @@ const NavBar = () => {
                       className="mt-6 flex items-center space-x-3 text-white py-3"
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: 0.6 }}
+                      transition={{ duration: 0.3, delay: (navLinks.length + 1) * 0.1 }}
                     >
                       <div className="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center text-white font-semibold shadow-md">
                         {user.username.charAt(0).toUpperCase() || "U"}
@@ -348,7 +349,7 @@ const NavBar = () => {
                       className="text-lg font-medium text-white py-3 hover:text-amber-400 transition-colors duration-200 flex items-center space-x-2"
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: 0.7 }}
+                      transition={{ duration: 0.3, delay: (navLinks.length + 2) * 0.1 }}
                     >
                       <svg
                         className="w-5 h-5"
@@ -370,7 +371,7 @@ const NavBar = () => {
                       className="text-lg font-medium text-red-400 py-3 hover:text-red-300 transition-colors duration-200 flex items-center space-x-2"
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: 0.8 }}
+                      transition={{ duration: 0.3, delay: (navLinks.length + 3) * 0.1 }}
                     >
                       <svg
                         className="w-5 h-5"
@@ -393,7 +394,7 @@ const NavBar = () => {
                     className="mt-6"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: 0.6 }}
+                    transition={{ duration: 0.3, delay: (navLinks.length + 1) * 0.1 }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >

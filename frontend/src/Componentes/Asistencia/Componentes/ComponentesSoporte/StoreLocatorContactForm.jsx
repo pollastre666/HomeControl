@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaMapPin, FaPhone, FaClock, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { db } from "../../../../config/firebase";
+import { collection, addDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 const StoreLocatorContactForm = () => {
   const navigate = useNavigate();
@@ -16,7 +19,8 @@ const StoreLocatorContactForm = () => {
   const [loading, setLoading] = useState(false);
   const [stores, setStores] = useState([]);
   const [expandedStore, setExpandedStore] = useState(null);
-  const [countdown, setCountdown] = useState(5); // New state for countdown
+  const [countdown, setCountdown] = useState(5);
+  const [submitError, setSubmitError] = useState(null);
   const nameInputRef = useRef(null);
 
   const mockStores = [
@@ -50,21 +54,18 @@ const StoreLocatorContactForm = () => {
     nameInputRef.current?.focus();
   }, []);
 
-  // Countdown effect when form is submitted
   useEffect(() => {
     if (submitted && !loading) {
       const timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
             clearInterval(timer);
-            navigate("/"); // Redirect when countdown reaches 0
+            navigate("/");
             return 0;
           }
           return prev - 1;
         });
       }, 1000);
-
-      // Cleanup interval on unmount or when form is reset
       return () => clearInterval(timer);
     }
   }, [submitted, loading, navigate]);
@@ -93,17 +94,34 @@ const StoreLocatorContactForm = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
       setLoading(true);
-      setTimeout(() => {
-        console.log("Form Submission:", formData);
+      try {
+        console.log("StoreLocatorContactForm: Submitting form:", formData);
+        await addDoc(collection(db, "contacts"), {
+          type: formData.contactType,
+          name: formData.name,
+          email: formData.email,
+          postalCode: formData.postalCode,
+          timestamp: new Date(),
+        });
+        console.log("StoreLocatorContactForm: Form submitted to Firestore:", formData);
         setStores(mockStores);
-        setLoading(false);
         setSubmitted(true);
-        setCountdown(50); // Reset countdown on submit
-      }, 2000);
+        setSubmitError(null);
+        toast.success("¡Solicitud de búsqueda de tiendas enviada con éxito!");
+      } catch (error) {
+        console.error("StoreLocatorContactForm: Error submitting form:", error.code, error.message);
+        const errorMessage = error.code === "permission-denied"
+          ? "No tienes permiso para enviar el formulario. Verifica tu autenticación."
+          : "Error al enviar el formulario. Inténtalo de nuevo.";
+        setSubmitError(errorMessage);
+        toast.error(errorMessage);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -113,7 +131,8 @@ const StoreLocatorContactForm = () => {
     setSubmitted(false);
     setStores([]);
     setExpandedStore(null);
-    setCountdown(5); // Reset countdown
+    setCountdown(5);
+    setSubmitError(null);
     nameInputRef.current?.focus();
   };
 
@@ -197,6 +216,7 @@ const StoreLocatorContactForm = () => {
             ) : (
               <p className="text-gray-600 text-center">No se encontraron tiendas.</p>
             )}
+            {submitError && <p className="text-red-500 text-sm text-center mt-4">{submitError}</p>}
             <div className="mt-6 flex justify-center">
               <motion.button
                 onClick={resetForm}
@@ -226,6 +246,7 @@ const StoreLocatorContactForm = () => {
             <p className="text-gray-600 text-base mb-6 text-center">
               Ingresa tu código postal para encontrar la tienda HomeControl más cercana.
             </p>
+            {submitError && <p className="text-red-500 text-sm text-center mb-4">{submitError}</p>}
             <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-6" noValidate>
               <input type="hidden" name="contactType" value="StoreLocator" />
               <motion.div

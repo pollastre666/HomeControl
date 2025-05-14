@@ -1,133 +1,254 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../Autenticacion/AuthProvider';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { useNavigate, Navigate } from 'react-router-dom';
 import Layout from '../../hocs/layouts/layout';
+import Spinner from '../Spinner';
 import { toast } from 'react-toastify';
-
-const QUICK_ACTIONS = [
-  {
-    title: 'Ver Horarios',
-    description: 'Revisa tus horarios programados',
-    path: '/Horarios',
-    buttonText: 'Ver',
-  },
-  {
-    title: 'Control Doméstico',
-    description: 'Administra tus dispositivos',
-    path: '/ControlDomestico',
-    buttonText: 'Administrar',
-  },
-  {
-    title: 'Ver Tareas',
-    description: 'Revisa tus tareas pendientes',
-    path: '/Tareas',
-    buttonText: 'Ver',
-  },
-  {
-    title: 'Ir al Dashboard',
-    description: 'Accede al dashboard general',
-    path: '/user/dashboard',
-    buttonText: 'Acceder',
-  },
-];
+import { getMessaging, getToken } from 'firebase/messaging';
 
 const UserProfile = () => {
-  const { user, isLoading, logout } = useAuth();
+  const { user, isLoading, updateUserProfile } = useAuth();
   const navigate = useNavigate();
+  const [formError, setFormError] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    street: '',
+    city: '',
+    postalCode: '',
+    country: '',
+  });
 
-  // Estado de carga
-  if (isLoading) {
-    return (
-      <Layout>
-        <div className="flex justify-center items-center h-screen">
-          <div className="flex flex-col items-center space-y-4 animate-fade-in">
-            <svg
-              className="animate-spin h-12 w-12 text-blue-600"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-            <p className="text-lg font-semibold text-blue-800">Cargando perfil...</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name || '',
+        phone: user.phone || '',
+        street: user.address?.street || '',
+        city: user.address?.city || '',
+        postalCode: user.address?.postalCode || '',
+        country: user.address?.country || '',
+      });
+    }
+  }, [user]);
 
-  // Redirigir si no está autenticado
-  if (!user) {
-    toast.warn('Por favor, inicia sesión para acceder a tu perfil.');
-    return <Navigate to="/login" replace />;
-  }
+  if (isLoading) return <Layout><Spinner /></Layout>;
+  if (!user) return <Navigate to="/login" replace />;
 
-  // Permitir acceso a user, editor y admin
-  if (!['user', 'editor', 'admin'].includes(user.role)) {
-    toast.error('Acceso denegado: Rol no válido.');
-    return <Navigate to={`/unauthorized?role=user`} replace />;
-  }
+  const validateForm = () => {
+    if (formData.phone && !/^[0-9]{10}$/.test(formData.phone)) {
+      setFormError('Teléfono debe tener 10 dígitos');
+      return false;
+    }
+    if (formData.postalCode && !/^[0-9]{5}$/.test(formData.postalCode)) {
+      setFormError('Código postal debe tener 5 dígitos');
+      return false;
+    }
+    return true;
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormError(null);
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const updates = {
+      name: formData.name || user.name || '',
+      phone: formData.phone || user.phone || '',
+      address: {
+        street: formData.street || user.address?.street || '',
+        city: formData.city || user.address?.city || '',
+        postalCode: formData.postalCode || user.address?.postalCode || '',
+        country: formData.country || user.address?.country || '',
+      },
+      profileIncomplete: false,
+    };
+
+    try {
+      await updateUserProfile(updates);
+      toast.success('Perfil actualizado correctamente');
+      navigate('/user/dashboard');
+    } catch (error) {
+      setFormError('Error al actualizar el perfil');
+      toast.error('Error al actualizar el perfil');
+    }
+  };
+
+  const requestNotificationPermission = async () => {
+    try {
+      const messaging = getMessaging();
+      const token = await getToken(messaging, { vapidKey: process.env.REACT_APP_FCM_VAPID_KEY });
+      await updateUserProfile({ fcmToken: token });
+      toast.success('Notificaciones habilitadas');
+    } catch (error) {
+      toast.error('Error al habilitar notificaciones');
+    }
+  };
 
   return (
     <Layout>
-      <main className="flex-grow p-6 animate-fade-in">
-        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold text-blue-800">Perfil de Usuario</h1>
-            <button
-              onClick={logout}
-              className="bg-red-600 text-white py-1 px-3 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200"
-            >
-              Cerrar Sesión
-            </button>
-          </div>
-
-          <p className="text-gray-600 mb-6">
-            Bienvenido, {user.username || 'Usuario'} (Rol: {user.role})
-          </p>
-
-          {/* Detalles del Perfil */}
-          <section className="bg-blue-50 rounded-lg p-4 shadow-md mb-6">
-            <h3 className="text-lg font-semibold text-blue-800">Detalles del Perfil</h3>
-            <div className="mt-2 space-y-2">
-              <p className="text-gray-600">Nombre: {user.username || 'N/A'}</p>
-              <p className="text-gray-600">Rol: {user.role}</p>
-              {user.email && <p className="text-gray-600">Correo: {user.email}</p>}
-            </div>
-          </section>
-
-          {/* Acciones Rápidas */}
-          <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {QUICK_ACTIONS.map((action) => (
-              <div
-                key={action.title}
-                className="bg-blue-50 rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-200"
-              >
-                <h3 className="text-lg font-semibold text-blue-800">{action.title}</h3>
-                <p className="text-gray-600 text-sm mt-1">{action.description}</p>
-                <button
-                  onClick={() => navigate(action.path)}
-                  className="mt-2 bg-blue-600 text-white py-1 px-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 w-full"
+      <motion.div
+        className="container mx-auto px-4 py-8 max-w-6xl"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <h1 className="text-4xl font-bold text-yellow-400 mb-8">Mi Perfil - IoT Solutions</h1>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Profile Summary */}
+          <motion.div
+            className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 h-fit"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+          >
+            <div className="flex flex-col items-center">
+              <div className="w-24 h-24 bg-gray-200 rounded-full mb-4 flex items-center justify-center">
+                <svg
+                  className="w-12 h-12 text-yellow-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  {action.buttonText}
-                </button>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
               </div>
-            ))}
-          </section>
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">{user.name || 'Usuario'}</h2>
+              <p className="text-gray-600 dark:text-gray-400">{user.email}</p>
+              <button
+                type="button"
+                onClick={requestNotificationPermission}
+                className="mt-4 px-4 py-2 bg-yellow-400 text-gray-900 font-medium rounded-lg hover:bg-yellow-500 transition-colors duration-200"
+                aria-label="Habilitar notificaciones push"
+              >
+                {user.fcmToken ? 'Notificaciones habilitadas' : 'Habilitar Notificaciones'}
+              </button>
+            </div>
+          </motion.div>
+
+          {/* Profile Form */}
+          <motion.div
+            className="md:col-span-2 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+          >
+            {formError && (
+              <div className="mb-6 p-4 bg-red-100 text-red-700 rounded-lg text-center" role="alert" aria-live="polite">
+                {formError}
+              </div>
+            )}
+            <h2 className="text-2xl font-semibold text-yellow-400 mb-6">Editar Perfil</h2>
+            <form onSubmit={handleUpdateProfile} className="grid grid-cols-1 md:grid-cols-2 gap-6" aria-label="Formulario de edición de perfil">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Nombre completo
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 dark:bg-gray-700 dark:text-gray-200"
+                  aria-required="true"
+                  aria-describedby="name-error"
+                />
+              </div>
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Teléfono
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 dark:bg-gray-700 dark:text-gray-200"
+                  aria-describedby="phone-error"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label htmlFor="street" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Dirección
+                </label>
+                <input
+                  type="text"
+                  id="street"
+                  name="street"
+                  value={formData.street}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 dark:bg-gray-700 dark:text-gray-200"
+                />
+              </div>
+              <div>
+                <label htmlFor="city" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Ciudad
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 dark:bg-gray-700 dark:text-gray-200"
+                />
+              </div>
+              <div>
+                <label htmlFor="postalCode" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Código postal
+                </label>
+                <input
+                  type="text"
+                  id="postalCode"
+                  name="postalCode"
+                  value={formData.postalCode}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 dark:bg-gray-700 dark:text-gray-200"
+                  aria-describedby="postalCode-error"
+                />
+              </div>
+              <div>
+                <label htmlFor="country" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  País
+                </label>
+                <input
+                  type="text"
+                  id="country"
+                  name="country"
+                  value={formData.country}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 dark:bg-gray-700 dark:text-gray-200"
+                />
+              </div>
+              <div className="md:col-span-2 flex justify-end">
+                <motion.button
+                  type="submit"
+                  className="px-6 py-2 bg-yellow-400 text-gray-900 font-semibold rounded-lg hover:bg-yellow-500 transition-all duration-200"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  aria-label="Guardar cambios de perfil"
+                >
+                  Guardar Cambios
+                </motion.button>
+              </div>
+            </form>
+          </motion.div>
         </div>
-      </main>
+      </motion.div>
     </Layout>
   );
 };

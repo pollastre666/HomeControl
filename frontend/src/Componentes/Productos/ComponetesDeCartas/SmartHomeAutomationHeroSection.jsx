@@ -9,9 +9,9 @@ const descriptionVariants = { hidden: { opacity: 0, y: 20 }, visible: { opacity:
 
 const SmartHomeAutomationHeroSection = () => {
   const categories = [
-    { name: "Automatización de Iluminación", image: "https://www.somfy.es/common/img/library///500x370_cover/yslo-swing-shutters-motor-tahoma-compatible.jpg", description: "Controla la iluminación de tu hogar con un solo toque para crear el ambiente perfecto.", link: "/smart-home-automation/iluminacion", icon: <FaLightbulb className="mr-3 text-xl text-white" /> },
-    { name: "Climatización Inteligente", image: "https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg", description: "Mantén tu hogar a la temperatura ideal con sistemas de climatización automatizados.", link: "/smart-home-automation/climatizacion", icon: <FaFan className="mr-3 text-xl text-white" /> },
-    { name: "Integración Total", image: "https://www.somfy.es/common/img/library//500x370_cover/blinds-and-curtains.jpg", description: "Conecta todos los sistemas de tu hogar para una experiencia completamente automatizada.", link: "/smart-home-automation/integracion", icon: <FaHome className="mr-3 text-xl text-white" /> },
+    { name: "Automatización de Iluminación", image: "https://www.somfy.es/common/img/library///500x370_cover/yslo-swing-shutters-motor-tahoma-compatible.jpg", description: "Controla la iluminación de tu hogar con un solo toque para crear el ambiente perfecto.", icon: <FaLightbulb className="mr-3 text-xl text-white" /> },
+    { name: "Climatización Inteligente", image: "https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg", description: "Mantén tu hogar a la temperatura ideal con sistemas de climatización automatizados.", icon: <FaFan className="mr-3 text-xl text-white" /> },
+    { name: "Integración Total", image: "https://www.somfy.es/common/img/library//500x370_cover/blinds-and-curtains.jpg", description: "Conecta todos los sistemas de tu hogar para una experiencia completamente automatizada.", icon: <FaHome className="mr-3 text-xl text-white" /> },
   ];
 
   const [activeImage, setActiveImage] = useState(categories[0].image);

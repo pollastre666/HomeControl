@@ -29,19 +29,19 @@ const PersianasHeroSection = () => {
 const categories = [
   {
     name: "Estores enrollables eléctricos",
-    image: "https://www.somfy.es/common/img/library///500x370_cover/Connexoon_Window_Stephane_Rambaud_18_web2.jpg",
+    image: "https://www.somfy.es/common/img/library///850x650_cover/1-motorized-roller-shutters.png",
     description: "Disfruta de luz natural con solo un clic y olvídate de subir o bajar estores manualmente.",
     icon: <FaWindowMaximize className="mr-3 text-xl text-white" />,
   },
   {
     name: "Cortinas con motor",
-    image: "https://www.somfy.es/common/img/library//500x370_cover/blinds-and-curtains.jpg",
+    image: "https://www.somfy.es/common/img/library///850x650_cover/2-motorized-swing-shutters.png",
     description: "Abre tus cortinas desde el sofá o programa su apertura diaria al amanecer.",
     icon: <FaBlender className="mr-3 text-xl text-white" />,
   },
   {
     name: "Pantallas de proyección motorizadas",
-    image: "https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg",
+    image: "https://www.somfy.es/common/img/library///850x650_cover/4-motorzied-external-venetian-blinds.png",
     description: "Crea tu cine en casa con pantallas que se despliegan automáticamente cuando lo necesitas.",
     icon: <FaTv className="mr-3 text-xl text-white" />,
   },
