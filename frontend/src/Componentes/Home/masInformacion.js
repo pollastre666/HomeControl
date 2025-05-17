@@ -56,8 +56,7 @@ const MasInformacion = () => {
   };
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-amber-50 via-white to-amber-100 flex flex-col items-center justify-center p-6 md:p-12 overflow-hidden">
-      {/* Parallax Background */}
+    <section className="relative min-h-screen bg-gradient-to-br from-amber-50 via-white to-amber-100 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-12 overflow-hidden">
       <motion.div
         className="absolute inset-0 -z-10 bg-cover bg-center opacity-10"
         style={{
@@ -65,8 +64,6 @@ const MasInformacion = () => {
           y: parallaxY
         }}
       />
-
-      {/* Decorative Gradient Overlay */}
       <div className="absolute inset-x-0 top-0 -z-10 transform-gpu overflow-hidden blur-3xl h-96">
         <div
           className="relative aspect-[1155/678] w-full bg-gradient-to-tr from-amber-200 to-amber-500 opacity-20"
@@ -76,10 +73,8 @@ const MasInformacion = () => {
           }}
         />
       </div>
-
-      {/* Header */}
       <motion.h2
-        className="text-3xl md:text-4xl font-bold text-gray-900 mb-12 text-center drop-shadow-lg"
+        className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-10 sm:mb-12 lg:mb-16 text-center drop-shadow-lg"
         initial={{ opacity: 0, y: -50 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
@@ -87,10 +82,8 @@ const MasInformacion = () => {
       >
         Get in Touch
       </motion.h2>
-
-      {/* Form Container */}
       <motion.div
-        className="w-full max-w-lg bg-white/90 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-amber-200/50"
+        className="w-full max-w-md sm:max-w-lg lg:max-w-xl bg-white/90 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-xl border border-amber-200/50"
         initial={{ opacity: 0, scale: 0.95 }}
         whileInView={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
@@ -103,29 +96,28 @@ const MasInformacion = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <p className="text-amber-600 font-semibold text-lg">
+            <p className="text-amber-600 font-semibold text-base sm:text-lg lg:text-xl">
               Request Sent Successfully!
             </p>
-            <p className="text-gray-600">
+            <p className="text-gray-600 text-sm sm:text-base lg:text-lg">
               Thank you for reaching out. We’ll get back to you soon.
             </p>
             <button
               onClick={() => setSuccess(false)}
-              className="inline-block px-6 py-2 text-sm font-semibold text-amber-600 hover:text-amber-800 bg-amber-100/50 rounded-lg hover:bg-amber-200/50 transition-all duration-300"
+              className="inline-block px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base font-semibold text-amber-600 hover:text-amber-800 bg-amber-100/50 rounded-lg hover:bg-amber-200/50 transition-all duration-300"
             >
               Send Another Request
             </button>
           </motion.div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Name Field */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
               viewport={{ once: true }}
             >
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="name" className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
                 Name
               </label>
               <input
@@ -134,20 +126,18 @@ const MasInformacion = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm transition-all duration-300"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm sm:text-base transition-all duration-300"
                 placeholder="Enter your name"
                 disabled={isSubmitting}
               />
             </motion.div>
-
-            {/* Email Field */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
               viewport={{ once: true }}
             >
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
                 Email
               </label>
               <input
@@ -156,20 +146,18 @@ const MasInformacion = () => {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm transition-all duration-300"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm sm:text-base transition-all duration-300"
                 placeholder="Enter your email"
                 disabled={isSubmitting}
               />
             </motion.div>
-
-            {/* Message Field */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.5 }}
               viewport={{ once: true }}
             >
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="message" className="block text-sm sm:text-base font-medium text-gray-700 mb-2">
                 Message
               </label>
               <textarea
@@ -178,16 +166,14 @@ const MasInformacion = () => {
                 value={formData.message}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm resize-none transition-all duration-300"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 text-sm sm:text-base resize-none transition-all duration-300"
                 placeholder="What information would you like to receive?"
                 disabled={isSubmitting}
               />
             </motion.div>
-
-            {/* Error Message */}
             {error && (
               <motion.p
-                className="text-red-500 text-sm text-center"
+                className="text-red-500 text-sm sm:text-base text-center"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
@@ -195,12 +181,10 @@ const MasInformacion = () => {
                 {error}
               </motion.p>
             )}
-
-            {/* Submit Button */}
             <motion.button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full flex justify-center py-3 px-4 rounded-lg text-sm font-semibold text-white ${
+              className={`w-full flex justify-center py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base font-semibold text-white ${
                 isSubmitting
                   ? 'bg-amber-400/50 cursor-not-allowed'
                   : 'bg-amber-600 hover:bg-amber-700'
@@ -243,8 +227,6 @@ const MasInformacion = () => {
           </form>
         )}
       </motion.div>
-
-      {/* Bottom Gradient Overlay */}
       <div className="absolute inset-x-0 bottom-0 -z-10 transform-gpu overflow-hidden blur-3xl h-96">
         <div
           className="relative aspect-[1155/678] w-full bg-gradient-to-tr from-amber-200 to-amber-500 opacity-20"

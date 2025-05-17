@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { db } from "../../../../config/firebase"; // Importa tu configuración de Firestore
+import { db } from "../../../../config/firebase";
 import { collection, addDoc } from "firebase/firestore";
+import { toast } from "react-toastify";
 
 const RepairContactForm = () => {
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ const RepairContactForm = () => {
     e.preventDefault();
     if (validate()) {
       try {
+        console.log("RepairContactForm: Submitting form:", formData);
         await addDoc(collection(db, "contacts"), {
           type: formData.contactType,
           name: formData.name,
@@ -49,13 +51,18 @@ const RepairContactForm = () => {
           issue: formData.issue,
           timestamp: new Date(),
         });
-        console.log("Formulario enviado a Firestore:", formData);
+        console.log("RepairContactForm: Form submitted to Firestore:", formData);
         setSubmitted(true);
         setSubmitError(null);
+        toast.success("¡Solicitud de reparación enviada con éxito!");
         setTimeout(() => navigate("/"), 2000);
       } catch (error) {
-        console.error("Error al enviar el formulario a Firestore: ", error);
-        setSubmitError("Error al enviar el formulario. Inténtalo de nuevo.");
+        console.error("RepairContactForm: Error submitting form:", error.code, error.message);
+        const errorMessage = error.code === "permission-denied"
+          ? "No tienes permiso para enviar el formulario. Verifica tu autenticación."
+          : "Error al enviar el formulario. Inténtalo de nuevo.";
+        setSubmitError(errorMessage);
+        toast.error(errorMessage);
       }
     }
   };
@@ -86,6 +93,7 @@ const RepairContactForm = () => {
           <p className="text-gray-600 text-sm sm:text-base mb-6">
             Completa el formulario para agendar una reparación en casa.
           </p>
+          {submitError && <p className="text-red-500 text-sm text-center mb-4">{submitError}</p>}
           <form onSubmit={handleSubmit} className="space-y-4">
             <input type="hidden" name="contactType" value="Repair" />
             <div className="flex flex-col lg:flex-row gap-6">
@@ -179,7 +187,6 @@ const RepairContactForm = () => {
                 </div>
               </motion.div>
             </div>
-            {submitError && <p className="text-red-500 text-sm text-center">{submitError}</p>}
             <motion.button
               type="submit"
               className="w-full py-2 px-4 bg-amber-400 text-white font-semibold rounded-full hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-colors duration-200"

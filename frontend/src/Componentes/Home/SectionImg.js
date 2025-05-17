@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import GalleryCardHero from '../Productos/ComponetesDeCartas/GalleryCardHero'; 
 
-// Gallery items data (exactly six items)
 const galleryItems = [
   {
     id: 1,
@@ -54,7 +53,6 @@ const galleryItems = [
   },
 ];
 
-// Animation variants for header
 const headerVariants = {
   hidden: { opacity: 0, y: 60 },
   visible: { opacity: 1, y: 0, transition: { duration: 1, ease: 'easeOut' } },
@@ -62,13 +60,10 @@ const headerVariants = {
 
 const GallerySection = () => {
   const [hoveredItem, setHoveredItem] = useState(null);
-
-  // Memoize gallery items
   const memoizedItems = useMemo(() => galleryItems, []);
 
   return (
-    <section className="relative bg-gradient-to-br from-amber-50 via-white to-amber-100 py-16 sm:py-24 lg:py-32 overflow-hidden">
-      {/* Background Effects */}
+    <section className="relative bg-gradient-to-br from-amber-50 via-white to-amber-100 py-12 sm:py-16 lg:py-24 overflow-hidden">
       <div className="absolute inset-0 -z-10 bg-gradient-to-t from-amber-200/30 to-transparent pointer-events-none" />
       <div className="absolute inset-x-0 bottom-0 -z-10 h-96 transform-gpu overflow-hidden blur-3xl">
         <div
@@ -79,26 +74,22 @@ const GallerySection = () => {
           }}
         />
       </div>
-
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header Section */}
         <motion.div
-          className="text-center mb-12 sm:mb-16 lg:mb-20"
+          className="text-center mb-10 sm:mb-12 lg:mb-16"
           variants={headerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
         >
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-4 sm:mb-6 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 mb-4 sm:mb-6 tracking-tight">
             Soluciones HomeControl
           </h1>
-          <p className="mx-auto max-w-2xl sm:max-w-3xl text-base sm:text-lg leading-7 text-gray-600 font-medium">
+          <p className="mx-auto max-w-2xl text-sm sm:text-base lg:text-lg leading-7 text-gray-600 font-medium">
             Transforma tu hogar con soluciones de automatización inteligentes y conectadas.
           </p>
         </motion.div>
-
-        {/* Interactive Image Grid with GalleryCardHero */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
           {memoizedItems.map((item, index) => (
             <GalleryCardHero
               key={item.id}

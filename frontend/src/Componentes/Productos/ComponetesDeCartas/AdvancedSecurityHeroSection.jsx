@@ -9,9 +9,9 @@ const descriptionVariants = { hidden: { opacity: 0, y: 20 }, visible: { opacity:
 
 const AdvancedSecurityHeroSection = () => {
   const categories = [
-    { name: "Cámaras Inteligentes", image: "https://www.somfy.es/common/img/library//500x370_cover/cameras-and-alarms.jpg", description: "Monitorea tu hogar en tiempo real con nuestras cámaras de alta definición.", link: "/advanced-security/camaras", icon: <FaCamera className="mr-3 text-xl text-white" /> },
-    { name: "Alarmas Conectadas", image: "https://www.somfy.es/common/img/library//500x370_cover/gates-and-door-phones.jpg", description: "Recibe alertas instantáneas ante cualquier actividad sospechosa.", link: "/advanced-security/alarmas", icon: <FaBell className="mr-3 text-xl text-white" /> },
-    { name: "Sistemas de Protección", image: "https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg", description: "Protección integral con sensores y sistemas avanzados.", link: "/advanced-security/proteccion", icon: <FaShieldAlt className="mr-3 text-xl text-white" /> },
+    { name: "Cámaras Inteligentes", image: "https://www.somfy.es/common/img/library//500x370_cover/cameras-and-alarms.jpg", description: "Monitorea tu hogar en tiempo real con nuestras cámaras de alta definición.", icon: <FaCamera className="mr-3 text-xl text-white" /> },
+    { name: "Alarmas Conectadas", image: "https://www.somfy.es/common/img/library//500x370_cover/gates-and-door-phones.jpg", description: "Recibe alertas instantáneas ante cualquier actividad sospechosa.", icon: <FaBell className="mr-3 text-xl text-white" /> },
+    { name: "Sistemas de Protección", image: "https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg", description: "Protección integral con sensores y sistemas avanzados.", icon: <FaShieldAlt className="mr-3 text-xl text-white" /> },
   ];
 
   const [activeImage, setActiveImage] = useState(categories[0].image);

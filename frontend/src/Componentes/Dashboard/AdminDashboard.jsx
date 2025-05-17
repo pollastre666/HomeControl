@@ -1,241 +1,217 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../Autenticacion/AuthProvider';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { db } from '../../config/firebase';
+import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import Layout from '../../hocs/layouts/layout';
+import Spinner from '../Spinner';
 import { toast } from 'react-toastify';
 
 const AdminDashboard = () => {
-  const { user, isLoading, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [users, setUsers] = useState([]);
+  const [devices, setDevices] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Handle loading state
-  if (isLoading) {
-    return (
-      <Layout>
-        <div className="flex justify-center items-center h-screen">
-          <div className="flex flex-col items-center space-y-4">
-            <svg
-              className="animate-spin h-12 w-12 text-blue-600"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              />
-            </svg>
-            <p className="text-lg font-semibold text-blue-800">Cargando...</p>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const usersCollection = await getDocs(collection(db, 'users'));
+        const devicesCollection = await getDocs(collection(db, 'devices'));
+        setUsers(usersCollection.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setDevices(devicesCollection.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        setIsLoading(false);
+      } catch (error) {
+        console.error('AdminDashboard: Data fetch error:', error);
+        toast.error('Error al cargar datos');
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
-  // Redirect if not authenticated
-  if (!user) {
-    toast.warn('Por favor, inicia sesión para acceder a esta página.');
-    return <Navigate to="/login" replace />;
-  }
+  const toggleDeviceStatus = async (deviceId, currentStatus) => {
+    try {
+      await updateDoc(doc(db, 'devices', deviceId), { status: !currentStatus });
+      setDevices(devices.map(d => (d.id === deviceId ? { ...d, status: !currentStatus } : d)));
+      toast.success('Estado del dispositivo actualizado');
+    } catch (error) {
+      console.error('AdminDashboard: Device toggle error:', error);
+      toast.error('Error al actualizar dispositivo');
+    }
+  };
 
-  // TEMPORARY: Allow access for any authenticated user for testing
-  // Original: if (user.role !== 'admin') { ... }
-  // Revert to original check after confirming Firestore role is set correctly
-  // if (!['admin', 'editor', 'user'].includes(user.role)) {
-  //   toast.error('Acceso denegado: No tienes permisos para esta página.');
-  //   return <Navigate to={`/unauthorized?role=admin`} replace />;
-  // }
-
-  // Sidebar options
-  const sidebarItems = [
-    {
-      name: 'Admin Dashboard',
-      path: '/admin/dashboard',
-      icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6',
-    },
-    {
-      name: 'Editor Dashboard',
-      path: '/editor/dashboard',
-      icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z',
-    },
-    {
-      name: 'User Dashboard',
-      path: '/user/dashboard',
-      icon: 'M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z',
-    },
-    {
-      name: 'Users',
-      path: '/admin/users',
-      icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z',
-    },
-    {
-      name: 'Devices',
-      path: '/admin/devices',
-      icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
-    },
-    {
-      name: 'Log Out',
-      action: logout,
-      icon: 'M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1',
-    },
-  ];
-
-  // Placeholder for API data
-  const stats = [
-    { title: 'Connected Devices', value: 12, subtext: '+2 since yesterday' },
-    { title: 'Active Schedules', value: 8, subtext: '2 upcoming in 1 hour' },
-    { title: 'Registered Users', value: 45, subtext: '+5 this week' },
-  ];
-
-  const recentActivity = [
-    { text: 'Living room lights turned on by schedule', time: '10 minutes ago' },
-    { text: 'User "juan" added a new device', time: '1 hour ago' },
-    { text: 'Security alarm activated', time: '3 hours ago' },
-  ];
-
-  const recentDevices = [
-    {
-      name: 'Security Camera',
-      icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
-      date: new Date().toLocaleDateString(),
-    },
-    {
-      name: 'Smart Thermostat',
-      icon: 'M20 14.66V20a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2h5.34M9 11.66l3 3 7-7',
-      date: new Date().toLocaleDateString(),
-    },
-  ];
+  if (isLoading || !user) return <Layout><Spinner /></Layout>;
 
   return (
     <Layout>
-      <div className="flex min-h-screen bg-gray-100">
-        {/* Sidebar */}
-        <aside className="w-64 bg-blue-800 text-white flex-shrink-0 shadow-lg">
-          <div className="p-6">
-            <h2 className="text-2xl font-bold">Admin Panel</h2>
-            <p className="text-sm text-blue-200 mt-1">System Management</p>
-          </div>
-          <nav className="mt-6">
-            <ul className="space-y-2">
-              {sidebarItems.map((item) => (
-                <li key={item.name}>
-                  <button
-                    onClick={item.action || (() => navigate(item.path))}
-                    className="w-full text-left px-6 py-3 hover:bg-blue-700 transition-colors duration-200 flex items-center space-x-3"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d={item.icon}
-                      />
-                    </svg>
-                    <span>{item.name}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </aside>
-
-        {/* Main Content */}
-        <main className="flex-1 p-6">
-          {/* Header */}
-          <header className="bg-white shadow-md rounded-lg p-6 mb-6 flex items-center justify-between">
+      <motion.div
+        className="max-w-6xl mx-auto p-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <h1 className="text-4xl font-bold text-yellow-400 mb-8">Dashboard de Administrador - IoT Solutions</h1>
+        <motion.div
+          className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          <div className="flex items-center space-x-4 mb-6">
+            <svg
+              className="w-10 h-10 text-yellow-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
             <div>
-              <h1 className="text-2xl font-bold text-blue-800">Admin Dashboard</h1>
-              <p className="text-sm text-gray-500">
-                Welcome, {user?.username || 'User'} (Role: {user?.role || 'Admin'})
+              <p className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                Bienvenido, {user.name || user.username || 'Admin'}!
               </p>
+              <p className="text-gray-600 dark:text-gray-400">Rol: {user.role}</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-600">{new Date().toLocaleDateString()}</span>
-              <button
-                onClick={logout}
-                className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors duration-200"
-              >
-                Log Out
-              </button>
+          </div>
+
+          <div className="mt-8">
+            <h2 className="text-2xl font-semibold text-yellow-400 mb-4">Usuarios</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-gray-100 dark:bg-gray-700">
+                    <th className="py-3 px-4 text-gray-800 dark:text-gray-200">Email</th>
+                    <th className="py-3 px-4 text-gray-800 dark:text-gray-200">Rol</th>
+                    <th className="py-3 px-4 text-gray-800 dark:text-gray-200">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((u) => (
+                    <motion.tr
+                      key={u.id}
+                      className="border-b border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{u.email}</td>
+                      <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{u.role}</td>
+                      <td className="py-3 px-4">
+                        <Link
+                          to="/admin/roles"
+                          className="text-yellow-400 hover:underline font-medium"
+                          aria-label={`Editar rol de ${u.email}`}
+                        >
+                          Editar
+                        </Link>
+                      </td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          </header>
+          </div>
 
-          {/* Stats */}
-          <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-            {stats.map((stat) => (
-              <div
-                key={stat.title}
-                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200"
-              >
-                <h3 className="text-lg font-semibold text-blue-800">{stat.title}</h3>
-                <p className="text-3xl font-bold text-blue-600 mt-2">{stat.value}</p>
-                <p className="text-sm text-gray-500 mt-1">{stat.subtext}</p>
-              </div>
-            ))}
-          </section>
-
-          {/* System Activity */}
-          <section className="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 className="text-xl font-semibold text-blue-800 mb-4">System Activity</h2>
-            <ul className="space-y-3">
-              {recentActivity.map((activity, index) => (
-                <li key={index} className="flex items-center space-x-3">
-                  <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
-                  <p className="text-gray-600 flex-1">{activity.text}</p>
-                  <span className="text-sm text-gray-400">{activity.time}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          {/* Recent Devices */}
-          <section className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-blue-800 mb-4">Recently Added Devices</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {recentDevices.map((device) => (
-                <div
-                  key={device.name}
-                  className="bg-blue-50 rounded-lg p-4 flex items-center space-x-4"
-                >
-                  <svg
-                    className="w-8 h-8 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
+          <div className="mt-8">
+            <h2 className="text-2xl font-semibold text-yellow-400 mb-4">Dispositivos</h2>
+            {devices.length === 0 ? (
+              <p className="text-gray-600 dark:text-gray-400">No hay dispositivos registrados.</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {devices.map((device) => (
+                  <motion.div
+                    key={device.id}
+                    className="p-6 bg-gray-100 dark:bg-gray-700 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d={device.icon}
-                    />
-                  </svg>
-                  <div>
-                    <p className="text-gray-600 font-semibold">{device.name}</p>
-                    <p className="text-sm text-gray-500">Added: {device.date}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        </main>
-      </div>
+                    <div className="flex items-center space-x-4">
+                      <svg
+                        className="w-8 h-8 text-yellow-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M12 1v2m0 18v2m-9-11h2m18 0h-2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12a11 11 0 012.12-6.56M22 12a11 11 0 01-2.12 6.56M6.66 6.66A7.96 7.96 0 014.1 12a7.96 7.96 0 012.56 5.34m12.68 0A7.96 7.96 0 0119.9 12a7.96 7.96 0 01-2.56-5.34"
+                        />
+                      </svg>
+                      <div>
+                        <h3 className="font-medium text-gray-800 dark:text-gray-200">{device.name}</h3>
+                        <p className="text-gray-600 dark:text-gray-400">
+                          Estado: <span className={device.status ? 'text-green-500' : 'text-red-500'}>
+                            {device.status ? 'Encendido' : 'Apagado'}
+                          </span>
+                        </p>
+                        <p className="text-gray-600 dark:text-gray-400">Propietario: {device.owner}</p>
+                      </div>
+                    </div>
+                    <motion.button
+                      onClick={() => toggleDeviceStatus(device.id, device.status)}
+                      className={`mt-4 px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
+                        device.status
+                          ? 'bg-red-500 text-white hover:bg-red-600'
+                          : 'bg-green-500 text-white hover:bg-green-600'
+                      }`}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      aria-label={`Cambiar estado de ${device.name}`}
+                    >
+                      {device.status ? 'Apagar' : 'Encender'}
+                    </motion.button>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="mt-8">
+            <h2 className="text-2xl font-semibold text-yellow-400 mb-4">Acciones</h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <li>
+                <Link
+                  to="/user/profile"
+                  className="block p-4 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+                  aria-label="Editar perfil"
+                >
+                  Editar Perfil
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/admin/roles"
+                  className="block p-4 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+                  aria-label="Gestionar roles"
+                >
+                  Gestionar Roles
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/admin/settings"
+                  className="block p-4 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+                  aria-label="Configuraciones"
+                >
+                  Configuraciones
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </motion.div>
+      </motion.div>
     </Layout>
   );
 };

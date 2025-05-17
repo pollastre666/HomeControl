@@ -9,9 +9,9 @@ const descriptionVariants = { hidden: { opacity: 0, y: 20 }, visible: { opacity:
 
 const AutomationHubHeroSection = () => {
   const categories = [
-    { name: "Conexión Centralizada", image: "https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg", description: "Unifica todos tus dispositivos inteligentes en un solo hub para un control total.", link: "/automation-hub/conexion", icon: <FaNetworkWired className="mr-3 text-xl text-white" /> },
-    { name: "Control desde tu Móvil", image: "https://www.somfy.es/common/img/library///500x370_cover/Connexoon_Window_Stephane_Rambaud_18_web2.jpg", description: "Gestiona tu hogar desde cualquier lugar con nuestra app intuitiva.", link: "/automation-hub/movil", icon: <FaMobileAlt className="mr-3 text-xl text-white" /> },
-    { name: "Configuración Personalizada", image: "https://www.somfy.es/common/img/library//500x370_cover/blinds-and-curtains.jpg", description: "Personaliza escenas y horarios según tus necesidades diarias.", link: "/automation-hub/configuracion", icon: <FaCog className="mr-3 text-xl text-white" /> },
+    { name: "Conexión Centralizada", image: "https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg", description: "Unifica todos tus dispositivos inteligentes en un solo hub para un control total.", icon: <FaNetworkWired className="mr-3 text-xl text-white" /> },
+    { name: "Control desde tu Móvil", image: "https://www.somfy.es/common/img/library///500x370_cover/Connexoon_Window_Stephane_Rambaud_18_web2.jpg", description: "Gestiona tu hogar desde cualquier lugar con nuestra app intuitiva.", icon: <FaMobileAlt className="mr-3 text-xl text-white" /> },
+    { name: "Configuración Personalizada", image: "https://www.somfy.es/common/img/library//500x370_cover/blinds-and-curtains.jpg", description: "Personaliza escenas y horarios según tus necesidades diarias.", icon: <FaCog className="mr-3 text-xl text-white" /> },
   ];
 
   const [activeImage, setActiveImage] = useState(categories[0].image);

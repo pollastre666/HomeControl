@@ -29,23 +29,23 @@ const EstoresHeroSection = () => {
   const categories = [
     {
       name: "Estores con Control Remoto",
-      image: "https://www.somfy.es/common/img/library//500x370_cover/blinds-and-curtains.jpg",
+      image: "https://www.somfy.es/common/img/library///850x650_cover/5-motorized-interior-blinds1.png",
       description: "Ajusta tus estores desde cualquier lugar con nuestro control remoto avanzado.",
-      link: "/estores/control-remoto",
+ 
       icon: <FaWindowMaximize className="mr-3 text-xl text-white" />,
     },
     {
       name: "Estores con Sensor Solar",
-      image: "https://www.somfy.es/common/img/library///500x370_cover/Connexoon_Window_Stephane_Rambaud_18_web2.jpg",
+      image: "https://www.somfy.es/common/img/library///850x650_cover/6-motorized-curtains.png",
       description: "Aprovecha la luz solar para ajustar automáticamente tus estores y ahorrar energía.",
-      link: "/estores/sensor-solar",
+  
       icon: <FaBolt className="mr-3 text-xl text-white" />,
     },
     {
       name: "Estores Personalizables",
-      image: "https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg",
+      image: "https://www.somfy.es/common/img/library///850x650_cover/7-motorized-projection-screens.png",
       description: "Diseña estores a tu gusto con una amplia gama de colores y materiales.",
-      link: "/estores/personalizables",
+     
       icon: <FaPalette className="mr-3 text-xl text-white" />,
     },
   ];

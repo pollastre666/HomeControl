@@ -9,9 +9,9 @@ const descriptionVariants = { hidden: { opacity: 0, y: 20 }, visible: { opacity:
 
 const AccessControlHeroSection = () => {
   const categories = [
-    { name: "Cerraduras Inteligentes", image: "https://www.somfy.es/common/img/library//500x370_cover/gates-and-door-phones.jpg", description: "Accede a tu hogar de forma segura con nuestras cerraduras inteligentes.", link: "/access-control/cerraduras", icon: <FaLock className="mr-3 text-xl text-white" /> },
-    { name: "Videoporteros", image: "https://www.somfy.es/common/img/library//500x370_cover/cameras-and-alarms.jpg", description: "Visualiza y comunica con tus visitantes desde cualquier lugar.", link: "/access-control/videoporteros", icon: <FaCamera className="mr-3 text-xl text-white" /> },
-    { name: "Control de Llaves", image: "https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg", description: "Gestiona el acceso de tu hogar con sistemas de control de llaves avanzados.", link: "/access-control/llaves", icon: <FaKey className="mr-3 text-xl text-white" /> },
+    { name: "Cerraduras Inteligentes", image: "https://www.somfy.es/common/img/library//500x370_cover/gates-and-door-phones.jpg", description: "Accede a tu hogar de forma segura con nuestras cerraduras inteligentes.", icon: <FaLock className="mr-3 text-xl text-white" /> },
+    { name: "Videoporteros", image: "https://www.somfy.es/common/img/library//500x370_cover/cameras-and-alarms.jpg", description: "Visualiza y comunica con tus visitantes desde cualquier lugar.", icon: <FaCamera className="mr-3 text-xl text-white" /> },
+    { name: "Control de Llaves", image: "https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg", description: "Gestiona el acceso de tu hogar con sistemas de control de llaves avanzados.", icon: <FaKey className="mr-3 text-xl text-white" /> },
   ];
 
   const [activeImage, setActiveImage] = useState(categories[0].image);

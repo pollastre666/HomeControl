@@ -1,8 +1,7 @@
-// src/Componentes/Home/CallToActionBanner.js
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useAnimation } from 'framer-motion';
-import { ChevronRight } from 'lucide-react'; // Ícono de flecha (instala con npm install lucide-react)
+import { ChevronRight } from 'lucide-react';
 
 const CallToActionBanner = () => {
   const controls = useAnimation();
@@ -38,13 +37,12 @@ const CallToActionBanner = () => {
 
   return (
     <motion.section
-      className="py-16 relative overflow-hidden"
+      className="py-12 sm:py-16 lg:py-20 relative overflow-hidden"
       animate={controls}
       initial={{ background: 'radial-gradient(circle at 50% 50%, #f5be34, #f59e42)' }}
     >
-      {/* Overlay decorativo */}
       <div className="absolute inset-0 bg-gradient-to-t from-amber-900/30 to-transparent opacity-70" />
-      <div className="container mx-auto px-4 text-center relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <motion.div
           variants={textVariants}
           initial="hidden"
@@ -53,13 +51,13 @@ const CallToActionBanner = () => {
         >
           <motion.h2
             variants={textVariants}
-            className="text-4xl sm:text-5xl font-extrabold tracking-tight mb-4"
+            className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4 sm:mb-6"
           >
             ¡Transforma tu hogar ahora!
           </motion.h2>
           <motion.p
             variants={textVariants}
-            className="text-xl sm:text-2xl mb-8 max-w-2xl mx-auto"
+            className="text-base sm:text-lg lg:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto"
           >
             Ahorra energía, mejora tu seguridad y vive con mayor confort. Explora nuestras soluciones inteligentes hoy mismo.
           </motion.p>
@@ -72,7 +70,7 @@ const CallToActionBanner = () => {
             >
               <Link
                 to="/productos"
-                className="inline-flex items-center px-8 py-4 rounded-xl bg-white text-amber-700 font-bold shadow-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 transition-all duration-300"
+                className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 rounded-xl bg-white text-amber-700 text-sm sm:text-base font-bold shadow-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-400 transition-all duration-300"
                 aria-label="Explorar productos de HomeControl"
               >
                 Descubre Más
@@ -80,16 +78,15 @@ const CallToActionBanner = () => {
                   animate={{ x: [0, 5, 0] }}
                   transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                 >
-                  <ChevronRight className="ml-2 w-6 h-6" />
+                  <ChevronRight className="ml-2 w-5 sm:w-6 h-5 sm:h-6" />
                 </motion.div>
               </Link>
             </motion.div>
           </motion.div>
         </motion.div>
       </div>
-      {/* Elemento decorativo animado */}
       <motion.div
-        className="absolute bottom-0 right-0 w-64 h-64 bg-amber-300/20 rounded-full blur-3xl"
+        className="absolute bottom-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-amber-300/20 rounded-full blur-3xl"
         animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.7, 0.5] }}
         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
       />
