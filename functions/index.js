@@ -124,3 +124,125 @@ exports.listarDispositivosUsuario = functions.https.onCall(async (data, context)
   }
 });
 
+// Cloud Function para actualizar un dispositivo existente
+exports.actualizarDispositivo = functions.https.onCall(async (data, context)  => {
+  // Verificar si el usuario está autenticado
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      'unauthenticated',
+      'El usuario debe estar autenticado para actualizar un dispositivo.'
+    ) ;
+  }
+
+  const uid = context.auth.uid;
+  
+  // Validar datos de entrada
+  if (!data.deviceId) {
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      'Se requiere el ID del dispositivo a actualizar.'
+    ) ;
+  }
+
+  try {
+    // Verificar que el dispositivo existe y pertenece al usuario
+    const deviceRef = admin.firestore().collection('Dispositivos').doc(data.deviceId);
+    const deviceDoc = await deviceRef.get();
+    
+    if (!deviceDoc.exists) {
+      throw new functions.https.HttpsError(
+        'not-found',
+        'El dispositivo no existe.'
+      ) ;
+    }
+    
+    const deviceData = deviceDoc.data();
+    if (deviceData.idUsuarioPropietario !== uid) {
+      throw new functions.https.HttpsError(
+        'permission-denied',
+        'No tienes permiso para actualizar este dispositivo.'
+      ) ;
+    }
+    
+    // Preparar datos para actualización
+    const updateData = {};
+    
+    // Solo actualizar campos permitidos
+    if (data.nombre !== undefined) updateData.nombre = data.nombre;
+    if (data.ubicacion !== undefined) updateData.ubicacion = data.ubicacion;
+    if (data.configuracion !== undefined) updateData.configuracion = data.configuracion;
+    
+    // Añadir timestamp de actualización
+    updateData.ultimaActualizacion = admin.firestore.FieldValue.serverTimestamp();
+    
+    // Actualizar el documento
+    await deviceRef.update(updateData);
+    
+    return { 
+      success: true, 
+      message: "Dispositivo actualizado con éxito" 
+    };
+  } catch (error) {
+    console.error("Error al actualizar dispositivo:", error);
+    throw new functions.https.HttpsError(
+      'internal',
+      'Error al actualizar el dispositivo: ' + error.message
+    ) ;
+  }
+});
+
+// Cloud Function para eliminar un dispositivo
+exports.eliminarDispositivo = functions.https.onCall(async (data, context)  => {
+  // Verificar si el usuario está autenticado
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      'unauthenticated',
+      'El usuario debe estar autenticado para eliminar un dispositivo.'
+    ) ;
+  }
+
+  const uid = context.auth.uid;
+  
+  // Validar datos de entrada
+  if (!data.deviceId) {
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      'Se requiere el ID del dispositivo a eliminar.'
+    ) ;
+  }
+
+  try {
+    // Verificar que el dispositivo existe y pertenece al usuario
+    const deviceRef = admin.firestore().collection('Dispositivos').doc(data.deviceId);
+    const deviceDoc = await deviceRef.get();
+    
+    if (!deviceDoc.exists) {
+      throw new functions.https.HttpsError(
+        'not-found',
+        'El dispositivo no existe.'
+      ) ;
+    }
+    
+    const deviceData = deviceDoc.data();
+    if (deviceData.idUsuarioPropietario !== uid) {
+      throw new functions.https.HttpsError(
+        'permission-denied',
+        'No tienes permiso para eliminar este dispositivo.'
+      ) ;
+    }
+    
+    // Eliminar el documento
+    await deviceRef.delete();
+    
+    return { 
+      success: true, 
+      message: "Dispositivo eliminado con éxito" 
+    };
+  } catch (error) {
+    console.error("Error al eliminar dispositivo:", error);
+    throw new functions.https.HttpsError(
+      'internal',
+      'Error al eliminar el dispositivo: ' + error.message
+    ) ;
+  }
+});
