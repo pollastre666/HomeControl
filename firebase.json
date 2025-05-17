@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> Mohamed
-=======
->>>>>>> Mohamed
 {
   "hosting": {
     "public": "frontend/build",
@@ -19,10 +12,6 @@
         "destination": "/index.html"
       }
     ]
-<<<<<<< HEAD
-  }
-<<<<<<< HEAD
-=======
   },
   "functions": [
     {
@@ -37,8 +26,5 @@
       ]
     }
   ]
->>>>>>> Mohamed
 }
-=======
-}
->>>>>>> Mohamed
+
