@@ -124,7 +124,7 @@ const LoginForm = () => {
           </div>
 
           <h2 className="text-3xl font-bold text-yellow-400 mb-6 text-center">
-            {isSignUp ? 'Crear Cuenta - IoT Solutions' : 'Iniciar Sesión - IoT Solutions'}
+            {isSignUp ? 'Crear Cuenta Nueva' : 'Iniciar Sesión'}
           </h2>
 
           {error && (
@@ -152,7 +152,7 @@ const LoginForm = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 transition-all duration-200"
-                  placeholder="tu@correo.com"
+                  placeholder="Correo electrónico"
                   required
                   disabled={isLoading}
                   aria-required="true"

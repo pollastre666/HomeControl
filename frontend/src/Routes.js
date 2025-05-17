@@ -10,7 +10,7 @@ console.log('Loaded REACT_APP_STRIPE_PUBLIC_KEY:', process.env.REACT_APP_STRIPE_
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY || 'pk_test_51ROl5WRCz11UNurnDiqgkjLo3hOmSGZeRrEOvqOBtxK68hw3VolJZaIIvXSfKYBS3quOZ6wM3jOBE5GkqVY8pp0800vZNyTIAF');
 
 const Home = lazy(() => import("./Containers/Paginas/HomePage"));
-const DataTable = lazy(() => import("./Containers/Paginas/Horarios"));
+//const DataTable = lazy(() => import("./Containers/Paginas/Horarios"));
 const TareasComponent = lazy(() => import("./Containers/Paginas/Tareas"));
 const MapContactSection = lazy(() => import("./Componentes/Ubicacion"));
 const Nosotros = lazy(() => import("./Containers/Paginas/Nosotros"));
@@ -102,20 +102,20 @@ function AnimatedRoutes() {
               <Route path="Analytics" element={<Layout><Analytics /></Layout>} />
               <Route path="/devices/:deviceId/control" element={<Layout><DeviceControl /></Layout>} />
               <Route path="/devices/add" element={<Layout><AddDevice /></Layout>} />
-              <Route path="/schedules" element={<Layout><Schedules /></Layout>} />
+              <Route path="/schedules" element={<Schedules />} />
               {/* Rutas de autenticación */}
               <Route path="/login" element={<Layout><LoginForm /></Layout>} />
               <Route path="/forgot-password" element={<Layout><ForgotPassword /></Layout>} />
               <Route path="/unauthorized" element={<Layout><Unauthorized /></Layout>} />
 
               {/* Rutas protegidas */}
-              <Route path="/Horarios" element={<Layout><ProtectedRoute allowedRoles={["user", "editor", "admin"]}><DataTable /></ProtectedRoute></Layout>} />
-              <Route path="/Tareas" element={<Layout><ProtectedRoute allowedRoles={["user", "editor", "admin"]}><TareasComponent /></ProtectedRoute></Layout>} />
-              <Route path="/admin/dashboard" element={<Layout><ProtectedRoute allowedRoles={["admin"]}><AdminDashboard /></ProtectedRoute></Layout>} />
-              <Route path="/editor/dashboard" element={<Layout><ProtectedRoute allowedRoles={["editor"]}><EditorDashboard /></ProtectedRoute></Layout>} />
-              <Route path="/editor/content" element={<Layout><ProtectedRoute allowedRoles={["editor", "admin"]}><EditorContent /></ProtectedRoute></Layout>} />
-              <Route path="/user/profile" element={<Layout><ProtectedRoute allowedRoles={["user", "editor", "admin"]}><UserProfile /></ProtectedRoute></Layout>} />
-              <Route path="/user/dashboard" element={<Layout><ProtectedRoute allowedRoles={["user"]}><UserDashboard /></ProtectedRoute></Layout>} />
+              {/*<Route path="/Horarios" element={<ProtectedRoute allowedRoles={["user", "editor", "admin"]}><DataTable /></ProtectedRoute>} />*/}
+              {<Route path="/Tareas" element={<ProtectedRoute allowedRoles={["user", "editor", "admin"]}><TareasComponent /></ProtectedRoute>} /> }
+              <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={["admin"]}><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/editor/dashboard" element={<ProtectedRoute allowedRoles={["editor"]}><EditorDashboard /></ProtectedRoute>} />
+              <Route path="/editor/content" element={<ProtectedRoute allowedRoles={["editor", "admin"]}><EditorContent /></ProtectedRoute>} />
+              <Route path="/user/profile" element={<ProtectedRoute allowedRoles={["user", "editor", "admin"]}><UserProfile /></ProtectedRoute>} />
+              <Route path="/user/dashboard" element={<ProtectedRoute allowedRoles={["user"]}><UserDashboard /></ProtectedRoute>} />
 
               {/* Ruta de error */}
               <Route path="*" element={<Layout><ErrorPage /></Layout>} />

@@ -10,8 +10,8 @@ import RequestQuoteButton from './Detalles/RequestQuoteButton';
 import RelatedProducts from './Detalles/RelatedProducts';
 import CheckoutModal from './Detalles/CheckoutModal';
 
-// Initialize Stripe with your publishable key
-const stripePromise = loadStripe('your-publishable-key-here'); // Replace with your Stripe publishable key
+
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 // Animation variants
 const heroVariants = {
@@ -35,6 +35,12 @@ const textVariants = {
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, delay: 0.4 } },
+};
+
+const imageVariants = {
+  hidden: { opacity: 0, x: 50 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.7, delay: 0.5 } },
+  hover: { scale: 1.03, transition: { duration: 0.3 } },
 };
 
 const ProductDetailPage = () => {
@@ -82,7 +88,6 @@ const ProductDetailPage = () => {
               module = await import('./Estores/estoresData');
             } catch (importError) {
               console.error('Failed to import estoresData:', importError);
-              // Fallback for missing estoresData
               module = { componentData: {}, getCompatibilityMessage: () => '' };
             }
             break;
@@ -114,34 +119,41 @@ const ProductDetailPage = () => {
   }, [componentId]);
 
   if (error) {
-    return <div className="text-center text-red-600 py-16">{error}</div>;
+    return (
+      <div className="text-center text-red-600 py-20 bg-gray-100 dark:bg-gray-900 min-h-screen flex items-center justify-center">
+        {error}
+      </div>
+    );
   }
 
   if (!component) {
-    return <div className="text-center text-gray-600 py-16">Cargando... o componente no encontrado</div>;
+    return (
+      <div className="text-center text-gray-600 dark:text-gray-400 py-20 bg-gray-100 dark:bg-gray-900 min-h-screen flex items-center justify-center">
+        Cargando... o componente no encontrado
+      </div>
+    );
   }
 
   return (
     <div className="relative bg-gradient-to-br from-gray-50 via-white to-amber-50/30 dark:from-gray-900 dark:via-gray-800 dark:to-amber-900/10 min-h-screen overflow-hidden">
       {/* Dynamic Background with Particles */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-amber-100/20 to-transparent dark:from-amber-900/10 dark:to-transparent animate-gradient-x" />
-        <svg className="absolute inset-0 w-full h-full opacity-10 dark:opacity-20" xmlns="http://www.w3.org/2000/svg">
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-100/20 via-amber-50/10 to-transparent dark:from-amber-900/10 dark:via-amber-800/5 dark:to-transparent animate-gradient-x" />
+        <svg className="absolute inset-0 w-full h-full opacity-15 dark:opacity-25" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
-              <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(255,193,7,0.05)" strokeWidth="0.5" />
+            <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
+              <path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,193,7,0.05)" strokeWidth="0.5" />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#grid)" />
-          {/* Particle simulation */}
           <g className="particles">
-            {[...Array(20)].map((_, i) => (
+            {[...Array(25)].map((_, i) => (
               <circle
                 key={i}
                 cx={Math.random() * 100 + '%'}
                 cy={Math.random() * 100 + '%'}
-                r={Math.random() * 2 + 1}
-                fill="rgba(255,193,7,0.3)"
+                r={Math.random() * 3 + 1}
+                fill="rgba(255,193,7,0.25)"
                 className="animate-float"
               />
             ))}
@@ -151,60 +163,60 @@ const ProductDetailPage = () => {
 
       {/* Enhanced Hero Section */}
       <motion.section
-        className="relative h-[450px] flex items-center justify-center text-center px-4 sm:px-6 lg:px-8"
+        className="relative h-[400px] sm:h-[450px] lg:h-[500px] flex items-center justify-center text-center px-4 sm:px-6 lg:px-8"
         initial="hidden"
         animate="visible"
         variants={heroVariants}
       >
-        <motion.div className="relative z-10" variants={textVariants}>
-          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md p-8 sm:p-10 rounded-3xl border-2 border-amber-200/40 dark:border-amber-900/40 shadow-2xl">
+        <motion.div className="relative z-10 max-w-5xl" variants={textVariants}>
+          <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md p-6 sm:p-8 lg:p-10 rounded-3xl border-2 border-amber-200/50 dark:border-amber-900/50 shadow-xl hover:shadow-2xl transition-shadow duration-300">
             <motion.h1
-              className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-amber-700 dark:text-amber-300 drop-shadow-2xl tracking-wide transition-all duration-500 hover:scale-105"
+              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-amber-700 dark:text-amber-300 drop-shadow-lg tracking-wide leading-tight"
               variants={textVariants}
             >
               {component.name}
             </motion.h1>
             <motion.p
-              className="mt-6 text-xl sm:text-2xl lg:text-3xl text-gray-700 dark:text-gray-200 max-w-4xl mx-auto drop-shadow-md leading-relaxed"
+              className="mt-4 sm:mt-6 text-lg sm:text-xl lg:text-2xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto drop-shadow-md leading-relaxed"
               variants={textVariants}
             >
               {component.description}
             </motion.p>
             <motion.button
-              className="mt-8 inline-block bg-gradient-to-r from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white px-8 py-4 rounded-xl hover:from-amber-700 hover:to-amber-800 transition-all duration-300 shadow-lg overflow-hidden relative group"
+              className="mt-6 sm:mt-8 inline-block bg-gradient-to-r from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl hover:from-amber-700 hover:to-amber-800 transition-all duration-300 shadow-lg hover:shadow-xl relative overflow-hidden group"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsCheckoutOpen(true)}
             >
-              <span className="absolute inset-0 bg-amber-500/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <span className="relative z-10 font-semibold text-lg">Explorar Producto</span>
+              <span className="absolute inset-0 bg-[radial-gradient(circle, rgba(255,193,7,0.2), transparent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <span className="relative z-10 font-semibold text-base sm:text-lg">Explorar Producto</span>
             </motion.button>
           </div>
         </motion.div>
-        <div className="absolute inset-0 border-4 border-[rgba(255,193,7,0.15)] dark:border-[rgba(255,193,7,0.05)] rounded-3xl overflow-hidden shadow-[0_0_20px_rgba(255,193,7,0.1)] animate-pulse-slow" />
+        <div className="absolute inset-0 border-4 border-[rgba(255,193,7,0.1)] dark:border-[rgba(255,193,7,0.05)] rounded-3xl overflow-hidden shadow-[0_0_15px_rgba(255,193,7,0.1)] animate-pulse-slow" />
       </motion.section>
 
       {/* Product Details with Image on Right */}
       <motion.div
-        className="container mx-auto px-4 sm:px-6 lg:px-8 py-16"
+        className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20"
         initial="hidden"
         animate="visible"
         variants={sectionVariants}
       >
-        <div className="max-w-7xl mx-auto bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-3xl shadow-2xl p-6 sm:p-8 border border-gray-200/20 dark:border-gray-700/20">
-          <div className="flex flex-col lg:flex-row items-center gap-12">
+        <div className="max-w-7xl mx-auto bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-10 border border-gray-200/20 dark:border-gray-700/20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
             {/* Product Info (Left) */}
-            <div className="flex-1 space-y-6">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:space-x-6 mb-6">
-                <p className="text-4xl lg:text-5xl font-extrabold text-amber-600 dark:text-amber-400">
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+                <p className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-amber-600 dark:text-amber-400 drop-shadow-md">
                   ${component.price} USD
                 </p>
-                <div className="flex items-center space-x-4 mt-2 lg:mt-0">
-                  <p className="text-gray-600 dark:text-gray-300 text-lg">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                  <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg">
                     Stock: {component.stock} unidades
                   </p>
                   {component.stock <= 5 && component.stock > 0 && (
-                    <span className="inline-block bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-semibold px-3 py-1 rounded-full shadow-md">
+                    <span className="inline-block bg-gradient-to-r from-red-500 to-red-600 text-white text-sm font-semibold px-3 py-1 rounded-full shadow-md animate-pulse-slow">
                       Últimas unidades
                     </span>
                   )}
@@ -220,24 +232,24 @@ const ProductDetailPage = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col lg:flex-row gap-4 mb-6">
+              <div className="flex flex-col sm:flex-row gap-4">
                 {component.stock > 0 ? (
                   <motion.button
                     onClick={() => setIsCheckoutOpen(true)}
-                    className="relative bg-gradient-to-r from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white px-6 py-3 rounded-xl hover:from-amber-700 hover:to-amber-800 transition-all duration-300 shadow-lg overflow-hidden group"
+                    className="relative bg-gradient-to-r from-amber-600 to-amber-700 dark:from-amber-500 dark:to-amber-600 text-white px-6 py-3 rounded-xl hover:from-amber-700 hover:to-amber-800 transition-all duration-300 shadow-lg hover:shadow-xl overflow-hidden group"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
                     <span className="absolute inset-0 bg-[radial-gradient(circle, rgba(255,193,7,0.2), transparent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <span className="relative z-10 font-semibold text-lg">Comprar Ahora</span>
+                    <span className="relative z-10 font-semibold text-base sm:text-lg">Comprar Ahora</span>
                   </motion.button>
                 ) : (
-                  <p className="text-red-600 font-semibold text-lg">Producto agotado</p>
+                  <p className="text-red-600 font-semibold text-lg sm:text-xl">Producto agotado</p>
                 )}
                 <RequestQuoteButton />
               </div>
               {compatibilityMessage && (
-                <p className="text-gray-600 dark:text-gray-300 italic text-sm">
+                <p className="text-gray-600 dark:text-gray-400 italic text-sm sm:text-base">
                   {compatibilityMessage}
                 </p>
               )}
@@ -245,21 +257,19 @@ const ProductDetailPage = () => {
 
             {/* Product Image (Right) */}
             <motion.div
-              className="flex-1 relative overflow-hidden rounded-2xl shadow-xl border-4 border-amber-200/40 dark:border-amber-900/40"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.5 }}
-              whileHover={{ scale: 1.02 }}
+              className="relative overflow-hidden rounded-2xl shadow-xl border-4 border-amber-200/50 dark:border-amber-900/50"
+              variants={imageVariants}
+              whileHover="hover"
             >
-              <div className="relative w-full h-80 sm:h-96">
+              <div className="relative w-full h-64 sm:h-80 md:h-96">
                 <img
                   src={component.image}
                   alt={component.name}
-                  className="w-full h-full object-cover transition-transform duration-500"
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-amber-900/10 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-amber-900/20 dark:from-amber-900/10 to-transparent" />
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right, rgba(255,193,7,0.15), transparent)]" />
-                <div className="absolute inset-0 animate-glow" style={{ boxShadow: '0 0 20px rgba(255,193,7,0.3)' }} />
+                <div className="absolute inset-0 animate-glow" style={{ boxShadow: '0 0 15px rgba(255,193,7,0.3)' }} />
               </div>
             </motion.div>
           </div>
@@ -267,7 +277,7 @@ const ProductDetailPage = () => {
       </motion.div>
 
       {/* Additional Sections */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-16 space-y-16">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-20 lg:pb-24 space-y-16 sm:space-y-20">
         <motion.div variants={sectionVariants} initial="hidden" animate="visible">
           <Features features={component.features} />
         </motion.div>
@@ -294,7 +304,6 @@ const ProductDetailPage = () => {
   );
 };
 
-// Custom CSS Animations
 const styles = `
   @keyframes gradient-x {
     0% { background-position: 0% 50%; }
@@ -307,24 +316,24 @@ const styles = `
   }
   @keyframes float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-15px); }
   }
   .animate-float {
-    animation: float 4s ease-in-out infinite;
+    animation: float 6s ease-in-out infinite;
   }
   @keyframes pulse-slow {
     0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.02); }
+    50% { transform: scale(1.03); }
   }
   .animate-pulse-slow {
-    animation: pulse-slow 6s ease-in-out infinite;
+    animation: pulse-slow 8s ease-in-out infinite;
   }
   @keyframes glow {
     0%, 100% { box-shadow: 0 0 10px rgba(255,193,7,0.2); }
-    50% { box-shadow: 0 0 20px rgba(255,193,7,0.4); }
+    50% { box-shadow: 0 0 25px rgba(255,193,7,0.5); }
   }
   .animate-glow {
-    animation: glow 4s ease-in-out infinite;
+    animation: glow 5s ease-in-out infinite;
   }
 `;
 const styleSheet = document.createElement('style');

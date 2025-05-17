@@ -37,14 +37,14 @@ const Footer = () => {
 
   return (
     <motion.footer
-      className="relative z-10 bg-gradient-to-b from-amber-50 to-amber-100 py-12 lg:py-16"
+      className="relative z-10 bg-gradient-to-b from-amber-50 to-amber-100 py-6 sm:py-8 md:py-10 lg:py-12"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true }}
     >
-      <div className="container mx-auto px-4 md:px-6 max-w-7xl">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-10 max-w-7xl">
+        <div className="grid grid-cols-1 gap-8 sm:gap-10 md:grid-cols-2 lg:grid-cols-4">
           {/* Sección Información */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -52,34 +52,22 @@ const Footer = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <Link to="/" className="mb-6 inline-block transition-opacity hover:opacity-80" aria-label="HomeControl Inicio">
-              <img src={Logo} alt="Logotipo HomeControl" className="h-12 w-auto" />
+            <Link to="/" className="mb-4 sm:mb-6 inline-block transition-opacity hover:opacity-80" aria-label="HomeControl Inicio">
+              <img src={Logo} alt="Logotipo HomeControl" className="h-8 sm:h-10 md:h-12 lg:h-14 w-auto" />
             </Link>
-            <address className="not-italic text-gray-600">
+            <address className="not-italic text-sm sm:text-base text-gray-600">
               <div className="flex items-center gap-2 mb-2">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="text-amber-500"
-                >
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" className="text-amber-500 w-5 h-5 sm:w-6 sm:h-6">
                   <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                 </svg>
-                <span>+34 900 123 456</span>
+                <span className="break-words">+34 900 123 456</span>
               </div>
               <div className="flex items-center gap-2">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="text-amber-500"
-                >
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" className="text-amber-500 w-5 h-5 sm:w-6 sm:h-6">
                   <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                   <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                 </svg>
-                <span>info@homecontrol.es</span>
+                <span className="break-words">info@homecontrol.es</span>
               </div>
             </address>
           </motion.div>
@@ -105,27 +93,31 @@ const Footer = () => {
             transition={{ duration: 0.6, delay: 0.6 }}
             viewport={{ once: true }}
           >
-            <h4 className="mb-4 text-lg font-semibold text-gray-900">
+            <h4 className="mb-3 sm:mb-4 text-base sm:text-lg font-semibold text-gray-900">
               Mantente Conectado
             </h4>
             <form
-              className="mb-6"
+              className="mb-4 sm:mb-6"
               onSubmit={(e) => {
                 e.preventDefault();
                 alert("¡Suscrito al boletín!");
               }}
+              aria-describedby="newsletter-description"
             >
-              <div className="flex gap-2">
+              <p id="newsletter-description" className="sr-only">
+                Suscríbete a nuestro boletín para recibir actualizaciones y noticias.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2">
                 <input
                   type="email"
                   placeholder="Tu correo electrónico"
-                  className="flex-1 px-4 py-2 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 text-gray-900"
+                  className="flex-1 px-2 sm:px-4 py-2 text-sm border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 text-gray-900 min-w-0 max-w-full"
                   aria-label="Correo electrónico para el boletín"
                   required
                 />
                 <motion.button
                   type="submit"
-                  className="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition duration-200"
+                  className="px-3 sm:px-4 py-2 bg-amber-500 text-white text-sm sm:text-base rounded-lg hover:bg-amber-600 transition duration-200"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   aria-label="Suscribirse al boletín"
@@ -134,14 +126,14 @@ const Footer = () => {
                 </motion.button>
               </div>
             </form>
-            <div className="flex gap-4">
+            <div className="flex gap-3 flex-wrap">
               {redesSociales.map((red, index) => (
                 <motion.a
                   key={index}
                   href={red.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md text-amber-500 hover:bg-amber-500 hover:text-white transition-all duration-200"
+                  className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-white shadow-md text-amber-500 hover:bg-amber-500 hover:text-white transition-all duration-200 min-w-[36px]"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   aria-label={`Visitar nuestro ${red.nombre}`}
@@ -153,7 +145,7 @@ const Footer = () => {
           </motion.div>
         </div>
         <motion.div
-          className="mt-12 text-center text-sm text-gray-600"
+          className="mt-8 sm:mt-10 text-center text-xs sm:text-sm text-gray-600"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.8 }}
@@ -173,9 +165,9 @@ const GrupoEnlaces = ({ titulo, children }) => (
     transition={{ duration: 0.6, delay: 0.4 }}
     viewport={{ once: true }}
   >
-    <h5 className="mb-4 text-lg font-semibold text-gray-900">{titulo}</h5>
+    <h5 className="mb-2 sm:mb-3 text-base sm:text-lg font-semibold text-gray-900">{titulo}</h5>
     <nav aria-label={`Enlaces de ${titulo.toLowerCase()}`}>
-      <ul className="space-y-2">{children}</ul>
+      <ul className="space-y-1 sm:space-y-2">{children}</ul>
     </nav>
   </motion.div>
 );
@@ -184,7 +176,7 @@ const EnlaceFooter = ({ to, children }) => (
   <li>
     <Link
       to={to}
-      className="text-sm text-gray-600 hover:text-amber-500 transition-colors duration-200"
+      className="text-xs sm:text-sm text-gray-600 hover:text-amber-500 transition-colors duration-200"
       aria-label={children}
     >
       {children}

@@ -22,8 +22,8 @@ const VerticalMenu = ({ isOpen, setIsOpen }) => {
 
   const menuItems = [
     {
-      label: "Descarga Manuales",
-      to: "/manuales",
+      label: "Productos",
+      to: "/productos",
       icon: (
         <svg
           className="w-5 h-5"

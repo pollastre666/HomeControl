@@ -9,9 +9,8 @@ const HeroSection = () => {
 
   return (
     <div className="relative isolate bg-gradient-to-b from-amber-50 via-white to-amber-100 overflow-hidden">
-      {/* Parallax Background Image */}
       <motion.div
-        className="relative w-full h-[600px] bg-cover bg-center"
+        className="relative w-full h-[400px] sm:h-[500px] lg:h-[600px] bg-cover bg-center"
         style={{
           backgroundImage: `url('https://www.somfy.es/common/img/library///2000x600_cover/port-enery-winter.jpg')`,
           y: parallaxY,
@@ -20,28 +19,25 @@ const HeroSection = () => {
           opacity: 0.9,
         }}
       >
-        {/* Overlay for Readability */}
         <div className="absolute inset-0 bg-gradient-to-t from-amber-900/50 to-transparent" />
       </motion.div>
-
-      {/* CTA Box */}
       <motion.div
-        className="absolute left-4 sm:left-8 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-6 sm:p-8 max-w-sm sm:max-w-md border border-amber-200/50"
+        className="absolute left-4 sm:left-6 lg:left-8 top-1/2 transform -translate-y-1/2 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8 w-full max-w-[90%] sm:max-w-md lg:max-w-lg border border-amber-200/50"
         initial={{ opacity: 0, x: -100 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        whileHover={{ scale: 1.02, boxShadow: "0 10px 20px rgba(0, 0, 0, 0.15)" }}
+        whileHover={{ scale: 1.02 }}
         role="complementary"
         aria-labelledby="hero-cta-title"
       >
-        <h2 id="hero-cta-title" className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+        <h2 id="hero-cta-title" className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-gray-900 tracking-tight">
           Ahorra energía con HomeControl
         </h2>
-        <p className="mt-3 text-base sm:text-lg text-gray-600 leading-relaxed">
+        <p className="mt-2 sm:mt-3 text-sm sm:text-base lg:text-lg text-gray-600 leading-relaxed">
           Transforma tu hogar con nuestras soluciones inteligentes. Controla luces, persianas y más para maximizar la eficiencia energética y el confort.
         </p>
         <motion.div
-          className="mt-6"
+          className="mt-4 sm:mt-6"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -54,8 +50,6 @@ const HeroSection = () => {
           </Link>
         </motion.div>
       </motion.div>
-
-      {/* Decorative Gradient Overlay */}
       <div className="absolute inset-x-0 bottom-0 -z-10 transform-gpu overflow-hidden blur-3xl h-96">
         <div
           className="relative aspect-[1155/678] w-full bg-gradient-to-tr from-amber-300 to-amber-600 opacity-30"
