@@ -1,19 +1,28 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+admin.initializeApp();
 
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
+// Cloud Function que se activa al crear un nuevo usuario en Firebase Authentication
+exports.crearPerfilUsuario = functions.auth.user().onCreate(async (user) => {
+  const { uid, email, displayName, photoURL } = user;
+  const fechaCreacion = admin.firestore.FieldValue.serverTimestamp();
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+  const nuevoPerfil = {
+    uid: uid,
+    email: email || '', // Asegurar que email no sea undefined
+    nombreMostrado: displayName || '', // Usar displayName si está disponible
+    fotoURL: photoURL || '', // Usar photoURL si está disponible
+    rol: "cliente", // Rol por defecto
+    fechaCreacion: fechaCreacion,
+  };
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+  try {
+    await admin.firestore().collection("users").doc(uid).set(nuevoPerfil);
+    console.log(`Perfil creado para el usuario ${uid} con email ${email}`);
+    return null;
+  } catch (error) {
+    console.error(`Error al crear perfil para usuario ${uid}:`, error);
+    return null;
+  }
+});
+
