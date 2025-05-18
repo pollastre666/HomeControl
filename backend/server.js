@@ -39,7 +39,7 @@ mqttService.onMessage(async (topic, message) => {
     
     // Si es un mensaje de estado, actualizar Firestore
     if (type === 'state') {
-      await db.collection('Dispositivos').doc(deviceId).update({
+      await db.collection('devices').doc(deviceId).update({
         estadoActual: payload.status || payload,
         online: true,
         ultimaConexion: admin.firestore.FieldValue.serverTimestamp()
@@ -63,7 +63,7 @@ app.get('/', (req, res) => {
 });
 
 // Ruta para enviar comandos a dispositivos
-app.post('/api/dispositivos/:deviceId/comando', async (req, res) => {
+app.post('/api/devices/:deviceId/comando', async (req, res) => {
   try {
     const { deviceId } = req.params;
     const { comando, uid } = req.body;
@@ -76,7 +76,7 @@ app.post('/api/dispositivos/:deviceId/comando', async (req, res) => {
     }
     
     // Verificar que el dispositivo existe y pertenece al usuario
-    const deviceDoc = await db.collection('Dispositivos').doc(deviceId).get();
+    const deviceDoc = await db.collection('devices').doc(deviceId).get();
     
     if (!deviceDoc.exists) {
       return res.status(404).json({ 
@@ -107,7 +107,7 @@ app.post('/api/dispositivos/:deviceId/comando', async (req, res) => {
       await mqttService.publishMessage(topic, comandoMsg);
       
       // Actualizar el estado deseado en Firestore
-      await db.collection('Dispositivos').doc(deviceId).update({
+      await db.collection('devices').doc(deviceId).update({
         estadoDeseado: comando.action,
         ultimoComando: admin.firestore.FieldValue.serverTimestamp()
       });
