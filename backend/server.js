@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const admin = require('firebase-admin');
-const mqttService = require('./src/services/mqtt-service');
+const mqttService = require('./services/mqtt-service');
 
 // Inicializar Firebase Admin SDK
 const serviceAccount = {
