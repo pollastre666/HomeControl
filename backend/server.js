@@ -2,7 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const admin = require('firebase-admin');
-const mqttService = require('./services/mqtt-service');
+const mqttService = require('.src/services/mqtt-service');
+const dispositivosRoutes = require('./src/Routes/dispositivos-routes');
 
 // Inicializar Firebase Admin SDK
 const serviceAccount = {
@@ -39,7 +40,7 @@ mqttService.onMessage(async (topic, message) => {
     
     // Si es un mensaje de estado, actualizar Firestore
     if (type === 'state') {
-      await db.collection('devices').doc(deviceId).update({
+      await db.collection('Dispositivos').doc(deviceId).update({
         estadoActual: payload.status || payload,
         online: true,
         ultimaConexion: admin.firestore.FieldValue.serverTimestamp()
@@ -62,8 +63,11 @@ app.get('/', (req, res) => {
   res.send('Servidor HomeControl funcionando');
 });
 
+// Usar las rutas de dispositivos
+app.use('/api/dispositivos', dispositivosRoutes);
+
 // Ruta para enviar comandos a dispositivos
-app.post('/api/devices/:deviceId/comando', async (req, res) => {
+app.post('/api/dispositivos/:deviceId/comando', async (req, res) => {
   try {
     const { deviceId } = req.params;
     const { comando, uid } = req.body;
@@ -76,7 +80,7 @@ app.post('/api/devices/:deviceId/comando', async (req, res) => {
     }
     
     // Verificar que el dispositivo existe y pertenece al usuario
-    const deviceDoc = await db.collection('devices').doc(deviceId).get();
+    const deviceDoc = await db.collection('Dispositivos').doc(deviceId).get();
     
     if (!deviceDoc.exists) {
       return res.status(404).json({ 
@@ -107,7 +111,7 @@ app.post('/api/devices/:deviceId/comando', async (req, res) => {
       await mqttService.publishMessage(topic, comandoMsg);
       
       // Actualizar el estado deseado en Firestore
-      await db.collection('devices').doc(deviceId).update({
+      await db.collection('Dispositivos').doc(deviceId).update({
         estadoDeseado: comando.action,
         ultimoComando: admin.firestore.FieldValue.serverTimestamp()
       });
