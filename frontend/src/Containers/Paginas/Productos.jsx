@@ -15,7 +15,7 @@ import {
 import {
   componentData as accessControlData,
   getCompatibilityMessage as getAccessControlCompatibility,
-} from '../../Componentes//Productos/ControlDeAcceso/accessControlData';
+} from '../../Componentes/Productos/ControlDeAcceso/accessControlData';
 import {
   componentData as automationHubData,
   getCompatibilityMessage as getAutomationHubCompatibility,
@@ -131,7 +131,7 @@ const CategorySection = ({ category, products, onBuyNow }) => {
 
   return (
     <motion.section
-      className="py-16"
+      className="py-12 bg-gray-50 rounded-lg my-8"
       variants={sectionVariants}
       initial="hidden"
       whileInView="visible"
@@ -139,16 +139,16 @@ const CategorySection = ({ category, products, onBuyNow }) => {
       id={category.id}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-10">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-8">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-800 mb-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 tracking-tight">
               {category.name}
             </h2>
-            <p className="text-base sm:text-lg text-gray-600">{category.description}</p>
+            <p className="text-sm sm:text-base text-gray-600">{category.description}</p>
           </div>
           <button
             onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-            className="mt-4 sm:mt-0 flex items-center bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors duration-300"
+            className="mt-4 sm:mt-0 flex items-center bg-amber-500 text-white px-4 py-2 rounded-full hover:bg-amber-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-amber-400"
             aria-label={`Ordenar ${category.name} ${sortOrder === 'asc' ? 'Z-A' : 'A-Z'}`}
           >
             Ordenar {sortOrder === 'asc' ? 'Z-A' : 'A-Z'}
@@ -156,11 +156,11 @@ const CategorySection = ({ category, products, onBuyNow }) => {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {sortedProducts.map((product, index) => (
             <motion.div
               key={product.id}
-              className="relative rounded-xl bg-white shadow-md hover:shadow-lg transition-shadow duration-300 h-64 w-full max-w-sm mx-auto border border-gray-200"
+              className="relative rounded-xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden h-[360px] flex flex-col"
               variants={cardVariants}
               initial="hidden"
               whileInView="visible"
@@ -174,70 +174,70 @@ const CategorySection = ({ category, products, onBuyNow }) => {
               onMouseLeave={() => setHoveredProduct(null)}
             >
               <Link to={product.link} aria-label={`Explorar ${product.name}`}>
-                <motion.div className="relative w-full h-full group" variants={cardHoverVariants}>
+                <motion.div className="relative w-full h-48 group" variants={cardHoverVariants}>
                   <img
-                    src={product.image}
+                    src={product.image || 'https://via.placeholder.com/300x200?text=No+Image'}
                     alt={product.name}
                     loading="lazy"
-                    className="w-full h-32 object-cover rounded-t-xl transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-cover rounded-t-xl transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 to-transparent rounded-t-xl transition-opacity duration-300 group-hover:from-gray-900/50" />
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3
-                      id={`product-${product.id}`}
-                      className="text-xl font-bold text-white mb-1 line-clamp-1"
-                    >
-                      {product.name}
-                    </h3>
-                    <AnimatePresence>
-                      {hoveredProduct === product.id && (
-                        <motion.div
-                          variants={textVariants}
-                          initial="hidden"
-                          animate="visible"
-                          exit="exit"
-                        >
-                          <p className="text-sm text-gray-200 mb-2 line-clamp-2">
-                            {product.description}
-                          </p>
-                          <p className="text-lg font-semibold text-amber-400 mb-1">
-                            ${product.price} USD
-                          </p>
-                          {product.stock === 0 ? (
-                            <p className="text-red-500 font-semibold text-sm mt-1">
-                              Agotado
-                            </p>
-                          ) : (
-                            <motion.button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                onBuyNow(product);
-                              }}
-                              className="mt-2 bg-amber-200 text-gray-800 px-3 py-1 rounded-lg hover:bg-amber-300 transition-colors duration-300 text-sm"
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                            >
-                              Comprar Ahora
-                            </motion.button>
-                          )}
-                          <p className="text-xs text-gray-300 mt-1">
-                            Compatibilidad: {getCompatibilityMessage(product)}
-                          </p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                    <AnimatePresence>
-                      {hoveredProduct === product.id && (
-                        <motion.div
-                          className="absolute bottom-4 left-4 w-2 h-2 bg-amber-200 rounded-full"
-                          variants={indicatorVariants}
-                          initial="hidden"
-                          animate={['visible', 'pulse']}
-                        />
-                      )}
-                    </AnimatePresence>
-                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent rounded-t-xl transition-opacity duration-300 group-hover:from-gray-900/70" />
                 </motion.div>
+                <div className="p-4 flex flex-col flex-grow">
+                  <h3
+                    id={`product-${product.id}`}
+                    className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1"
+                  >
+                    {product.name}
+                  </h3>
+                  <AnimatePresence>
+                    {hoveredProduct === product.id && (
+                      <motion.div
+                        variants={textVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        className="flex flex-col flex-grow"
+                      >
+                        <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                          {product.description}
+                        </p>
+                        <p className="text-lg font-bold text-amber-600 mb-2">
+                          ${product.price} USD
+                        </p>
+                        {product.stock === 0 ? (
+                          <p className="text-red-600 font-medium text-sm">
+                            Agotado
+                          </p>
+                        ) : (
+                          <motion.button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              onBuyNow(product);
+                            }}
+                            className="mt-auto bg-amber-500 text-white px-4 py-2 rounded-full hover:bg-amber-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            aria-label={`Comprar ${product.name}`}
+                          >
+                            Comprar Ahora
+                          </motion.button>
+                        )}
+                        <p className="text-xs text-gray-500 mt-2">
+                          Compatibilidad: {getCompatibilityMessage(product)}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                  {hoveredProduct === product.id && (
+                    <motion.div
+                      className="absolute top-2 right-2 w-3 h-3 bg-amber-500 rounded-full"
+                      variants={indicatorVariants}
+                      initial="hidden"
+                      animate={['visible', 'pulse']}
+                    />
+                  )}
+                </div>
               </Link>
             </motion.div>
           ))}
@@ -293,25 +293,25 @@ const Productos = ({ title = 'Nuestros Productos', description = 'Transforma tu 
   }
 
   return (
-    <section className="relative min-h-[60vh] bg-gradient-to-br from-amber-50 via-gray-100 to-white overflow-hidden">
+    <section className="relative min-h-screen bg-gradient-to-br from-amber-50 via-gray-100 to-white overflow-hidden">
       {/* Hero Section */}
       <motion.div
-        className="relative h-full w-full bg-cover bg-center"
+        className="relative h-[60vh] w-full bg-cover bg-center"
         style={{ backgroundImage: "url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80')" }}
         variants={heroVariants}
         initial="hidden"
         animate="visible"
         viewport={{ once: true }}
       >
-        <div className="absolute inset-0 bg-black/30" />
-        <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-center text-center py-24">
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-center text-center">
           <motion.div
             className="text-white"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 1, ease: 'easeOut' }}
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-4">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4">
               {title}
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl max-w-3xl mx-auto mb-6">
@@ -321,27 +321,25 @@ const Productos = ({ title = 'Nuestros Productos', description = 'Transforma tu 
               href="#productos"
               onClick={(e) => {
                 e.preventDefault();
-                navigate('#productos', { behavior: 'smooth' });
+                document.getElementById('productos')?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="inline-block bg-amber-200 text-gray-800 px-6 py-3 rounded-lg font-semibold hover:bg-amber-300 transition-colors duration-300 relative"
+              className="inline-block bg-amber-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-amber-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-amber-400"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              aria-label="Explorar productos con desplazamiento suave"
+              aria-label="Explorar productos"
             >
               Explora Ahora
-              <span className="absolute -top-2 -right-2 bg-amber-300 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                ?
-              </span>
+              <ChevronRight className="inline ml-2" size={20} />
             </motion.a>
           </motion.div>
         </div>
       </motion.div>
 
       {/* Índice de Categorías */}
-      <div className="sticky top-0 bg-white py-4 shadow-md z-10">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">Categorías</h3>
-          <div className="flex flex-wrap gap-4">
+      <div className="sticky top-0 bg-white py-4 shadow-lg z-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 overflow-x-auto whitespace-nowrap">
+          <h3 className="text-lg font-semibold text-gray-900 mb-3">Categorías</h3>
+          <div className="flex gap-4">
             {categories.map((category) => (
               <a
                 key={category.id}
@@ -350,7 +348,7 @@ const Productos = ({ title = 'Nuestros Productos', description = 'Transforma tu 
                   e.preventDefault();
                   document.getElementById(category.id)?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="text-amber-600 hover:text-amber-800 font-medium transition-colors duration-200"
+                className="text-amber-600 hover:text-amber-800 font-medium transition-colors duration-200 px-3 py-1 rounded-full hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-400"
                 aria-label={`Ir a ${category.name}`}
               >
                 {category.name}
@@ -361,17 +359,15 @@ const Productos = ({ title = 'Nuestros Productos', description = 'Transforma tu 
       </div>
 
       {/* Contenido de categorías */}
-      <div id="productos" className="relative">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-amber-50/20 to-transparent" />
+      <div id="productos" className="relative py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {categories.map((category) => (
-            <div key={category.id} id={category.id}>
-              <CategorySection
-                category={category}
-                products={categorizedProducts[category.id] || []}
-                onBuyNow={handleBuyNow}
-              />
-            </div>
+            <CategorySection
+              key={category.id}
+              category={category}
+              products={categorizedProducts[category.id] || []}
+              onBuyNow={handleBuyNow}
+            />
           ))}
         </div>
       </div>

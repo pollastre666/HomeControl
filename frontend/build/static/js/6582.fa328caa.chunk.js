@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[6582],{6582:(e,n,s)=>{s.r(n),s.d(n,{default:()=>u});var t=s(9950),f=s(1123),r=s(4414);const u=function(){return(0,t.useEffect)((()=>{window.scrollTo(0,0)}),[]),(0,r.jsx)(f.A,{})}}}]);

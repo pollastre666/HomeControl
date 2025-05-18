@@ -240,7 +240,7 @@ const CheckoutForm = ({ component, onClose, user }) => {
             value={holderName}
             onChange={handleNameChange}
             className="w-full p-3 bg-transparent border-0 text-gray-100 focus:ring-0 focus:outline-none placeholder-gray-500"
-            placeholder="Ej. Juan Pérez"
+            placeholder="Tu nombre completo"
             aria-label="Nombre del titular"
           />
           <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-amber-400 to-transparent transition-all duration-300" />

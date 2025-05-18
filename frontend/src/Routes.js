@@ -45,7 +45,7 @@ const AdvancedSecurityComponentDetail = lazy(() => import("./Componentes/Product
 const SmartHomeAutomationIndex = lazy(() => import("./Componentes/Productos/SmartHomeAutomatismos/SmartHomeAutomationIndex"));
 const SmartHomeAutomationComponentDetail = lazy(() => import("./Componentes/Productos/SmartHomeAutomatismos/SmartHomeAutomationComponentDetail"));
 const Productos = lazy(() => import("./Containers/Paginas/Productos"));
-const Analytics = lazy(() => import("./Componentes/IoT/Analytics"));
+;
 const DeviceControl = lazy(() => import("./Componentes/IoT/DeviceControl"));
 const AddDevice = lazy(() => import("./Componentes/IoT/AddDevice"));
 const Schedules = lazy(() => import("./Componentes/IoT/Schedules"));
@@ -82,7 +82,7 @@ function AnimatedRoutes() {
 
               {/* Resto de rutas públicas */}
               <Route path="/Ubicacion" element={<Layout><MapContactSection /></Layout>} />
-              <Route path="/Nosotros" element={<Layout><Nosotros /></Layout>} />
+              <Route path="/Nosotros" element={<Nosotros />} />
               <Route path="/Asistencia" element={<Layout><Asistencia /></Layout>} />
               <Route path="/Contacto" element={<Layout><Contacto /></Layout>} />
               <Route path="/solicitar-reparacion" element={<Layout><RepairContactForm /></Layout>} />
@@ -99,7 +99,6 @@ function AnimatedRoutes() {
               <Route path="/advanced-security" element={<Layout><AdvancedSecurityIndex /></Layout>} />
               <Route path="/smart-home-automation" element={<Layout><SmartHomeAutomationIndex /></Layout>} />
               <Route path="/components/:componentId" element={<Layout><RouteComponentSelector persianasComponentIds={persianasComponentIds} estoresComponentIds={estoresComponentIds} automationHubComponentIds={automationHubComponentIds} accessControlComponentIds={accessControlComponentIds} advancedSecurityComponentIds={advancedSecurityComponentIds} smartHomeAutomationComponentIds={smartHomeAutomationComponentIds} allComponentIds={allComponentIds} /></Layout>} />
-              <Route path="Analytics" element={<Layout><Analytics /></Layout>} />
               <Route path="/devices/:deviceId/control" element={<Layout><DeviceControl /></Layout>} />
               <Route path="/devices/add" element={<Layout><AddDevice /></Layout>} />
               <Route path="/schedules" element={<Schedules />} />

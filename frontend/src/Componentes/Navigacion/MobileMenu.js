@@ -1,6 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, NavLink } from "react-router-dom";
+import Logo from "../../Assets/Logos/LogoH.png";
 
 const MobileMenu = ({ menuAbierto, setMenuAbierto, navLinks, user, handleLogout, navigate, toggleVerticalMenu }) => {
   const cerrarMenu = () => setMenuAbierto(false);
@@ -30,7 +31,7 @@ const MobileMenu = ({ menuAbierto, setMenuAbierto, navLinks, user, handleLogout,
               <div className="flex items-center justify-between mb-8">
                 <Link to="/" onClick={cerrarMenu} aria-label="HomeControl Inicio">
                   <img
-                    src="/Assets/Logos/LogoH.png"
+                    src={Logo}
                     alt="HomeControl Logo"
                     className="h-12 sm:h-14 w-auto shadow-md rounded-sm"
                     onError={(e) => (e.target.outerHTML = <svg className="h-12 sm:h-14 w-12 sm:w-14 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z" /></svg>)}

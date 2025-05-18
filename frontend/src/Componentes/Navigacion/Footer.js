@@ -60,7 +60,7 @@ const Footer = () => {
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" className="text-amber-500 w-5 h-5 sm:w-6 sm:h-6">
                   <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                 </svg>
-                <span className="break-words">+34 900 123 456</span>
+                <span className="break-words">+34 000 000 000</span>
               </div>
               <div className="flex items-center gap-2">
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" className="text-amber-500 w-5 h-5 sm:w-6 sm:h-6">
@@ -74,16 +74,14 @@ const Footer = () => {
 
           {/* Recursos */}
           <GrupoEnlaces titulo="Recursos">
-            <EnlaceFooter to="/recursos">Recursos</EnlaceFooter>
+
             <EnlaceFooter to="/ubicacion">Ubicación</EnlaceFooter>
-            <EnlaceFooter to="/blog">Blog</EnlaceFooter>
           </GrupoEnlaces>
 
           {/* Empresa */}
           <GrupoEnlaces titulo="Empresa">
             <EnlaceFooter to="/nosotros">Sobre nosotros</EnlaceFooter>
             <EnlaceFooter to="/contacto">Contacto</EnlaceFooter>
-            <EnlaceFooter to="/carreras">Carreras</EnlaceFooter>
           </GrupoEnlaces>
 
           {/* Newsletter y Redes Sociales */}
@@ -151,7 +149,7 @@ const Footer = () => {
           transition={{ duration: 0.6, delay: 0.8 }}
           viewport={{ once: true }}
         >
-          &copy; {añoActual} HomeControl. Todos los derechos reservados.
+          &copy; {añoActual} HomeControl.
         </motion.div>
       </div>
     </motion.footer>

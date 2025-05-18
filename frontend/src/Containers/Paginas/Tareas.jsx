@@ -9,6 +9,7 @@ function TareasComponent() {
 
   return (
     <Layout>
+      {/* Aquí puedes agregar otros componentes o secciones */}
       <TareasPage />
     </Layout>
   );

@@ -64,6 +64,7 @@ const NavBar = () => {
   const navLinks = [
     { to: "/", label: "Inicio" },
     { to: "/Nosotros", label: "Nosotros" },
+    { to: "/Productos", label: "Productos" }, 
   ];
 
   if (user) {
@@ -76,7 +77,7 @@ const NavBar = () => {
     <>
       <motion.nav
         role="navigation"
-        className={`w-full fixed top-0 z-50 bg-amber-600 shadow-lg transition-all duration-300 ${isScrolled ? "py-2 sm:py-2" : "py-3 sm:py-4"} backdrop-blur-md border-b border-amber-400/50`}
+        className={`w-full fixed top-0 z-50 bg-amber-600 dark:bg-amber-700 shadow-lg transition-all duration-300 ${isScrolled ? "py-2 sm:py-2" : "py-3 sm:py-4"} backdrop-blur-md border-b border-amber-400/50 dark:border-amber-500/50`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
@@ -104,7 +105,7 @@ const NavBar = () => {
             </Link>
             <Link
               to="/"
-              className="text-base sm:text-lg md:text-xl font-extrabold tracking-tight text-white hover:text-amber-400 transition-colors duration-200"
+              className="text-base sm:text-lg md:text-xl font-extrabold tracking-tight text-light-50 dark:text-light-100 hover:text-amber-400 dark:hover:text-amber-300 transition-colors duration-200"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
               HomeControl
@@ -117,7 +118,9 @@ const NavBar = () => {
                 key={link.to}
                 to={link.to}
                 className={({ isActive }) =>
-                  `text-sm sm:text-base md:text-lg font-medium text-white transition-colors duration-200 relative ${isActive ? "text-amber-400" : "hover:text-amber-400"} after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-400 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full`
+                  `text-sm sm:text-base md:text-lg font-medium text-light-50 dark:text-light-100 transition-colors duration-200 relative ${
+                    isActive ? "text-amber-400 dark:text-amber-300" : "hover:text-amber-400 dark:hover:text-amber-300"
+                  } after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-400 dark:after:bg-amber-300 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full`
                 }
                 onClick={() => setMenuAbierto(false)}
                 aria-current={({ isActive }) => (isActive ? "page" : undefined)}
@@ -127,7 +130,7 @@ const NavBar = () => {
             ))}
             <motion.button
               onClick={toggleVerticalMenu}
-              className="text-sm sm:text-base md:text-lg font-medium text-white hover:text-amber-400 transition-colors duration-200 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-400 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full"
+              className="text-sm sm:text-base md:text-lg font-medium text-light-50 dark:text-light-100 hover:text-amber-400 dark:hover:text-amber-300 transition-colors duration-200 relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-amber-400 dark:after:bg-amber-300 after:bottom-0 after:left-0 after:transition-all after:duration-300 hover:after:w-full"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               aria-label="Abrir menú de asistencia"
@@ -146,14 +149,14 @@ const NavBar = () => {
                   aria-label={`Menú de usuario ${user.username || "Usuario"}`}
                   aria-expanded={isDropdownOpen}
                 >
-                  <div className="w-8 sm:w-10 h-8 sm:h-10 rounded-full bg-amber-400 flex items-center justify-center text-white font-semibold shadow-md text-sm sm:text-base">
+                  <div className="w-8 sm:w-10 h-8 sm:h-10 rounded-full bg-amber-400 dark:bg-amber-500 flex items-center justify-center text-light-50 dark:text-dark-50 font-semibold shadow-md text-sm sm:text-base">
                     {user?.username?.charAt(0).toUpperCase() || "U"}
                   </div>
-                  <span className="hidden md:inline text-sm sm:text-base font-medium text-white">
+                  <span className="hidden md:inline text-sm sm:text-base font-medium text-light-50 dark:text-light-100">
                     {user?.username || "Usuario"}
                   </span>
                   <svg
-                    className={`w-3 sm:w-4 h-3 sm:h-4 text-white transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
+                    className={`w-3 sm:w-4 h-3 sm:h-4 text-light-50 dark:text-light-100 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -169,7 +172,7 @@ const NavBar = () => {
                 <AnimatePresence>
                   {isDropdownOpen && (
                     <motion.div
-                      className="absolute right-0 mt-1 sm:mt-2 w-36 sm:w-48 max-w-full bg-white/90 backdrop-blur-md rounded-lg shadow-xl py-1 sm:py-2 border border-amber-200/50 overflow-x-hidden"
+                      className="absolute right-0 mt-1 sm:mt-2 w-36 sm:w-48 max-w-full bg-light-50/90 dark:bg-dark-800/90 backdrop-blur-md rounded-lg shadow-xl py-1 sm:py-2 border border-amber-200/50 dark:border-amber-600/50 overflow-x-hidden"
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
@@ -180,7 +183,7 @@ const NavBar = () => {
                           navigate("/user/profile");
                           setMenuAbierto(false);
                         }}
-                        className="w-full text-left px-3 sm:px-4 py-1 sm:py-2 text-sm sm:text-base text-gray-800 hover:bg-amber-100 transition-colors duration-200 flex items-center space-x-1 sm:space-x-2"
+                        className="w-full text-left px-3 sm:px-4 py-1 sm:py-2 text-sm sm:text-base text-dark-800 dark:text-light-200 hover:bg-amber-100 dark:hover:bg-amber-700 transition-colors duration-200 flex items-center space-x-1 sm:space-x-2"
                       >
                         <svg
                           className="w-4 sm:w-5 h-4 sm:h-5"
@@ -199,7 +202,7 @@ const NavBar = () => {
                       </button>
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left px-3 sm:px-4 py-1 sm:py-2 text-sm sm:text-base text-red-600 hover:bg-amber-100 transition-colors duration-200 flex items-center space-x-1 sm:space-x-2"
+                        className="w-full text-left px-3 sm:px-4 py-1 sm:py-2 text-sm sm:text-base text-secondary-600 dark:text-secondary-400 hover:bg-amber-100 dark:hover:bg-amber-700 transition-colors duration-200 flex items-center space-x-1 sm:space-x-2"
                       >
                         <svg
                           className="w-4 sm:w-5 h-4 sm:h-5"
@@ -224,7 +227,7 @@ const NavBar = () => {
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   to="/login"
-                  className="px-3 sm:px-4 py-1 sm:py-2 text-sm sm:text-base font-medium bg-white text-amber-600 rounded-lg hover:bg-amber-50 transition-colors duration-200 shadow-md"
+                  className="px-3 sm:px-4 py-1 sm:py-2 text-sm sm:text-base font-medium bg-light-50 dark:bg-dark-800 text-amber-600 dark:text-amber-400 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-700 transition-colors duration-200 shadow-md"
                   onClick={() => setMenuAbierto(false)}
                   aria-label="Iniciar Sesión"
                 >
@@ -236,7 +239,7 @@ const NavBar = () => {
 
           <motion.button
             onClick={() => setMenuAbierto(!menuAbierto)}
-            className="lg:hidden text-white focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-md p-2 min-w-[40px]"
+            className="lg:hidden text-light-50 dark:text-light-100 focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-md p-2 min-w-[40px]"
             whileTap={{ scale: 0.9 }}
             aria-label={menuAbierto ? "Cerrar menú" : "Abrir menú"}
             aria-controls="mobile-menu"
