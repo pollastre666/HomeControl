@@ -2,22 +2,154 @@
 module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
+    "./public/index.html",
   ],
+  safelist: [
+    'bg-blue-button',
+    'text-blue-button',
+    'hover:bg-blue-button',
+    'focus:bg-blue-button',
+    {
+      pattern: /^(bg|text|border)-(primary|secondary|amber|dark|light)-(100|200|300|400|500|600|700|800|900)$/,
+      variants: ['hover', 'focus', 'active'],
+    },
+  ],
+  darkMode: 'class',
   theme: {
+    screens: {
+      'xs': '320px',
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1536px',
+    },
     extend: {
       colors: {
-        "blue-button": '#0466C8',
-        // Aquí puedes añadir más colores personalizados si lo necesitas
-        "primary": '#0466C8',  // Ejemplo de color primario
-        "secondary": '#ff4500',  // Ejemplo de color secundario
-        "dark": '#1a1a1a',  // Ejemplo de color oscuro
-        "light": '#f2f2f2',  // Ejemplo de color claro
-        // Añade otros colores personalizados que necesites
+        "blue-button": {
+          DEFAULT: "#0466C8",
+          50: "#E6F0FA",
+          100: "#B3D1F0",
+          200: "#80B2E6",
+          300: "#4D94DB",
+          400: "#1A76D1",
+          500: "#0466C8",
+          600: "#0357A6",
+          700: "#024885",
+          800: "#023964",
+          900: "#012A43",
+        },
+        "primary": {
+          DEFAULT: "#0466C8",
+          50: "#E6F0FA",
+          100: "#B3D1F0",
+          200: "#80B2E6",
+          300: "#4D94DB",
+          400: "#1A76D1",
+          500: "#0466C8",
+          600: "#0357A6",
+          700: "#024885",
+          800: "#023964",
+          900: "#012A43",
+        },
+        "secondary": {
+          DEFAULT: "#ff4500",
+          50: "#FFE6E0",
+          100: "#FFC2B3",
+          200: "#FF9F86",
+          300: "#FF7B59",
+          400: "#FF582C",
+          500: "#ff4500",
+          600: "#E63B00",
+          700: "#CC3200",
+          800: "#B32900",
+          900: "#991F00",
+        },
+        "dark": {
+          DEFAULT: "#1a1a1a",
+          50: "#f8fafc",
+          100: "#f1f5f9",
+          200: "#e2e8f0",
+          300: "#cbd5e1",
+          400: "#94a3b8",
+          500: "#64748b",
+          600: "#475569",
+          700: "#334155",
+          800: "#1e293b",
+          900: "#0f172a",
+        },
+        "light": {
+          DEFAULT: "#f2f2f2",
+          50: "#fafafa",
+          100: "#f5f5f5",
+          200: "#eeeeee",
+          300: "#e0e0e0",
+          400: "#bdbdbd",
+          500: "#9e9e9e",
+          600: "#757575",
+          700: "#616161",
+          800: "#424242",
+          900: "#212121",
+        },
+        "amber": {
+          50: "#FFF3E0",
+          100: "#FFE0B2",
+          200: "#FFCC80",
+          300: "#FFB74D",
+          400: "#FFA726",
+          500: "#FF9800",
+          600: "#FB8C00",
+          700: "#F57C00",
+          800: "#EF6C00",
+          900: "#E65100",
+        },
+        gradient: {
+          'blue-to-amber': ['#0466C8', '#FF9800'],
+        },
       },
       boxShadow: {
         navbar: "0px 10px 8px 0px rgba(3, 3, 4, 0.03), 0 1px 2px -1px rgba(3, 3, 4, 0.03)",
-        // Puedes agregar más sombras personalizadas aquí si es necesario
-        "custom-light": "0px 4px 6px rgba(0, 0, 0, 0.1)",  // Ejemplo de sombra ligera
+        "custom-light": "0px 4px 6px rgba(0, 0, 0, 0.1)",
+        "card": "0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05)",
+        "button": "0 2px 4px rgba(0, 0, 0, 0.2)",
+        "hover": "0 6px 16px rgba(0, 0, 0, 0.15)",
+        "inner": "inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)",
+      },
+      spacing: {
+        "72": "18rem",
+        "84": "21rem",
+        "96": "24rem",
+        "108": "27rem",
+      },
+      fontSize: {
+        "4.5xl": "2.5rem",
+        "5.5xl": "3rem",
+        "6xl": "3.75rem",
+      },
+      animation: {
+        "fade-in": "fadeIn 0.3s ease-in-out",
+        "slide-in": "slideIn 0.4s ease-out",
+      },
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: 0 },
+          "100%": { opacity: 1 },
+        },
+        slideIn: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+      },
+      transitionProperty: {
+        'height': 'height',
+        'width': 'width',
+        'opacity': 'opacity',
+        'transform': 'transform',
+      },
+      transitionDuration: {
+        '200': '200ms',
+        '300': '300ms',
+        '400': '400ms',
       },
     },
   },
@@ -25,5 +157,19 @@ module.exports = {
     require("@tailwindcss/forms"),
     require("@tailwindcss/typography"),
     require("@tailwindcss/aspect-ratio"),
+    // require("@tailwindcss/container-queries"), // Descomentar después de instalar
   ],
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
+  experimental: {
+    applyComplexClasses: true,
+  },
+  variables: {
+    colors: {
+      'primary': '#0466C8',
+      'secondary': '#ff4500',
+      'amber': '#FF9800',
+    },
+  },
 };

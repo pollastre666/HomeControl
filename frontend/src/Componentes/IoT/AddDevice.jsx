@@ -4,7 +4,7 @@ import { db } from '../../config/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { componentOptions } from './allComponents';
+import componentOptions from './devices'; // Fixed: Use default import
 
 const AddDevice = () => {
   const { user } = useAuth();
@@ -16,8 +16,6 @@ const AddDevice = () => {
   const [preview, setPreview] = useState(null);
 
   useEffect(() => {
-    console.log('AddDevice: Component options loaded:', componentOptions.length);
-    console.log('AddDevice: User:', user ? { uid: user.uid, email: user.email } : 'No user');
     if (selectedComponent) {
       const component = componentOptions.find(c => c.id === selectedComponent);
       setPreview(component);
@@ -26,12 +24,11 @@ const AddDevice = () => {
       setPreview(null);
       setName('');
     }
-  }, [selectedComponent, user]);
+  }, [selectedComponent]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!user) {
-      console.error('AddDevice: No user authenticated');
       setError('Debes iniciar sesión para añadir un dispositivo.');
       toast.error('Debes iniciar sesión.');
       return;
@@ -43,7 +40,6 @@ const AddDevice = () => {
       return;
     }
 
-    console.log('AddDevice: Creating device for user:', user.uid, { name, componentId: selectedComponent });
     setLoading(true);
     setError(null);
 
@@ -56,21 +52,17 @@ const AddDevice = () => {
         type: component?.name || selectedComponent,
         componentId: selectedComponent,
         category: component?.category || 'Unknown',
-        price: component?.price || 0,
         specs: component?.specs || {},
         status: false,
         createdAt: new Date(),
       };
-      console.log('AddDevice: Saving device data:', deviceData);
       await setDoc(doc(db, 'devices', deviceId), deviceData);
-      console.log('AddDevice: Device created:', deviceId);
       toast.success('Dispositivo añadido con éxito');
       setName('');
       setSelectedComponent('');
       setPreview(null);
       navigate('/user/dashboard');
     } catch (error) {
-      console.error('AddDevice: Error creating device:', error.code, error.message);
       const errorMessage = error.code === 'permission-denied'
         ? 'No tienes permiso para añadir dispositivos. Verifica tu autenticación o las reglas de Firestore.'
         : `Error al añadir dispositivo: ${error.message}`;
@@ -152,9 +144,7 @@ const AddDevice = () => {
                   {preview.name}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400">{preview.description}</p>
-                <p className="text-gray-500 dark:text-gray-500">
-                  Precio: ${preview.price.toFixed(2)} | Categoría: {preview.category}
-                </p>
+
               </div>
             </div>
           )}

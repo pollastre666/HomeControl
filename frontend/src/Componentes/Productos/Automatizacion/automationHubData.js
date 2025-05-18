@@ -4,7 +4,7 @@ export const componentData = {
   'central-unit': {
     id: 'central-unit',
     name: 'Unidad Central',
-    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
+    image: 'https://images.wiautomation.com/public/images/landing/anticipa/product/RxQJmWf025vrqW6XYIlC1JyeU6u2iIr1R0iztf4OaD3XtLlry1Lp0jnI7Ve2.jpg',
     description: 'Núcleo de control para todos los dispositivos del hogar.',
     features: ['Control centralizado', 'Conexión multi-dispositivo', 'Actualizaciones OTA', 'Interfaz web'],
     specs: { 'Procesador': 'Quad-core', 'Memoria': '2GB RAM', 'Conectividad': 'Wi-Fi/Zigbee' },
@@ -15,7 +15,7 @@ export const componentData = {
   'connectivity-module': {
     id: 'connectivity-module',
     name: 'Módulo de Conectividad',
-    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
+    image: 'https://www.myamplifiers.com/img/products/134/main.jpg',
     description: 'Conexión Wi-Fi y Bluetooth para dispositivos inteligentes.',
     features: ['Wi-Fi 2.4G/5G', 'Bluetooth 5.0', 'Rango extendido', 'Compatibilidad universal'],
     specs: { 'Frecuencia': '2.4/5 GHz', 'Rango': '50m', 'Alimentación': '5V USB' },
@@ -26,7 +26,7 @@ export const componentData = {
   sensors: {
     id: 'sensors',
     name: 'Sensores',
-    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
+    image: 'https://es-es.ring.com/cdn/shop/products/FLCpro_angle_wht_ON_1290x1290_97813204-4c5a-41aa-a3d9-c27a7e75281b_1280x1280_crop_center.png?v=1745302257',
     description: 'Detectores de movimiento y temperatura avanzados.',
     features: ['Detección de movimiento', 'Sensor de temperatura', 'Batería recargable', 'Alarma integrada'],
     specs: { 'Rango': '10m', 'Batería': '1 año', 'Conectividad': 'Zigbee' },
@@ -34,21 +34,11 @@ export const componentData = {
     price: 49.99,
     stock: 20,
   },
-  'app-interface': {
-    id: 'app-interface',
-    name: 'Interfaz de App',
-    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
-    description: 'Controla tu hogar desde tu smartphone con facilidad.',
-    features: ['Interfaz intuitiva', 'Notificaciones push', 'Control remoto', 'Soporte multilingüe'],
-    specs: { 'Compatibilidad': 'iOS/Android', 'Tamaño': '50MB', 'Actualizaciones': 'Mensuales' },
-    installationTips: 'Descargue la app desde la tienda oficial y regístrese.',
-    price: 0.00, // Gratuito con compra de hardware
-    stock: Infinity,
-  },
+
   'voice-control': {
     id: 'voice-control',
     name: 'Control por Voz',
-    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
+    image: 'https://es-es.ring.com/cdn/shop/products/Alarm2.05-PieceKit_1290x1290_b501c637-7893-4724-8570-6c645941a520_1280x1280_crop_center.png?v=1745302259',
     description: 'Integración con asistentes de voz como Alexa y Google.',
     features: ['Compatibilidad con Alexa', 'Google Assistant', 'Comandos personalizados', 'Respuesta rápida'],
     specs: { 'Conectividad': 'Wi-Fi', 'Micrófono': 'Sensibilidad 360°', 'Alimentación': 'USB' },
@@ -59,7 +49,7 @@ export const componentData = {
   'power-supply': {
     id: 'power-supply',
     name: 'Fuente de Alimentación',
-    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
+    image: 'https://www.cetronic.es/sqlcommerce/ficheros/dk_93/productos/999441008-25.jpg',
     description: 'Energía eficiente y estable para el hub.',
     features: ['Salida estable', 'Protección contra sobrecarga', 'Diseño compacto', 'Batería de respaldo'],
     specs: { 'Voltaje': '12V/5A', 'Eficiencia': '85%', 'Dimensiones': '10x5x3 cm' },

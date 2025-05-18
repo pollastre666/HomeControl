@@ -2,7 +2,7 @@ export const componentData = {
   tejido: {
     id: 'tejido',
     name: 'Tejido Ligero',
-    image: 'https://www.somfy.es/common/img/library///500x370_cover/Connexoon_Window_Stephane_Rambaud_18_web2.jpg', // Imagen de un estor enrollable
+    image: 'https://www.ikea.com/es/es/images/products/tretur-estor-opaco-gris-claro__0892632_pe653525_s5.jpg?f=xl',
     description: 'Tejido transpirable y elegante para control de luz suave, ideal para ambientes luminosos.',
     features: ['Opacidad ajustable', 'Resistente a la decoloración', 'Fácil limpieza'],
     specs: { Material: 'Poliéster', Ancho: '100-300cm', Peso: '200g/m²' },
@@ -13,7 +13,7 @@ export const componentData = {
   tubo: {
     id: 'tubo',
     name: 'Tubo de Aluminio',
-    image: 'https://www.somfy.es/common/img/library///500x370_cover/Connexoon_Window_Stephane_Rambaud_18_web2.jpg', // Imagen de un tubo para estores
+    image: 'https://tubefittings.eu/866-home_default/aluminiowa-rura-o-420-mm-x-20-mm.jpg',
     description: 'Tubo ligero y resistente para un enrollado perfecto, diseñado para durabilidad.',
     features: ['Acero reforzado', 'Diámetro adaptable', 'Bajo mantenimiento'],
     specs: { Material: 'Aluminio', Diámetro: '40-60mm', Longitud: 'Ajustable hasta 3m' },
@@ -24,7 +24,7 @@ export const componentData = {
   'motor-estores': {
     id: 'motor-estores',
     name: 'Motor Eléctrico',
-    image: 'https://www.somfy.es/common/img/library///500x370_cover/Connexoon_Window_Stephane_Rambaud_18_web2.jpg', // Imagen de un motor Somfy
+    image: 'https://persianasamedida.com/594-large_default/-motor-logos-1016-radio-0-a-15-kg.jpg',
     description: 'Motor silencioso para automatización de estores, con tecnología avanzada.',
     features: ['Control remoto', 'Silencioso', 'Programación horaria'],
     specs: { Potencia: '20Nm', Voltaje: '220V', Conectividad: 'Wi-Fi opcional' },
@@ -35,7 +35,7 @@ export const componentData = {
   rieles: {
     id: 'rieles',
     name: 'Rieles',
-    image: 'https://www.somfy.es/common/img/library///500x370_cover/Connexoon_Window_Stephane_Rambaud_18_web2.jpg', // Imagen de rieles Somfy
+    image: 'https://m.media-amazon.com/images/I/61mopminV5L._AC_SX679_.jpg',
     description: 'Rieles laterales que aseguran un movimiento suave y estable del estor.',
     features: ['Material anticorrosivo', 'Fácil instalación', 'Diseño elegante'],
     specs: { Material: 'Aluminio', Longitud: 'Ajustable', Ancho: '20mm' },
@@ -46,7 +46,7 @@ export const componentData = {
   'control-estores': {
     id: 'control-estores',
     name: 'Control',
-    image: 'https://www.somfy.es/common/img/library///500x370_cover/Connexoon_Window_Stephane_Rambaud_18_web2.jpg', // Imagen de un control remoto Somfy
+    image: 'https://shop.somfy.es/media/catalog/product/cache/015b82a7a09e482677d845fe81ecb38c/m/a/mando-situo-5-io.jpg',
     description: 'Control inteligente para gestionar estores manual o automáticamente.',
     features: ['Interruptor de pared', 'Control remoto', 'Integración con app'],
     specs: { Conectividad: 'Wi-Fi/Bluetooth', Compatibilidad: 'Motores estándar', Alimentación: 'Batería o 220V' },
@@ -57,7 +57,7 @@ export const componentData = {
   contrapeso: {
     id: 'contrapeso',
     name: 'Contrapeso',
-    image: 'https://www.somfy.es/common/img/library///500x370_cover/Connexoon_Window_Stephane_Rambaud_18_web2.jpg', // Imagen de un contrapeso
+    image: 'https://media.adeo.com/media/2174040/media.png?width=650&height=650&format=jpg&quality=80&fit=bounds',
     description: 'Contrapeso que asegura un enrollamiento uniforme y estable del estor.',
     features: ['Ajuste de peso', 'Diseño discreto', 'Fácil instalación'],
     specs: { Material: 'Plomo recubierto', Peso: '0.5-2kg', Longitud: 'Ajustable' },

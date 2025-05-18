@@ -2,7 +2,7 @@ export const componentData = {
   'motorized-shutters': {
     id: 'motorized-shutters',
     name: 'Persianas Motorizadas',
-    image: 'https://www.somfy.es/common/img/library///500x600_cover/category-camera-security-preview2.jpg', // Imagen placeholder
+    image: 'https://www.cortinadecor.com/public/productos/persianas-enrollables-exterior-con-cajon/motorizada-a-bateria-con-placa-solar/gris-7012/ambientes/persiana-enrollable-motorizada-gris-7012-frontal.jpg.webp', // Imagen placeholder
     description: 'Control automático de persianas para comodidad y eficiencia.',
     features: ['Motor silencioso', 'Control remoto', 'Programación horaria', 'Compatibilidad con app'],
     specs: { 'Velocidad': '15 cm/s', 'Peso máximo': '50 kg', 'Alimentación': '110-240V' },
@@ -13,7 +13,7 @@ export const componentData = {
   'smart-lighting': {
     id: 'smart-lighting',
     name: 'Iluminación Inteligente',
-    image: 'https://www.somfy.es/common/img/library///500x600_cover/category-camera-security-preview2.jpg', // Imagen placeholder
+    image: 'https://www.lampamania.es/ImgGalery/Img1/Clanky/aktuality-home/inteligentni_osvetleni.jpg', // Imagen placeholder
     description: 'Luces ajustables con automatización y control remoto.',
     features: ['Control por voz', 'Colores personalizables', 'Programación', 'Integración con app'],
     specs: { 'Potencia': '10W', 'Lúmenes': '800 lm', 'Conectividad': 'Wi-Fi' },
@@ -24,7 +24,7 @@ export const componentData = {
   'climate-control': {
     id: 'climate-control',
     name: 'Control de Clima',
-    image: 'https://www.somfy.es/common/img/library///500x600_cover/category-camera-security-preview2.jpg', // Imagen placeholder
+    image: 'https://www.windowo.es/data/thumb_cache/_data_prod_img_somfy-telis-pure-telecomando-a-16-canali-radio-rts_jpg_r_800_800.jpg', // Imagen placeholder
     description: 'Regulación automática de temperatura y ventilación.',
     features: ['Termostato inteligente', 'Control remoto', 'Sensores de humedad', 'Programación'],
     specs: { 'Rango': '10-30°C', 'Conectividad': 'Wi-Fi', 'Batería': '24h de respaldo' },
@@ -35,7 +35,7 @@ export const componentData = {
   'smart-plugs': {
     id: 'smart-plugs',
     name: 'Enchufes Inteligentes',
-    image: 'https://www.somfy.es/common/img/library///500x600_cover/category-camera-security-preview2.jpg', // Imagen placeholder
+    image: 'https://www.fluxs.es/wp-content/uploads/2020/09/enchufe-NAOS-dest.png', // Imagen placeholder
     description: 'Controla dispositivos desde tu smartphone.',
     features: ['Encendido/apagado remoto', 'Programación', 'Compatibilidad con app', 'Consumo monitoreado'],
     specs: { 'Potencia máxima': '1800W', 'Conectividad': 'Wi-Fi', 'Dimensiones': '5x5x5 cm' },
@@ -46,7 +46,7 @@ export const componentData = {
   'automation-controller': {
     id: 'automation-controller',
     name: 'Controlador de Automatización',
-    image: 'https://www.somfy.es/common/img/library///500x600_cover/category-camera-security-preview2.jpg', // Imagen placeholder
+    image: 'https://srprosecure.com/46984-large_default/neptune-2.jpg', // Imagen placeholder
     description: 'Centraliza la gestión de automatismos del hogar.',
     features: ['Control centralizado', 'Integración con dispositivos', 'Actualizaciones OTA', 'Interfaz web'],
     specs: { 'Conectividad': 'Wi-Fi/Zigbee', 'Almacenamiento': 'Nube', 'Procesador': 'Quad-core' },
@@ -54,17 +54,7 @@ export const componentData = {
     price: 149.99,
     stock: Infinity,
   },
-  'scene-scheduler': {
-    id: 'scene-scheduler',
-    name: 'Programador de Escenas',
-    image: 'https://www.somfy.es/common/img/library///500x600_cover/category-camera-security-preview2.jpg', // Imagen placeholder
-    description: 'Automatiza rutinas diarias con escenas personalizadas.',
-    features: ['Creación de escenas', 'Programación horaria', 'Control por voz', 'Compatibilidad multi-dispositivo'],
-    specs: { 'Conectividad': 'Wi-Fi', 'Capacidad': '50 escenas', 'Batería': '12h' },
-    installationTips: 'Configure las escenas a través de la app asociada.',
-    price: 79.99,
-    stock: 3,
-  },
+
 };
 
 export const getCompatibilityMessage = (componentId) => {

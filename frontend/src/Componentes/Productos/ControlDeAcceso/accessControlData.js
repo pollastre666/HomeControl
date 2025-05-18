@@ -4,7 +4,7 @@ export const componentData = {
   keypad: {
     id: 'keypad',
     name: 'Teclado',
-    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
+    image: 'https://www.zoominformatica.com/img-datos/ASC01N_3.jpg',
     description: 'Acceso seguro mediante códigos personalizados.',
     features: ['Códigos personalizables', 'Retroiluminación LED', 'Resistente al agua', 'Compatibilidad con app'],
     specs: { 'Dimensiones': '15x5x3 cm', 'Alimentación': 'Batería AA', 'Conectividad': 'Bluetooth' },
@@ -15,7 +15,7 @@ export const componentData = {
   'rfid-reader': {
     id: 'rfid-reader',
     name: 'Lector RFID',
-    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
+    image: 'https://thumb.pccomponentes.com/w-530-530/articles/20/207686/6.jpg',
     description: 'Entrada con tarjetas de proximidad para mayor seguridad.',
     features: ['Lectura rápida', 'Tarjetas programables', 'Rango de 5 cm', 'Integración con sistemas'],
     specs: { 'Rango de lectura': '5 cm', 'Frecuencia': '13.56 MHz', 'Alimentación': '12V DC' },
@@ -37,7 +37,7 @@ export const componentData = {
   intercom: {
     id: 'intercom',
     name: 'Interfono',
-    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
+    image: 'https://es.maisonic.com/media/catalog/product/cache/c0db1c895faaa6d6d4be1c5e86a4cfd5/5/3/531036ecrans-35804.jpg',
     description: 'Comunicación bidireccional con visitantes.',
     features: ['Video HD', 'Audio bidireccional', 'Visión nocturna', 'Control por app'],
     specs: { 'Resolución': '720p', 'Ángulo de visión': '90°', 'Conectividad': 'Wi-Fi' },
@@ -45,21 +45,11 @@ export const componentData = {
     price: 149.99,
     stock: 12,
   },
-  'mobile-access': {
-    id: 'mobile-access',
-    name: 'Acceso Móvil',
-    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
-    description: 'Abre puertas desde tu smartphone con tecnología avanzada.',
-    features: ['Control por app', 'Notificaciones push', 'Acceso compartido', 'Seguridad encriptada'],
-    specs: { 'Compatibilidad': 'iOS y Android', 'Conectividad': 'Bluetooth/Wi-Fi', 'Seguridad': 'AES-256' },
-    installationTips: 'Configure mediante la app oficial y asegure una conexión estable.',
-    price: 79.99,
-    stock: Infinity,
-  },
+
   'security-panel': {
     id: 'security-panel',
     name: 'Panel de Seguridad',
-    image: 'https://www.somfy.es/common/img/library//500x600_cover/category-camera-security-preview2.jpg',
+    image: 'https://media.mundoextintor.com/product/central-de-deteccion-y-alarma-analogica-compact-lyon-800x800.jpg?width=1200',
     description: 'Gestión centralizada de accesos y alarmas.',
     features: ['Pantalla táctil', 'Control multi-dispositivo', 'Alarma integrada', 'Notificaciones'],
     specs: { 'Pantalla': '7 pulgadas', 'Conectividad': 'Wi-Fi/Zigbee', 'Alimentación': '220V' },
