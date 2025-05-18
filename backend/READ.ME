@@ -7,6 +7,60 @@ Este directorio contendrá la configuración y el código para el backend de la 
 *   **Firestore:** Utilizado como la base de datos NoSQL principal.
 *   **Firebase Authentication:** Para la gestión de usuarios y autenticación.
 
+
 ## Proyecto homecontrol-dac34
 
+# Servidor Local HomeControl
+
+Este servidor Node.js actúa como intermediario entre la aplicación React, Firestore y los dispositivos ESP8266 a través de MQTT.
+
+## Configuración
+
+1. Crea un archivo `.env` en esta carpeta con las siguientes variables:
+
+    Firebase
+        FIREBASE_PROJECT_ID=tu-proyecto-firebase
+        FIREBASE_CLIENT_EMAIL=firebase-adminsdk-xxxx@tu-proyecto-firebase.iam.gserviceaccount.com
+        FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nXXXXX\n-----END PRIVATE KEY-----\n"
+
+    MQTT
+        MQTT_BROKER_URL=mqtts://tu-broker-mqtt.com:8883
+        MQTT_USERNAME=tu-usuario-mqtt
+        MQTT_PASSWORD=tu-password-mqtt
+
+    Server
+        PORT=3001
+
+2. Instala las dependencias:
+    npm install
+
+3. Inicia el servidor:
+    node server.js
+
+## Endpoints API
+
+### Enviar comando a un dispositivo
+- **URL**: `/api/dispositivos/:deviceId/comando`
+- **Método**: `POST`
+- **Cuerpo**:
+```json
+{
+ "uid": "id_del_usuario",
+ "comando": {
+   "action": "ON",
+   "brightness": 100,
+   "color": "#FFFFFF"
+ }
+}
+
+Respuesta exitosa:
+{
+  "success": true,
+  "message": "Comando enviado con éxito"
+}
+
+Estructura de Tópicos MQTT
+Comandos: homecontrol/{userId}/{deviceId}/command
+Estados: homecontrol/{userId}/{deviceId}/state
+Eventos: homecontrol/{userId}/{deviceId}/event
 

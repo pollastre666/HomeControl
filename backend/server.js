@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const admin = require('firebase-admin');
-const mqtt = require('mqtt');
+const mqttService = require('./src/services/mqtt-service');
 
 // Inicializar Firebase Admin SDK
 const serviceAccount = {
@@ -22,35 +22,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Configuración del cliente MQTT
-const mqttClient = mqtt.connect(process.env.MQTT_BROKER_URL, {
-  username: process.env.MQTT_USERNAME,
-  password: process.env.MQTT_PASSWORD,
-  protocol: 'mqtts',
-  rejectUnauthorized: false // Solo para desarrollo
-});
-
-// Estructura de tópicos MQTT
-const TOPIC_PREFIX = 'homecontrol';
-
-// Función para construir tópicos
-const buildTopic = (userId, deviceId, type) => {
-  return `${TOPIC_PREFIX}/${userId}/${deviceId}/${type}`;
-};
-
 // Conectar al broker MQTT
-mqttClient.on('connect', () => {
-  console.log('Conectado al broker MQTT');
-  
-  // Suscribirse a todos los tópicos de estado y eventos
-  mqttClient.subscribe(`${TOPIC_PREFIX}/+/+/state`);
-  mqttClient.subscribe(`${TOPIC_PREFIX}/+/+/event`);
-});
+mqttService.connect();
 
 // Manejar mensajes MQTT recibidos
-mqttClient.on('message', async (topic, message) => {
-  console.log(`Mensaje recibido en tópico ${topic}: ${message.toString()}`);
-  
+mqttService.onMessage(async (topic, message) => {
   try {
     // Parsear el tópico para extraer userId, deviceId y tipo
     const topicParts = topic.split('/');
@@ -124,39 +100,31 @@ app.post('/api/dispositivos/:deviceId/comando', async (req, res) => {
     };
     
     // Construir el tópico MQTT
-    const topic = buildTopic(uid, deviceId, 'command');
+    const topic = mqttService.buildTopic(uid, deviceId, mqttService.constructor.TOPIC_TYPES.COMMAND);
     
     // Publicar el comando en el tópico MQTT
-    mqttClient.publish(topic, JSON.stringify(comandoMsg), (err) => {
-      if (err) {
-        console.error('Error al publicar comando MQTT:', err);
-        return res.status(500).json({ 
-          success: false, 
-          message: 'Error al enviar comando' 
-        });
-      }
+    try {
+      await mqttService.publishMessage(topic, comandoMsg);
       
       // Actualizar el estado deseado en Firestore
-      db.collection('Dispositivos').doc(deviceId).update({
+      await db.collection('Dispositivos').doc(deviceId).update({
         estadoDeseado: comando.action,
         ultimoComando: admin.firestore.FieldValue.serverTimestamp()
-      })
-      .then(() => {
-        res.json({ 
-          success: true, 
-          message: 'Comando enviado con éxito' 
-        });
-      })
-      .catch(error => {
-        console.error('Error al actualizar Firestore:', error);
-        res.status(500).json({ 
-          success: false, 
-          message: 'Error al actualizar estado en Firestore' 
-        });
       });
-    });
+      
+      res.json({ 
+        success: true, 
+        message: 'Comando enviado con éxito' 
+      });
+    } catch (error) {
+      console.error('Error al enviar comando:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Error al enviar comando: ' + error.message 
+      });
+    }
   } catch (error) {
-    console.error('Error al enviar comando:', error);
+    console.error('Error al procesar solicitud:', error);
     res.status(500).json({ 
       success: false, 
       message: 'Error interno del servidor' 
