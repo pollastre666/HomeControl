@@ -63,9 +63,6 @@ app.get('/', (req, res) => {
   res.send('Servidor HomeControl funcionando');
 });
 
-// Usar las rutas de dispositivos
-app.use('/api/dispositivos', dispositivosRoutes);
-
 // Ruta para enviar comandos a dispositivos
 app.post('/api/dispositivos/:deviceId/comando', async (req, res) => {
   try {
@@ -80,7 +77,7 @@ app.post('/api/dispositivos/:deviceId/comando', async (req, res) => {
     }
     
     // Verificar que el dispositivo existe y pertenece al usuario
-    const deviceDoc = await db.collection('Dispositivos').doc(deviceId).get();
+    const deviceDoc = await db.collection('devices').doc(deviceId).get();
     
     if (!deviceDoc.exists) {
       return res.status(404).json({ 
@@ -90,7 +87,7 @@ app.post('/api/dispositivos/:deviceId/comando', async (req, res) => {
     }
     
     const deviceData = deviceDoc.data();
-    if (deviceData.idUsuarioPropietario !== uid) {
+    if (deviceData.userId !== uid) {
       return res.status(403).json({ 
         success: false, 
         message: 'No tienes permiso para controlar este dispositivo' 
@@ -109,13 +106,13 @@ app.post('/api/dispositivos/:deviceId/comando', async (req, res) => {
     // Publicar el comando en el tópico MQTT
     try {
       await mqttService.publishMessage(topic, comandoMsg);
-      
+        
       // Actualizar el estado deseado en Firestore
-      await db.collection('Dispositivos').doc(deviceId).update({
-        estadoDeseado: comando.action,
-        ultimoComando: admin.firestore.FieldValue.serverTimestamp()
+      await db.collection('devices').doc(deviceId).update({
+        desiredState: comando.action,
+        lastCommand: admin.firestore.FieldValue.serverTimestamp()
       });
-      
+        
       res.json({ 
         success: true, 
         message: 'Comando enviado con éxito' 

@@ -14,23 +14,23 @@ exports.crearDispositivo = async (req, res) => {
       });
     }
     
-    // Crear un nuevo documento en la colección Dispositivos
-    const deviceRef = db.collection('Dispositivos').doc();
+    // Crear un nuevo documento en la colección devices
+    const deviceRef = db.collection('devices').doc();
     const deviceId = deviceRef.id;
     
     const timestamp = admin.firestore.FieldValue.serverTimestamp();
     
     const nuevoDispositivo = {
       deviceId: deviceId,
-      nombre: nombre,
-      tipo: tipo,
-      idUsuarioPropietario: uid,
-      estadoActual: "apagado",
+      name: nombre,
+      type: tipo,
+      userId: uid,
+      currentState: "off",
       online: false,
-      ultimaConexion: timestamp,
-      ubicacion: ubicacion || "",
-      configuracion: configuracion || {},
-      fechaCreacion: timestamp
+      lastConnection: timestamp,
+      location: ubicacion || "",
+      configuration: configuracion || {},
+      createdAt: timestamp
     };
 
     await deviceRef.set(nuevoDispositivo);
@@ -65,8 +65,8 @@ exports.listarDispositivosUsuario = async (req, res) => {
     }
     
     // Consultar dispositivos donde el usuario es propietario
-    const snapshot = await db.collection('Dispositivos')
-      .where('idUsuarioPropietario', '==', uid)
+    const snapshot = await db.collection('devices')
+      .where('userId', '==', uid)
       .get();
     
     if (snapshot.empty) {
@@ -104,7 +104,7 @@ exports.obtenerDispositivo = async (req, res) => {
     const { deviceId } = req.params;
     
     // Obtener el documento del dispositivo
-    const deviceDoc = await db.collection('Dispositivos').doc(deviceId).get();
+    const deviceDoc = await db.collection('devices').doc(deviceId).get();
     
     if (!deviceDoc.exists) {
       return res.status(404).json({ 
