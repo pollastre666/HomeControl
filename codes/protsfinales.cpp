@@ -20,7 +20,7 @@ const int pirPin = D1; // Pin GPIO al que está conectado el sensor PIR (D1 = GP
 // --- Variables de Estado ---
 int pirState = LOW;             // Estado actual del sensor
 int lastPirState = LOW;         // Estado anterior del sensor
-unsigned long lastMotionTime = 0; // Tiempo del último movimiento detectado
+unsigned long lastMotionTime = 0;
 const unsigned long motionDebounceDelay = 2000; 
 
 void setup() {
