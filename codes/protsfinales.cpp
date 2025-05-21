@@ -15,7 +15,7 @@ const int serverPort = 5000;                 // Puerto en el que escuchará el s
 String serverPath = "/motion";               // Ruta en el servidor para notificar movimiento 
 
 // --- Configuración de Pines ---
-const int pirPin = D1; // Pin GPIO al que está conectado el sensor PIR (D1 = GPIO5 en Wemos D1 Mini)
+const int pirPin = D1; 
 
 // --- Variables de Estado ---
 int pirState = LOW;             // Estado actual del sensor
