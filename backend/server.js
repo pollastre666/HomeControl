@@ -1,22 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const admin = require('firebase-admin');
-const mqttService = require('.src/services/mqtt-service');
+const { admin, db } = require('./src/firebase');
+const mqttService = require('./src/services/mqtt-service');
 const dispositivosRoutes = require('./src/Routes/dispositivos-routes');
-
-// Inicializar Firebase Admin SDK
-const serviceAccount = {
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
-};
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
-
-const db = admin.firestore();
 
 // Configuración del servidor Express
 const app = express();
@@ -138,3 +125,9 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en puerto ${PORT}`);
 });
+
+// Ruta de prueba
+app.post('/api/test', (req, res) => {
+  res.json({ message: 'Test route works!' });
+});
+
