@@ -11,8 +11,10 @@ app.use(express.json());
 // Importar Firebase (asegurarse de que se inicialice antes de las rutas)
 const { db } = require('./src/firebase');
 
-// Importar rutas
+// Importar rutas dispositivos
 const dispositivosRoutes = require('./src/Routes/dispositivos-routes');
+// Importar rutas de horarios
+const horariosRoutes = require('./src/routes/horarios-routes');
 
 // Conectar al broker MQTT
 mqttService.connect();
@@ -61,6 +63,8 @@ app.post('/api/test', (req, res) => {
 
 // Usar las rutas de dispositivos
 app.use('/api/dispositivos', dispositivosRoutes);
+// Usar las rutas de horarios
+app.use('/api/horarios', horariosRoutes);
 
 // Ruta para enviar comandos a dispositivos
 app.post('/api/dispositivos/:deviceId/comando', async (req, res) => {

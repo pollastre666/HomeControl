@@ -128,3 +128,118 @@ exports.obtenerDispositivo = async (req, res) => {
   }
 };
 
+// Actualizar un dispositivo existente
+exports.actualizarDispositivo = async (req, res) => {
+  try {
+    const { deviceId } = req.params;
+    const { nombre, ubicacion, configuracion, uid } = req.body;
+    
+    // Validar datos de entrada
+    if (!deviceId || !uid) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Se requiere el ID del dispositivo y el ID del usuario' 
+      });
+    }
+    
+    // Verificar que el dispositivo existe
+    const deviceRef = db.collection('devices').doc(deviceId);
+    const deviceDoc = await deviceRef.get();
+    
+    if (!deviceDoc.exists) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'El dispositivo no existe' 
+      });
+    }
+    
+    // Verificar que el usuario es el propietario
+    const deviceData = deviceDoc.data();
+    if (deviceData.userId !== uid) {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'No tienes permiso para actualizar este dispositivo' 
+      });
+    }
+    
+    // Preparar datos para actualización
+    const updateData = {};
+    
+    // Solo actualizar campos proporcionados
+    if (nombre !== undefined) updateData.name = nombre;
+    if (ubicacion !== undefined) updateData.location = ubicacion;
+    if (configuracion !== undefined) updateData.configuration = configuracion;
+    
+    // Añadir timestamp de actualización
+    updateData.updatedAt = admin.firestore.FieldValue.serverTimestamp();
+    
+    // Actualizar el documento
+    await deviceRef.update(updateData);
+    
+    return res.json({ 
+      success: true, 
+      message: "Dispositivo actualizado con éxito",
+      dispositivo: {
+        id: deviceId,
+        ...deviceData,
+        ...updateData
+      }
+    });
+  } catch (error) {
+    console.error("Error al actualizar dispositivo:", error);
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Error al actualizar el dispositivo: ' + error.message 
+    });
+  }
+};
+
+// Eliminar un dispositivo
+exports.eliminarDispositivo = async (req, res) => {
+  try {
+    const { deviceId } = req.params;
+    const { uid } = req.body;
+    
+    // Validar datos de entrada
+    if (!deviceId || !uid) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Se requiere el ID del dispositivo y el ID del usuario' 
+      });
+    }
+    
+    // Verificar que el dispositivo existe
+    const deviceRef = db.collection('devices').doc(deviceId);
+    const deviceDoc = await deviceRef.get();
+    
+    if (!deviceDoc.exists) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'El dispositivo no existe' 
+      });
+    }
+    
+    // Verificar que el usuario es el propietario
+    const deviceData = deviceDoc.data();
+    if (deviceData.userId !== uid) {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'No tienes permiso para eliminar este dispositivo' 
+      });
+    }
+    
+    // Eliminar el documento
+    await deviceRef.delete();
+    
+    return res.json({ 
+      success: true, 
+      message: "Dispositivo eliminado con éxito" 
+    });
+  } catch (error) {
+    console.error("Error al eliminar dispositivo:", error);
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Error al eliminar el dispositivo: ' + error.message 
+    });
+  }
+};

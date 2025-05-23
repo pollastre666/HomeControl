@@ -6,5 +6,10 @@ const dispositivosController = require('../controllers/dispositivos-controller')
 router.post('/', dispositivosController.crearDispositivo);
 router.get('/usuario/:uid', dispositivosController.listarDispositivosUsuario);
 router.get('/:deviceId', dispositivosController.obtenerDispositivo);
+// Actualizar un dispositivo
+router.put('/:deviceId', dispositivosController.actualizarDispositivo);
+// Eliminar un dispositivo
+router.delete('/:deviceId', dispositivosController.eliminarDispositivo);
+
 
 module.exports = router;
