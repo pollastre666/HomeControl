@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mqttService = require('./src/services/mqtt-service');
+const schedulerService = require('./src/services/scheduler-service');
 
 // Inicializar Express
 const app = express();
@@ -140,4 +141,14 @@ app.post('/api/dispositivos/:deviceId/comando', async (req, res) => {
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en puerto ${PORT}`);
+  
+  // Iniciar el servicio de horarios
+  schedulerService.start();
+});
+
+// Manejar el cierre del servidor
+process.on('SIGINT', () => {
+  console.log('Deteniendo el servidor...');
+  schedulerService.stop();
+  process.exit();
 });
