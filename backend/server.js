@@ -1,14 +1,18 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { admin, db } = require('./src/firebase');
 const mqttService = require('./src/services/mqtt-service');
-const dispositivosRoutes = require('./src/Routes/dispositivos-routes');
 
-// Configuración del servidor Express
+// Inicializar Express
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Importar Firebase (asegurarse de que se inicialice antes de las rutas)
+const { db } = require('./src/firebase');
+
+// Importar rutas
+const dispositivosRoutes = require('./src/Routes/dispositivos-routes');
 
 // Conectar al broker MQTT
 mqttService.connect();
@@ -27,10 +31,10 @@ mqttService.onMessage(async (topic, message) => {
     
     // Si es un mensaje de estado, actualizar Firestore
     if (type === 'state') {
-      await db.collection('Dispositivos').doc(deviceId).update({
-        estadoActual: payload.status || payload,
+      await db.collection('devices').doc(deviceId).update({
+        currentState: payload.status || payload,
         online: true,
-        ultimaConexion: admin.firestore.FieldValue.serverTimestamp()
+        lastConnection: admin.firestore.FieldValue.serverTimestamp()
       });
       console.log(`Estado actualizado para dispositivo ${deviceId}`);
     }
@@ -49,6 +53,14 @@ mqttService.onMessage(async (topic, message) => {
 app.get('/', (req, res) => {
   res.send('Servidor HomeControl funcionando');
 });
+
+// Ruta de prueba
+app.post('/api/test', (req, res) => {
+  res.json({ message: 'Test route works!' });
+});
+
+// Usar las rutas de dispositivos
+app.use('/api/dispositivos', dispositivosRoutes);
 
 // Ruta para enviar comandos a dispositivos
 app.post('/api/dispositivos/:deviceId/comando', async (req, res) => {
@@ -93,13 +105,13 @@ app.post('/api/dispositivos/:deviceId/comando', async (req, res) => {
     // Publicar el comando en el tópico MQTT
     try {
       await mqttService.publishMessage(topic, comandoMsg);
-        
+      
       // Actualizar el estado deseado en Firestore
       await db.collection('devices').doc(deviceId).update({
         desiredState: comando.action,
         lastCommand: admin.firestore.FieldValue.serverTimestamp()
       });
-        
+      
       res.json({ 
         success: true, 
         message: 'Comando enviado con éxito' 
@@ -125,9 +137,3 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en puerto ${PORT}`);
 });
-
-// Ruta de prueba
-app.post('/api/test', (req, res) => {
-  res.json({ message: 'Test route works!' });
-});
-
