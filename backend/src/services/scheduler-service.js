@@ -1,4 +1,4 @@
-const { db } = require('../../firebase');
+const { db } = require('../firebase');
 const mqttService = require('./mqtt-service');
 
 class SchedulerService {

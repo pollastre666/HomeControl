@@ -1,4 +1,4 @@
-const { admin, db } = require('../../firebase');
+const { admin, db } = require('../firebase');
 const mqttService = require('../services/mqtt-service');
 
 // Crear un nuevo horario
