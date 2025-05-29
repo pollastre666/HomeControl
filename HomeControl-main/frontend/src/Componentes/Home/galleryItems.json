@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "src": "https://www.somfy.es/common/img/library///500x370_cover/Connexoon_Window_Stephane_Rambaud_18_web2.jpg",
+    "alt": "Panel de control para persianas motorizadas en un hogar inteligente",
+    "title": "Persianas",
+    "link": "/Persianas",
+    "description": "Control de luz y privacidad con persianas motorizadas.",
+    "category": "Control de Luz"
+  },
+  {
+    "id": 2,
+    "src": "https://www.somfy.es/common/img/library//500x370_cover/blinds-and-curtains.jpg",
+    "alt": "Estores eléctricos elegantes con automatización avanzada",
+    "title": "Estores Eléctricos",
+    "link": "/Estores",
+    "description": "Estores elegantes con automatización avanzada.",
+    "category": "Control de Luz"
+  },
+  {
+    "id": 3,
+    "src": "https://www.somfy.es/common/img/library//500x370_cover/heating-and-lighting.jpg",
+    "alt": "Hub de automatización para centralizar el control del hogar",
+    "title": "Automation Hub",
+    "link": "/automation-hub",
+    "description": "Centraliza el control de tu hogar inteligente.",
+    "category": "Automatización"
+  },
+  {
+    "id": 4,
+    "src": "https://www.somfy.es/common/img/library//500x370_cover/gates-and-door-phones.jpg",
+    "alt": "Sistema de control de acceso seguro para el hogar",
+    "title": "Control de Acceso",
+    "link": "/access-control",
+    "description": "Acceso seguro y simplificado para tu hogar.",
+    "category": "Seguridad"
+  },
+  {
+    "id": 5,
+    "src": "https://www.somfy.es/common/img/library//500x370_cover/cameras-and-alarms.jpg",
+    "alt": "Interfaz de seguridad avanzada con cámaras y alarmas",
+    "title": "Seguridad Avanzada",
+    "link": "/advanced-security",
+    "description": "Protección total con cámaras y alarmas inteligentes.",
+    "category": "Seguridad"
+  },
+  {
+    "id": 6,
+    "src": "https://www.somfy.es/common/img/library///500x370_cover/yslo-swing-shutters-motor-tahoma-compatible.jpg",
+    "alt": "Automatismos para un hogar inteligente completamente conectado",
+    "title": "Smart Home Automatismos",
+    "link": "/smart-home-automation",
+    "description": "Automatización completa para un hogar conectado.",
+    "category": "Automatización"
+  }
+]

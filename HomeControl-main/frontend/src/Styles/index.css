@@ -1,0 +1,192 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global Responsive Base Styles */
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply min-h-screen m-0 font-sans text-base sm:text-lg leading-relaxed bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100;
+  }
+
+  h1 {
+    @apply text-2xl sm:text-3xl lg:text-4xl font-bold;
+  }
+
+  h2 {
+    @apply text-xl sm:text-2xl lg:text-3xl font-semibold;
+  }
+
+  h3 {
+    @apply text-lg sm:text-xl lg:text-2xl font-medium;
+  }
+
+  button, input, select {
+    @apply text-sm sm:text-base;
+  }
+
+  /* Container for consistent max-width across devices */
+  .container {
+    @apply max-w-full sm:max-w-3xl lg:max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+/* Component-Specific Responsive Styles */
+@layer components {
+  .btn {
+    @apply px-3 py-2 sm:px-4 sm:py-2 rounded-lg font-medium transition-colors duration-200 touch-pinch-zoom;
+  }
+
+  .btn-primary {
+    @apply bg-amber-600 text-white hover:bg-amber-700 disabled:opacity-50;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-300 text-gray-800 hover:bg-gray-400 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700;
+  }
+
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 border border-amber-200/20 hover:shadow-lg;
+  }
+
+  .modal {
+    @apply bg-white dark:bg-gray-800 rounded-lg p-4 sm:p-6 w-full max-w-md sm:max-w-lg mx-4;
+  }
+
+  .active {
+    @apply border-orange-500;
+  }
+}
+
+/* Responsive Scrollbar Styles */
+@layer utilities {
+  /* Scrollbar for larger screens */
+  ::-webkit-scrollbar {
+    @apply w-2 sm:w-3;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
+  }
+
+  /* Hide scrollbar on mobile for cleaner look */
+  @media (max-width: 640px) {
+    ::-webkit-scrollbar {
+      @apply w-0;
+    }
+  }
+}
+
+/* Responsive Carousel Styles */
+.rec.rec-arrow {
+  @apply bg-gray-900 dark:bg-gray-800 text-white text-sm sm:text-base w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center;
+}
+
+.rec.rec-arrow:hover {
+  @apply bg-gray-700 dark:bg-gray-600;
+}
+
+.rec.rec-arrow:disabled {
+  @apply invisible;
+}
+
+.rec-carousel-item:focus {
+  @apply outline-none ring-2 ring-amber-400;
+}
+
+@media (max-width: 640px) {
+  .rec.rec-arrow {
+    @apply w-6 h-6;
+  }
+}
+
+/* Responsive Locomotive Scroll Styles */
+html.has-scroll-smooth {
+  @apply overflow-hidden;
+}
+
+html.has-scroll-dragging {
+  @apply select-none;
+}
+
+.has-scroll-smooth body {
+  @apply overflow-hidden;
+}
+
+.has-scroll-smooth [data-scroll-container] {
+  @apply min-h-screen;
+}
+
+[data-scroll-direction="horizontal"] [data-scroll-container] {
+  @apply h-screen inline-block whitespace-nowrap;
+}
+
+[data-scroll-direction="horizontal"] [data-scroll-section] {
+  @apply inline-block align-top whitespace-nowrap h-full;
+}
+
+.c-scrollbar {
+  @apply absolute right-0 top-0 w-2 sm:w-3 h-full transition-all duration-300 opacity-0;
+}
+
+.c-scrollbar:hover {
+  @apply scale-x-125;
+}
+
+.c-scrollbar:hover, .has-scroll-scrolling .c-scrollbar, .has-scroll-dragging .c-scrollbar {
+  @apply opacity-100;
+}
+
+[data-scroll-direction="horizontal"] .c-scrollbar {
+  @apply w-full h-2 sm:h-3 top-auto bottom-0 scale-y-100;
+}
+
+[data-scroll-direction="horizontal"] .c-scrollbar:hover {
+  @apply scale-y-125;
+}
+
+.c-scrollbar_thumb {
+  @apply absolute top-0 right-0 bg-gray-900 dark:bg-gray-600 opacity-75 w-1 sm:w-2 rounded-full m-1 cursor-grab;
+}
+
+.has-scroll-dragging .c-scrollbar_thumb {
+  @apply cursor-grabbing;
+}
+
+[data-scroll-direction="horizontal"] .c-scrollbar_thumb {
+  @apply right-auto bottom-0;
+}
+
+/* Touch-friendly styles for mobile */
+@layer utilities {
+  .touch-pinch-zoom {
+    touch-action: pinch-zoom;
+  }
+}
+
+/* Animation keyframes */
+@keyframes gradient-x {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 15s ease infinite;
+}
